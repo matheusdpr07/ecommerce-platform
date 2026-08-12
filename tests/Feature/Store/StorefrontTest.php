@@ -154,6 +154,7 @@ test('product page shows visible product details', function () {
             ->component('Store/Products/Show')
             ->where('product.slug', 'jaqueta-premium')
             ->where('product.name', 'Jaqueta Premium')
+            ->where('is_in_wishlist', false)
             ->has('product.variants', 1)
             ->where('product.variants.0.price_cents', 9900)
         );

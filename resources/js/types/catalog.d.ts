@@ -161,3 +161,57 @@ export interface StoreProductDetail {
         is_primary: boolean;
     }>;
 }
+
+export interface CartItemPayload {
+    id: number;
+    quantity: number;
+    unit_price_cents: number;
+    line_total_cents: number;
+    is_available: boolean;
+    max_quantity: number;
+    variant: {
+        id: number;
+        sku: string;
+        name: string;
+        stock_quantity: number;
+    };
+    product: {
+        id: number;
+        name: string;
+        slug: string;
+        primary_image?: StoreProductImage | null;
+    };
+}
+
+export interface CartPayload {
+    item_count: number;
+    subtotal_cents: number;
+    items: CartItemPayload[];
+}
+
+export interface CartSummary {
+    item_count: number;
+    subtotal_cents: number;
+}
+
+export interface WishlistItemPayload {
+    id: number;
+    product: {
+        id: number;
+        name: string;
+        slug: string;
+        min_price_cents: number;
+        has_stock: boolean;
+        primary_image?: StoreProductImage | null;
+        category?: Pick<Category, 'name' | 'slug'> | null;
+    };
+}
+
+export interface WishlistPayload {
+    item_count: number;
+    items: WishlistItemPayload[];
+}
+
+export interface WishlistSummary {
+    item_count: number;
+}

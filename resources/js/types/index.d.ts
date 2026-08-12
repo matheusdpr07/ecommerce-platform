@@ -16,4 +16,11 @@ export type PageProps<
         success?: string | null;
         error?: string | null;
     };
+    cart: {
+        item_count: number;
+        subtotal_cents: number;
+    };
+    wishlist: {
+        item_count: number;
+    };
 };

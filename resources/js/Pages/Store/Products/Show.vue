@@ -1,13 +1,19 @@
 <script setup lang="ts">
+import FlashAlert from '@/Components/FlashAlert.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import StoreLayout from '@/Layouts/StoreLayout.vue';
 import type { StoreProductDetail } from '@/types/catalog';
 import { formatMoneyFromCents } from '@/utils/money';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
 
 const props = defineProps<{
     product: StoreProductDetail;
+    is_in_wishlist: boolean;
 }>();
+
+const page = usePage();
+const user = computed(() => page.props.auth.user);
 
 const selectedVariantId = ref<number>(
     props.product.variants.find((variant) => variant.in_stock)?.id ??
@@ -23,7 +29,18 @@ const selectedImageUrl = ref<string | null>(
     props.product.images[0]?.url ?? null,
 );
 
-watch(selectedVariantId, () => {
+const cartForm = useForm({
+    product_variant_id: selectedVariantId.value,
+    quantity: 1,
+});
+
+const wishlistForm = useForm({
+    product_id: props.product.id,
+});
+
+watch(selectedVariantId, (variantId) => {
+    cartForm.product_variant_id = variantId;
+
     if (!selectedImageUrl.value && props.product.images[0]) {
         selectedImageUrl.value = props.product.images[0].url;
     }
@@ -38,12 +55,39 @@ const hasDiscount = computed(() => {
         variant.compare_at_price_cents > variant.price_cents
     );
 });
+
+const canAddToCart = computed(
+    () => selectedVariant.value?.in_stock && cartForm.quantity >= 1,
+);
+
+const addToCart = () => {
+    cartForm.product_variant_id = selectedVariantId.value;
+    cartForm.post(route('store.cart.items.store'), {
+        preserveScroll: true,
+    });
+};
+
+const toggleWishlist = () => {
+    if (!user.value) {
+        return;
+    }
+
+    if (props.is_in_wishlist) {
+        return;
+    }
+
+    wishlistForm.post(route('store.wishlist.items.store'), {
+        preserveScroll: true,
+    });
+};
 </script>
 
 <template>
     <Head :title="product.meta_title ?? product.name" />
 
     <StoreLayout>
+        <FlashAlert />
+
         <nav class="mb-6 text-sm text-gray-500">
             <Link :href="route('store.home')" class="hover:text-gray-900">
                 Produtos
@@ -179,6 +223,58 @@ const hasDiscount = computed(() => {
                     </div>
                 </div>
 
+                <div class="mt-8 flex flex-wrap items-end gap-4">
+                    <div>
+                        <label
+                            for="quantity"
+                            class="block text-sm font-medium text-gray-700"
+                            >Quantidade</label
+                        >
+                        <input
+                            id="quantity"
+                            v-model.number="cartForm.quantity"
+                            type="number"
+                            min="1"
+                            :max="selectedVariant?.stock_quantity ?? 1"
+                            class="mt-1 w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        />
+                    </div>
+
+                    <PrimaryButton
+                        type="button"
+                        :disabled="!canAddToCart || cartForm.processing"
+                        @click="addToCart"
+                    >
+                        Adicionar ao carrinho
+                    </PrimaryButton>
+                </div>
+
+                <div class="mt-4">
+                    <Link
+                        v-if="!user"
+                        :href="route('login')"
+                        class="text-sm text-indigo-600 hover:text-indigo-800"
+                    >
+                        Entre para salvar nos favoritos
+                    </Link>
+                    <button
+                        v-else-if="!is_in_wishlist"
+                        type="button"
+                        class="text-sm text-indigo-600 hover:text-indigo-800"
+                        :disabled="wishlistForm.processing"
+                        @click="toggleWishlist"
+                    >
+                        Adicionar aos favoritos
+                    </button>
+                    <Link
+                        v-else
+                        :href="route('store.wishlist.index')"
+                        class="text-sm text-gray-600 hover:text-gray-900"
+                    >
+                        Ver nos favoritos
+                    </Link>
+                </div>
+
                 <div
                     v-if="product.description"
                     class="mt-8 rounded-lg border border-gray-200 bg-white p-6"
@@ -190,11 +286,6 @@ const hasDiscount = computed(() => {
                         {{ product.description }}
                     </p>
                 </div>
-
-                <p class="mt-8 text-sm text-gray-500">
-                    Compra disponivel nas proximas fases. Por enquanto, voce
-                    pode navegar e comparar produtos livremente.
-                </p>
             </section>
         </div>
     </StoreLayout>

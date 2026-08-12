@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -44,7 +46,16 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function createStorefrontProduct(array $productAttributes = [], array $variantAttributes = []): Product
 {
-    // ..
+    $category = Category::factory()->create(['is_active' => true]);
+
+    return Product::factory()->withVariant(array_merge([
+        'is_active' => true,
+        'stock_quantity' => 10,
+        'price_cents' => 5000,
+    ], $variantAttributes))->create(array_merge([
+        'is_active' => true,
+        'category_id' => $category->id,
+    ], $productAttributes));
 }

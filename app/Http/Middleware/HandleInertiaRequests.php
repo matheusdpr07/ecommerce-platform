@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\CartService;
+use App\Services\WishlistService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -46,6 +48,10 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
             ],
+            'cart' => fn () => app(CartService::class)->getSummary($request),
+            'wishlist' => fn () => $request->user()
+                ? app(WishlistService::class)->getSummary($request->user())
+                : ['item_count' => 0],
         ];
     }
 }
