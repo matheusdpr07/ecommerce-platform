@@ -11,11 +11,14 @@ use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\ShippingMethodController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('activity', [AdminAuditLogController::class, 'index'])->name('activity.index');
+Route::get('reviews', [ReviewController::class, 'index'])->name('reviews.index');
+Route::patch('reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
 
 Route::get('customers', [CustomerController::class, 'index'])->name('customers.index');
 Route::get('customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');

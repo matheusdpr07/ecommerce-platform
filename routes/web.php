@@ -7,6 +7,7 @@ use App\Http\Controllers\Store\CheckoutController;
 use App\Http\Controllers\Store\OrderController;
 use App\Http\Controllers\Store\PaymentController;
 use App\Http\Controllers\Store\ProductController as StoreProductController;
+use App\Http\Controllers\Store\ReviewController;
 use App\Http\Controllers\Store\WishlistController;
 use App\Http\Controllers\Webhooks\MercadoPagoWebhookController;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +34,11 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('/products/{product:slug}/reviews', [ReviewController::class, 'store'])
+        ->name('store.products.reviews.store');
+    Route::put('/reviews/{review}', [ReviewController::class, 'update'])
+        ->name('store.reviews.update');
+
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('store.checkout.index');
     Route::patch('/checkout', [CheckoutController::class, 'update'])->name('store.checkout.update');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('store.checkout.store');

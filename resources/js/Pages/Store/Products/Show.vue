@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import FlashAlert from '@/Components/FlashAlert.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import ProductReviews from '@/Components/Store/ProductReviews.vue';
 import StoreLayout from '@/Layouts/StoreLayout.vue';
 import type { StoreProductDetail } from '@/types/catalog';
+import type { ProductReviewsPayload } from '@/types/review';
 import { formatMoneyFromCents } from '@/utils/money';
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
@@ -10,6 +12,7 @@ import { computed, ref, watch } from 'vue';
 const props = defineProps<{
     product: StoreProductDetail;
     is_in_wishlist: boolean;
+    reviews: ProductReviewsPayload;
 }>();
 
 const page = usePage();
@@ -310,5 +313,7 @@ const toggleWishlist = () => {
                 </div>
             </section>
         </div>
+
+        <ProductReviews :product-slug="product.slug" :reviews="reviews" />
     </StoreLayout>
 </template>

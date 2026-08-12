@@ -98,6 +98,11 @@ const navigationGroups: Array<{
                 routeName: 'admin.banners.index',
                 activePattern: 'admin.banners.*',
             },
+            {
+                label: 'Avaliações',
+                routeName: 'admin.reviews.index',
+                activePattern: 'admin.reviews.*',
+            },
         ],
     },
 ];
