@@ -452,3 +452,41 @@ export interface StockMovementItem {
     } | null;
     created_at?: string | null;
 }
+
+export interface AdminCustomerSummary {
+    id: number;
+    name: string;
+    email: string;
+    email_verified_at?: string | null;
+    orders_count: number;
+    addresses_count: number;
+    net_spent_cents: number;
+    last_order_at?: string | null;
+    created_at?: string | null;
+}
+
+export interface AdminCustomerDetail {
+    id: number;
+    name: string;
+    email: string;
+    email_verified_at?: string | null;
+    created_at?: string | null;
+    addresses: Array<{
+        id: number;
+        label: string;
+        recipient_name: string;
+        recipient_phone?: string | null;
+        postal_code: string;
+        line1: string;
+        line2: string;
+        complement?: string | null;
+        is_default: boolean;
+    }>;
+}
+
+export interface AdminCustomerOrder extends OrderSummary {
+    payment?: {
+        status: string;
+        status_label: string;
+    } | null;
+}

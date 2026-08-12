@@ -77,6 +77,12 @@ const user = computed(() => page.props.auth.user!);
                                 Pedidos
                             </NavLink>
                             <NavLink
+                                :href="route('admin.customers.index')"
+                                :active="route().current('admin.customers.*')"
+                            >
+                                Clientes
+                            </NavLink>
+                            <NavLink
                                 :href="route('admin.shipping-methods.index')"
                                 :active="route().current('admin.shipping-methods.*')"
                             >
@@ -215,6 +221,12 @@ const user = computed(() => page.props.auth.user!);
                         :active="route().current('admin.orders.*')"
                     >
                         Pedidos
+                    </ResponsiveNavLink>
+                    <ResponsiveNavLink
+                        :href="route('admin.customers.index')"
+                        :active="route().current('admin.customers.*')"
+                    >
+                        Clientes
                     </ResponsiveNavLink>
                     <ResponsiveNavLink
                         :href="route('admin.shipping-methods.index')"
