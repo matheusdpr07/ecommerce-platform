@@ -1,16 +1,20 @@
 # Ecommerce Platform
 
-Plataforma completa de e-commerce com catalogo, carrinho, checkout, Pix e painel administrativo operacional.
+Plataforma completa de e-commerce com catalogo, experiencia editorial, carrinho, checkout, Pix e painel administrativo operacional.
 
 ## Estado atual
 
-A Fase 11 esta concluida. A aplicacao inclui:
+A Fase 12 esta concluida. A aplicacao inclui:
 
 - Loja publica, busca, filtros, carrinho, wishlist, cupons e promocoes
 - Checkout autenticado com enderecos, frete, pedidos e controle transacional de estoque
 - Pagamento Pix via Mercado Pago, webhooks assinados e reembolso integral
 - Painel administrativo com dashboard, inventario, operacao de pedidos, clientes e auditoria
 - Acompanhamento de separacao, envio, rastreio e entrega na area do cliente
+- Identidade visual configuravel, homepage editorial e movimento acessivel ligado a rolagem
+- Banners administraveis com imagem, tema, posicao, agendamento e CTA
+- Avaliacoes moderadas exclusivas para compras entregues e verificadas
+- Central de notificacoes com alertas no banco e por e-mail para pedido, pagamento, entrega e avaliacao
 
 ## Stack
 

@@ -46,6 +46,19 @@ php artisan storage:link
 
 Com Herd, o site pode ficar disponivel em `http://ecommerce-platform.test`. Ajuste `APP_URL` no `.env` conforme o dominio local.
 
+## Identidade da loja
+
+A identidade exibida na vitrine pode ser ajustada sem alterar os componentes Vue:
+
+```env
+STORE_NAME="Aurea"
+STORE_EYEBROW="Curadoria contemporanea"
+STORE_TAGLINE="Escolhas que transformam o cotidiano."
+STORE_SUPPORT_EMAIL="hello@example.com"
+```
+
+Esses valores definem a assinatura da marca, a mensagem principal e o contato mostrado ao cliente. Banners e campanhas sao administrados em `/admin/banners`.
+
 ## Mercado Pago e Pix
 
 Configure as credenciais da aplicacao Mercado Pago somente no `.env` local:
@@ -101,6 +114,8 @@ composer dev
 ```
 
 Inicia servidor PHP, fila, logs (Pail) e Vite simultaneamente.
+
+A fila deve permanecer ativa para enviar os e-mails transacionais de pedidos, pagamentos, entrega e moderacao de avaliacoes. Em producao, configure um worker para a conexao definida em `QUEUE_CONNECTION`.
 
 ## Testes e qualidade
 

@@ -205,3 +205,39 @@ Registro objetivo de decisoes relevantes. Novas entradas devem incluir data, con
 **Motivo:** Evitar que atualizacoes de pagamento e webhooks sobrescrevam o andamento da entrega, preservar consistencia de estoque concorrente e fornecer rastreabilidade administrativa sem expor dados internos ao cliente.
 
 **Consequencias:** A logistica so avanca apos pagamento e em sequencia; pedidos ainda nao enviados sao cancelados quando o financeiro e encerrado; estoque passa a ter limite minimo por SKU; dashboard e gastos de clientes usam receita liquida de reembolsos; clientes permanecem somente leitura no admin e promocao de administradores continua exclusiva da CLI.
+
+---
+
+## 2026-08-12 — Experiencia editorial sem controlar artificialmente a rolagem
+
+**Contexto:** Fase 12 — elevar a percepcao visual da loja sem sacrificar navegacao, desempenho ou acessibilidade.
+
+**Decisao:** Manter a rolagem nativa e aplicar Scroll-driven Animations apenas como melhoria progressiva; animar `transform` e `opacity`; respeitar `prefers-reduced-motion`; usar tokens CSS e identidade `STORE_*`; habilitar View Transitions nos links principais.
+
+**Motivo:** Uma experiencia memoravel nao deve bloquear gestos, teclado, historico do navegador nem causar desconforto vestibular. O mesmo frontend precisa funcionar em navegadores sem as APIs mais novas.
+
+**Consequencias:** A loja ganha barra de progresso, revelacoes por viewport e transicoes sutis sem listener continuo de scroll; navegadores sem suporte recebem o conteudo estatico completo; a marca padrao `Aurea` pode ser substituida por ambiente.
+
+---
+
+## 2026-08-12 — Conteudo agendado e avaliacoes de compra verificada
+
+**Contexto:** Fase 12 — campanhas administraveis e prova social confiavel.
+
+**Decisao:** Persistir banners com posicao, tema, ordem e janela de publicacao; aceitar avaliacoes somente quando existir item de pedido entregue do cliente; publicar apenas depois de moderacao e devolver edicoes ao estado pendente.
+
+**Motivo:** Separar campanhas do deploy e impedir que notas anonimas ou sem relacao com uma compra distorcam a reputacao do produto.
+
+**Consequencias:** `/admin/banners` controla a narrativa da homepage; `/admin/reviews` concentra moderacao auditada; `reviews` possui vinculo unico com cliente/produto e `order_item`; somente registros `approved` compoem media e distribuicao.
+
+---
+
+## 2026-08-12 — Notificacoes transacionais depois do commit
+
+**Contexto:** Fase 12 — informar o cliente sobre eventos financeiros, logisticos e de comunidade.
+
+**Decisao:** Usar o sistema nativo de notificacoes do Laravel com canais `database` e `mail`, enfileirados com `afterCommit`; disparar somente quando servicos detectarem uma transicao real.
+
+**Motivo:** Oferecer uma caixa de entrada persistente e e-mail sem atrasar requisicoes nem anunciar operacoes que acabaram revertidas pela transacao.
+
+**Consequencias:** `/notifications` e isolada por usuario; o contador nao lido e compartilhado pelo Inertia; retries idempotentes de pagamento nao duplicam alertas; o worker de fila do projeto processa os envios no canal padrao.

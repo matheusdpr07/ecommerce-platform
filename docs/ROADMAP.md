@@ -13,7 +13,7 @@
 9. **Pedidos e controle transacional de estoque** — concluida
 10. **Mercado Pago, Pix, webhooks e reembolsos** — concluida
 11. **Painel administrativo completo** — concluida
-12. Avaliacoes, conteudo e notificacoes
+12. **Avaliacoes, conteudo e notificacoes** — concluida
 13. SEO, acessibilidade e desempenho
 14. Seguranca, testes, CI e preparacao para producao
 
@@ -365,3 +365,54 @@
 ### Proxima fase recomendada
 
 **Fase 12:** Avaliacoes, conteudo e notificacoes
+
+---
+
+## Fase 12 — Avaliacoes, conteudo e notificacoes
+
+**Status:** concluida
+
+### Concluido
+
+- Sistema visual editorial configuravel com identidade, navegacao, rodape e estados vazios consistentes
+- Rolagem nativa aprimorada por `animation-timeline`, barra de progresso e revelacoes progressivas
+- Preferencia `prefers-reduced-motion` respeitada e transicoes Inertia usadas como melhoria progressiva
+- Homepage editorial responsiva com descoberta por categorias, catalogo, busca e filtros moveis
+- Banners administraveis com upload, texto alternativo, tema, posicao, ordem, CTA e janela de publicacao
+- Avaliacoes restritas a clientes com compra entregue e verificacao pelo `order_item`
+- Media, distribuicao de notas e nome publico parcialmente anonimizado na pagina do produto
+- Edicao de avaliacao com retorno automatico para moderacao
+- Fila de moderacao administrativa com aprovacao, rejeicao, retorno ao cliente e auditoria
+- Central privada de notificacoes com contador, leitura individual e leitura em massa
+- Notificacoes transacionais por banco e e-mail enfileirado depois do commit
+- Eventos cobertos: pedido criado, pagamento, reembolso, entrega e moderacao de avaliacao
+- Redesign das jornadas de produto, carrinho, checkout, favoritos, pedidos e area do cliente
+
+### Pendente nesta fase
+
+- Nenhum
+
+### Decisoes
+
+- A rolagem continua nativa; animacoes CSS complementam a experiencia sem scroll hijacking
+- Conteudo de campanha usa `banners` e agendamento no backend, sem textos promocionais obrigatoriamente fixos no frontend
+- Somente compras entregues podem avaliar; alteracoes deixam de ser publicas ate nova aprovacao
+- Notificacoes usam os canais `database` e `mail`, com fila configurada para disparo apos commit
+- Identidade da loja usa variaveis `STORE_*`, preservando a plataforma como base reutilizavel
+
+### Testes relacionados
+
+- `tests/Feature/Admin/BannerManagementTest.php`
+- `tests/Feature/Store/ReviewTest.php`
+- `tests/Feature/Store/NotificationCenterTest.php`
+- `tests/Feature/Store/StorefrontTest.php`
+- `tests/Feature/Store/CartTest.php`
+- `tests/Feature/Store/CheckoutTest.php`
+- `tests/Feature/Store/CheckoutAuthenticationFlowTest.php`
+- `tests/Feature/Store/WishlistTest.php`
+- `tests/Feature/Store/OrderTest.php`
+- `tests/Feature/Admin/OrderFulfillmentManagementTest.php`
+
+### Proxima fase recomendada
+
+**Fase 13:** SEO, acessibilidade e desempenho

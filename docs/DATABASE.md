@@ -318,9 +318,58 @@ Estados: `pending`, `processing`, `approved`, `failed`, `cancelled`, `expired`, 
 | user_agent | text nullable | agente da requisicao |
 | created_at, updated_at | timestamp | `created_at` indexado |
 
-### Planejadas (fases futuras)
+#### `banners`
 
-- `banners`, `reviews`
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | bigint | PK |
+| title | string | titulo editorial |
+| eyebrow | string nullable | chamada curta |
+| description | text nullable | apoio do destaque |
+| image_path | string nullable | arquivo no disco publico |
+| image_alt | string nullable | texto alternativo |
+| cta_label | string nullable | texto do CTA |
+| cta_url | string(2048) nullable | caminho interno ou URL HTTP(S) |
+| theme | string | `paper`, `ink`, `accent` |
+| placement | string | `hero`, `editorial` |
+| is_active | boolean | habilitacao administrativa |
+| starts_at, ends_at | timestamp nullable | janela de publicacao |
+| sort_order | unsigned int | prioridade visual |
+
+#### `reviews`
+
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | bigint | PK |
+| user_id | bigint | FK `users`, unico com `product_id` |
+| product_id | bigint | FK `products` |
+| order_item_id | bigint unique | comprova a compra entregue |
+| rating | unsigned tinyint | nota de 1 a 5 |
+| title | string nullable | resumo do cliente |
+| body | text | experiencia detalhada |
+| status | string | `pending`, `approved`, `rejected`; index |
+| is_verified_purchase | boolean | snapshot de verificacao |
+| moderation_notes | text nullable | retorno da equipe |
+| moderated_by | bigint nullable | FK `users`, null on delete |
+| moderated_at | timestamp nullable | data da decisao |
+
+#### `notifications`
+
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | uuid | PK nativa do Laravel |
+| type | string | classe da notificacao |
+| notifiable_type, notifiable_id | morph | destinatario, index composto |
+| data | text | payload com titulo, mensagem, acao e tom |
+| read_at | timestamp nullable | controle de leitura |
+| created_at, updated_at | timestamp | ordenacao da caixa de entrada |
+
+### Relacionamentos adicionados na Fase 12
+
+- `banners` e conteudo independente, filtrado por posicao e janela de publicacao.
+- `products`, `users` e `order_items` convergem em `reviews`; o item do pedido comprova a compra.
+- `users` recebem `notifications` pelo relacionamento polimorfico nativo do Laravel.
+- `reviews` tambem podem apontar para o usuario administrador em `moderated_by`.
 
 ## Diagrama simplificado
 
