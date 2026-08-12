@@ -53,7 +53,9 @@ Monolito modular Laravel com frontend Inertia (Vue 3 + TypeScript). Uma unica ap
 ## Estrutura de rotas (planejada)
 
 ```
-/              Loja publica
+/              Loja publica (vitrine)
+/products/*    Pagina do produto
+/categories/*  Listagem por categoria
 /dashboard     Area autenticada (cliente)
 /admin/*       Painel administrativo
 ```

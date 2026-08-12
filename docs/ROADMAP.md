@@ -6,7 +6,7 @@
 2. **Autenticacao, usuarios e autorizacao administrativa** — concluida
 3. **Categorias e marcas** — concluida
 4. **Produtos, variacoes, imagens e estoque** — concluida
-5. Loja publica, busca, filtros e pagina do produto
+5. **Loja publica, busca, filtros e pagina do produto** — concluida
 6. Carrinho e lista de desejos
 7. Cupons e promocoes
 8. Enderecos, frete e checkout
@@ -91,3 +91,38 @@
 ### Proxima fase recomendada
 
 **Fase 5:** Loja publica, busca, filtros e pagina do produto
+
+---
+
+## Fase 5 — Loja publica, busca, filtros e pagina do produto
+
+**Status:** concluida
+
+### Concluido
+
+- Vitrine publica em `/` acessivel sem autenticacao
+- Listagem paginada de produtos ativos com categoria, marca e variacao ativa
+- Busca por nome, descricao, slug e SKU
+- Filtros por categoria, marca, faixa de preco e ordenacao
+- Pagina de categoria em `/categories/{slug}`
+- Pagina de produto em `/products/{slug}` com galeria, variacoes e estoque
+- Layout dedicado da loja (`StoreLayout`) separado do admin
+- Produtos inativos ou com categoria/marca inativa ocultos da vitrine
+
+### Pendente nesta fase
+
+- Nenhum
+
+### Decisoes
+
+- Loja publica nao exige cadastro para navegar
+- Apenas produtos visiveis no storefront (ativos, categoria ativa, variacao ativa)
+- Compra e carrinho ficam para a Fase 6
+
+### Testes relacionados
+
+- `tests/Feature/Store/StorefrontTest.php`
+
+### Proxima fase recomendada
+
+**Fase 6:** Carrinho e lista de desejos

@@ -122,3 +122,15 @@ Registro objetivo de decisoes relevantes. Novas entradas devem incluir data, con
 
 **Consequencias:** Rota `/admin/products`; upload em `storage/app/public/products`; executar `php artisan storage:link` no ambiente local; exclusao de categoria/marca bloqueada com produtos vinculados.
 
+---
+
+## 2026-08-12 — Loja publica sem autenticacao
+
+**Contexto:** Fase 5 — vitrine para visitantes.
+
+**Decisao:** Rotas publicas `/`, `/categories/{slug}` e `/products/{slug}`; layout `StoreLayout`; filtros e busca no backend via `StorefrontCatalogService`.
+
+**Motivo:** Loja aberta a todos; cadastro reservado para fluxos de cliente nas fases seguintes.
+
+**Consequencias:** Pagina inicial deixa de ser Welcome do Breeze; admin permanece isolado em `/admin`.
+
