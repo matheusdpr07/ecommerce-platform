@@ -248,8 +248,8 @@ Registro objetivo de decisoes relevantes. Novas entradas devem incluir data, con
 
 **Contexto:** Inicio da Fase 13 — adaptar para a loja o impacto de referencias visuais com troca de cenarios durante a rolagem.
 
-**Decisao:** Reconstruir o principio de capitulos em `StoreScrollStory`, usando somente dados e identidade da propria loja; manter artigos no fluxo, palco com `position: sticky` e ativacao por `IntersectionObserver`; nao incorporar a biblioteca de full page, imagens, textos ou codigo da referencia; remover o palco quando `prefers-reduced-motion` estiver ativo.
+**Decisao:** Reconstruir o principio de capitulos em `StoreScrollStory`, usando somente dados e identidade da propria loja; manter artigos no fluxo, palco com `position: sticky` e ativacao por `IntersectionObserver`; fazer um gesto vertical da roda avancar um unico capitulo, com bloqueio dos eventos repetidos do mesmo gesto e liberacao nos extremos; nao incorporar a biblioteca de full page, imagens, textos ou codigo da referencia; remover o palco e o encaixe quando `prefers-reduced-motion` estiver ativo.
 
-**Motivo:** Obter a percepcao de uma experiencia imersiva sem capturar wheel/toque, alterar a velocidade da pagina, prejudicar teclado ou adicionar uma dependencia pesada ao bundle.
+**Motivo:** Obter a percepcao de uma experiencia imersiva e eliminar a necessidade de varias voltas na roda, sem capturar toque ou teclado e sem adicionar uma dependencia pesada ao bundle.
 
-**Consequencias:** A homepage passa por identidade, categorias, curadoria e confianca antes do catalogo; o conteudo continua administravel por banners e catalogo; navegadores e usuarios sem movimento recebem quatro secoes estaticas completas; futuras otimizacoes da Fase 13 podem medir a experiencia sem depender de um motor proprietario de rolagem.
+**Consequencias:** A homepage passa por identidade, categorias, curadoria e confianca antes do catalogo; no mouse, cada gesto percorre um capitulo e a primeira/ultima cena nao prendem a pagina; o conteudo continua administravel por banners e catalogo; navegadores e usuarios sem movimento recebem quatro secoes estaticas completas; futuras otimizacoes da Fase 13 podem medir a experiencia sem depender de um motor proprietario de rolagem.

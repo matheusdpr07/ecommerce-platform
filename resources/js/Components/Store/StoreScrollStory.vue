@@ -16,6 +16,69 @@ const storyRoot = ref<HTMLElement | null>(null);
 const activeScene = ref(0);
 const storyReady = ref(false);
 let observer: IntersectionObserver | null = null;
+let wheelSnapping = false;
+let wheelUnlockTimer: ReturnType<typeof setTimeout> | null = null;
+
+const releaseWheelSnap = () => {
+    wheelSnapping = false;
+
+    if (wheelUnlockTimer) {
+        clearTimeout(wheelUnlockTimer);
+        wheelUnlockTimer = null;
+    }
+};
+
+const scheduleWheelRelease = () => {
+    if (wheelUnlockTimer) {
+        clearTimeout(wheelUnlockTimer);
+    }
+
+    wheelUnlockTimer = setTimeout(releaseWheelSnap, 700);
+};
+
+const scrollToChapter = (chapter: HTMLElement) => {
+    const rootFontSize = Number.parseFloat(
+        window.getComputedStyle(document.documentElement).fontSize,
+    );
+    const headerOffset = (Number.isFinite(rootFontSize) ? rootFontSize : 16) * 4.75;
+
+    window.scrollTo({
+        top: chapter.getBoundingClientRect().top + window.scrollY - headerOffset,
+        behavior: 'smooth',
+    });
+};
+
+const handleStoryWheel = (event: WheelEvent) => {
+    if (
+        !storyRoot.value ||
+        event.ctrlKey ||
+        Math.abs(event.deltaY) <= Math.abs(event.deltaX) ||
+        (event.deltaMode === 0 && Math.abs(event.deltaY) < 4)
+    ) {
+        return;
+    }
+
+    if (wheelSnapping) {
+        event.preventDefault();
+        scheduleWheelRelease();
+        return;
+    }
+
+    const chapters = [
+        ...storyRoot.value.querySelectorAll<HTMLElement>('[data-story-chapter]'),
+    ];
+    const direction = event.deltaY > 0 ? 1 : -1;
+    const targetIndex = activeScene.value + direction;
+
+    if (targetIndex < 0 || targetIndex >= chapters.length) {
+        return;
+    }
+
+    event.preventDefault();
+    wheelSnapping = true;
+    scrollToChapter(chapters[targetIndex]);
+    scheduleWheelRelease();
+};
 
 const heroBanner = computed(
     () => props.banners.find((banner) => banner.placement === 'hero') ?? null,
@@ -50,6 +113,8 @@ onMounted(() => {
         return;
     }
 
+    storyRoot.value.addEventListener('wheel', handleStoryWheel, { passive: false });
+
     const visibility = new Map<Element, number>();
     const chapters = storyRoot.value.querySelectorAll<HTMLElement>('[data-story-chapter]');
 
@@ -81,7 +146,11 @@ onMounted(() => {
     });
 });
 
-onBeforeUnmount(() => observer?.disconnect());
+onBeforeUnmount(() => {
+    observer?.disconnect();
+    storyRoot.value?.removeEventListener('wheel', handleStoryWheel);
+    releaseWheelSnap();
+});
 </script>
 
 <template>
@@ -588,6 +657,7 @@ onBeforeUnmount(() => observer?.disconnect());
     min-height: max(38rem, calc(100svh - 4.75rem));
     align-items: center;
     padding: clamp(4rem, 8vw, 8rem) clamp(1rem, 7vw, 7rem);
+    scroll-margin-top: 4.75rem;
 }
 
 .store-story__content {

@@ -427,8 +427,9 @@
 
 - Homepage reorganizada em quatro capitulos narrativos ligados a rolagem
 - Cenarios construidos com CSS, banners e produtos reais da loja, sem ativos copiados da referencia visual
-- Troca de cena por `IntersectionObserver`, sem listener continuo e sem capturar o gesto de rolagem
-- Rolagem nativa preservada em mouse, toque e teclado
+- Troca de cena por `IntersectionObserver`, sem listener continuo durante a rolagem
+- Um gesto vertical da roda avanca um capitulo, com bloqueio de repeticao e liberacao natural na primeira e na ultima cena
+- Rolagem nativa preservada para toque, teclado, movimento reduzido e para o restante da pagina
 - Experiencia responsiva validada visualmente em desktop e celular
 - Fallback de `prefers-reduced-motion` validado com todos os capitulos visiveis e interativos
 - Hierarquia da homepage corrigida para um unico `h1`
@@ -448,7 +449,7 @@
 ### Decisoes
 
 - Referencias externas orientam principios de composicao e interacao, nunca a copia de marca, texto, imagem ou codigo
-- A narrativa usa `position: sticky` e `IntersectionObserver`; nenhuma biblioteca de scroll hijacking entra no runtime
+- A narrativa usa `position: sticky` e `IntersectionObserver`; o encaixe da roda e local e nenhuma biblioteca de scroll hijacking entra no runtime
 - Produtos, categorias e banners continuam sendo a unica fonte de conteudo comercial da homepage
 - Sem movimento, os capitulos voltam ao fluxo normal e nenhuma acao fica oculta
 
