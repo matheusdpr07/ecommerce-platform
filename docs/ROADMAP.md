@@ -10,7 +10,7 @@
 6. **Carrinho e lista de desejos** — concluida
 7. **Cupons e promocoes** — concluida
 8. **Enderecos, frete e checkout** — concluida
-9. Pedidos e controle transacional de estoque
+9. **Pedidos e controle transacional de estoque** — concluida
 10. Mercado Pago, Pix, webhooks e reembolsos
 11. Painel administrativo completo
 12. Avaliacoes, conteudo e notificacoes
@@ -236,4 +236,39 @@
 
 ### Proxima fase recomendada
 
-**Fase 9:** Pedidos e controle transacional de estoque
+**Fase 10:** Mercado Pago, Pix, webhooks e reembolsos
+
+---
+
+## Fase 9 — Pedidos e controle transacional de estoque
+
+**Status:** concluida
+
+### Concluido
+
+- Tabelas `orders` e `order_items` com snapshot de precos, endereco e frete
+- Enum `OrderStatus` (`pending_payment`) e motivo `sale` em movimentacoes de estoque
+- Confirmacao de pedido via `POST /checkout` com transacao de banco
+- Baixa transacional de estoque com `lockForUpdate` e registro em `stock_movements`
+- Incremento de `usage_count` do cupom ao confirmar pedido
+- Limpeza do carrinho apos pedido criado
+- Listagem e detalhe de pedidos em `/orders` e `/orders/{order}`
+- Botao "Confirmar pedido" no checkout quando endereco e frete estao selecionados
+
+### Pendente nesta fase
+
+- Nenhum (pagamento e mudanca de status na Fase 10)
+
+### Decisoes
+
+- Pedidos iniciam com status `pending_payment` ate integracao de pagamento
+- Precos, endereco e frete congelados no pedido (snapshot), independente de alteracoes futuras
+- Estoque decrementado na confirmacao, nao na selecao do checkout
+
+### Testes relacionados
+
+- `tests/Feature/Store/OrderTest.php`
+
+### Proxima fase recomendada
+
+**Fase 10:** Mercado Pago, Pix, webhooks e reembolsos

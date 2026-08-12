@@ -60,6 +60,7 @@ Monolito modular Laravel com frontend Inertia (Vue 3 + TypeScript). Uma unica ap
 /wishlist      Lista de desejos (auth)
 /addresses     Enderecos do cliente (auth)
 /checkout      Checkout (auth)
+/orders        Pedidos do cliente (auth)
 /dashboard     Area autenticada (cliente)
 /admin/*       Painel administrativo (cupons, promocoes, frete, catalogo)
 ```

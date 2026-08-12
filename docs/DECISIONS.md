@@ -170,3 +170,15 @@ Registro objetivo de decisoes relevantes. Novas entradas devem incluir data, con
 
 **Consequencias:** Confirmacao do pedido e baixa de estoque ficam para a Fase 9; pagamento para a Fase 10; checkout exige autenticacao, e-mail verificado e carrinho com itens disponiveis.
 
+---
+
+## 2026-08-12 — Pedidos e baixa transacional de estoque
+
+**Contexto:** Fase 9 — criacao de pedidos a partir do checkout preparado na Fase 8.
+
+**Decisao:** Confirmacao via `POST /checkout` dentro de transacao; estoque decrementado com `lockForUpdate`; snapshot de precos, endereco e frete em `orders`/`order_items`; status inicial `pending_payment`; incremento de `usage_count` do cupom na confirmacao.
+
+**Motivo:** Garantir consistencia de estoque e valores no momento da compra; separar criacao do pedido da captura de pagamento (Fase 10).
+
+**Consequencias:** Rotas `/orders`; movimentacao de estoque com motivo `sale`; carrinho esvaziado apos pedido; pagamento Mercado Pago na proxima fase.
+

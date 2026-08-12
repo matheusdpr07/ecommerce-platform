@@ -98,7 +98,7 @@ MySQL em desenvolvimento e producao. SQLite in-memory apenas nos testes automati
 | user_id | bigint nullable | FK `users`, admin que registrou |
 | quantity_change | integer | positivo ou negativo |
 | quantity_after | unsigned int | saldo apos movimentacao |
-| reason | string | `initial`, `manual_adjustment`, `restock` |
+| reason | string | `initial`, `manual_adjustment`, `restock`, `sale` |
 | notes | text nullable | |
 | created_at | timestamp | index |
 
@@ -202,9 +202,53 @@ MySQL em desenvolvimento e producao. SQLite in-memory apenas nos testes automati
 | sort_order | unsigned int | default 0, index |
 | is_active | boolean | index, default true |
 
+#### `orders`
+
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | bigint | PK |
+| user_id | bigint | FK `users`, cascade on delete |
+| number | string unique | ex.: `PED-00000001` |
+| status | string | enum `OrderStatus`, index |
+| subtotal_cents | unsigned int | subtotal promocional |
+| discount_cents | unsigned int | desconto do cupom |
+| shipping_cents | unsigned int | frete |
+| total_cents | unsigned int | total final |
+| coupon_id | bigint nullable | FK `coupons`, null on delete |
+| coupon_code | string nullable | snapshot |
+| coupon_name | string nullable | snapshot |
+| shipping_method_id | bigint nullable | FK `shipping_methods`, null on delete |
+| shipping_method_name | string | snapshot |
+| recipient_name | string | snapshot do endereco |
+| recipient_phone | string nullable | |
+| postal_code | string(8) | |
+| street | string | |
+| street_number | string | numero do logradouro |
+| complement | string nullable | |
+| neighborhood | string | |
+| city | string | |
+| state | string(2) | |
+| placed_at | timestamp | index |
+
+#### `order_items`
+
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | bigint | PK |
+| order_id | bigint | FK `orders`, cascade on delete |
+| product_variant_id | bigint | FK `product_variants`, restrict on delete |
+| product_id | bigint | FK `products`, restrict on delete |
+| product_name | string | snapshot |
+| product_slug | string | snapshot |
+| variant_name | string | snapshot |
+| variant_sku | string | snapshot |
+| quantity | unsigned int | |
+| unit_price_cents | unsigned int | preco promocional no pedido |
+| original_unit_price_cents | unsigned int nullable | preco original se houve promocao |
+| line_total_cents | unsigned int | |
+
 ### Planejadas (fases futuras)
 
-- `orders`, `order_items`
 - `payments`, `webhook_events`
 - `banners`, `reviews`, `admin_audit_logs`
 
@@ -229,9 +273,12 @@ users ──┬── carts ── cart_items
         │            ├── addresses (shipping_address_id)
         │            └── shipping_methods (shipping_method_id)
         ├── addresses
+        ├── orders ── order_items
         ├── wishlist_items
-        ├── orders (fase 9)
-        └── stock_movements (admin, fase 4)
+        └── stock_movements (admin e vendas)
 
-shipping_methods ── carts (frete selecionado)
+shipping_methods ──┬── carts (frete selecionado)
+                   └── orders (snapshot)
+
+coupons ── orders (nullable)
 ```
