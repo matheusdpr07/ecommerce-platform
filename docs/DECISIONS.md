@@ -146,3 +146,15 @@ Registro objetivo de decisoes relevantes. Novas entradas devem incluir data, con
 
 **Consequencias:** Rotas `/cart` e `/wishlist`; contadores compartilhados via Inertia; checkout permanece pendente.
 
+---
+
+## 2026-08-12 — Cupons e promocoes
+
+**Contexto:** Fase 7 — descontos antes do checkout.
+
+**Decisao:** Cupons manuais no carrinho; promocoes automaticas na vitrine; precos finais sempre calculados no backend.
+
+**Motivo:** Separar campanhas de codigo (marketing) de regras automaticas de catalogo; evitar confiar em desconto no frontend.
+
+**Consequencias:** CRUD em `/admin/coupons` e `/admin/promotions`; incremento de `usage_count` do cupom fica para a fase de pedidos.
+

@@ -130,9 +130,43 @@ MySQL em desenvolvimento e producao. SQLite in-memory apenas nos testes automati
 | product_id | bigint | FK `products`, cascade on delete |
 | unique(user_id, product_id) | | |
 
+#### `coupons`
+
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | bigint | PK |
+| code | string unique | codigo informado no carrinho |
+| name | string | identificacao interna |
+| type | string | `percentage`, `fixed_amount` |
+| value | unsigned int | percentual (1-100) ou centavos |
+| min_order_cents | unsigned int nullable | pedido minimo |
+| max_discount_cents | unsigned int nullable | teto para percentual |
+| usage_limit | unsigned int nullable | limite total de usos |
+| usage_count | unsigned int | usos registrados |
+| starts_at | timestamp nullable | inicio da vigencia |
+| expires_at | timestamp nullable | fim da vigencia |
+| is_active | boolean | index, default true |
+
+#### `promotions`
+
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | bigint | PK |
+| name | string | |
+| type | string | `percentage`, `fixed_amount` |
+| value | unsigned int | percentual ou centavos |
+| scope | string | `all_products`, `category`, `brand`, `product` |
+| category_id | bigint nullable | FK `categories` |
+| brand_id | bigint nullable | FK `brands` |
+| product_id | bigint nullable | FK `products` |
+| priority | unsigned int | desempate administrativo |
+| starts_at | timestamp nullable | |
+| expires_at | timestamp nullable | |
+| is_active | boolean | index, default true |
+
 ### Planejadas (fases futuras)
 
-- `orders`, `order_items`, `coupons`, `promotions`
+- `orders`, `order_items`
 - `addresses`, `payments`, `webhook_events`
 - `banners`, `reviews`, `admin_audit_logs`
 
@@ -146,9 +180,14 @@ brands ──────── products (nullable)
 
 products ──┬── product_variants ── stock_movements
            ├── product_images
-           └── wishlist_items
+           ├── wishlist_items
+           └── promotions (escopo product)
+
+categories ── promotions (escopo category)
+brands ────── promotions (escopo brand)
 
 users ──┬── carts ── cart_items
+        │            └── coupons (nullable FK em carts)
         ├── wishlist_items
         ├── orders (fase 9)
         ├── addresses (fase 8)

@@ -8,7 +8,7 @@
 4. **Produtos, variacoes, imagens e estoque** — concluida
 5. **Loja publica, busca, filtros e pagina do produto** — concluida
 6. **Carrinho e lista de desejos** — concluida
-7. Cupons e promocoes
+7. **Cupons e promocoes** — concluida
 8. Enderecos, frete e checkout
 9. Pedidos e controle transacional de estoque
 10. Mercado Pago, Pix, webhooks e reembolsos
@@ -163,3 +163,40 @@
 ### Proxima fase recomendada
 
 **Fase 7:** Cupons e promocoes
+
+---
+
+## Fase 7 — Cupons e promocoes
+
+**Status:** concluida
+
+### Concluido
+
+- Tabelas `coupons`, `promotions` e `coupon_id` em `carts`
+- CRUD administrativo em `/admin/coupons` e `/admin/promotions`
+- Cupons percentuais ou valor fixo, com pedido minimo, limite de uso e vigencia
+- Promocoes automaticas por produto, categoria, marca ou catalogo inteiro
+- Precos promocionais na vitrine, pagina do produto, carrinho e wishlist
+- Aplicacao e remocao de cupom no carrinho (`/cart`)
+- Desconto de cupom calculado no backend sobre o subtotal promocional
+- Merge de cupom de convidado ao login/cadastro
+
+### Pendente nesta fase
+
+- Nenhum
+
+### Decisoes
+
+- Promocoes aplicadas automaticamente; cupons exigem codigo no carrinho
+- Entre promocoes elegiveis, prevalece o menor preco final para o cliente
+- Contagem de uso do cupom permanece para a fase de pedidos (checkout)
+
+### Testes relacionados
+
+- `tests/Feature/Admin/CouponManagementTest.php`
+- `tests/Feature/Admin/PromotionManagementTest.php`
+- `tests/Feature/Store/CouponTest.php`
+
+### Proxima fase recomendada
+
+**Fase 8:** Enderecos, frete e checkout
