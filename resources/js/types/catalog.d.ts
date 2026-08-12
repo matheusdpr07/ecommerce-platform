@@ -101,3 +101,63 @@ export interface ProductFormData {
     variants: ProductVariant[];
     images: ProductImageItem[];
 }
+
+export interface StoreCategoryOption {
+    id: number;
+    name: string;
+    slug: string;
+}
+
+export interface StoreCatalogFilters {
+    search: string;
+    category: string;
+    brand: string;
+    sort: string;
+    min_price: string;
+    max_price: string;
+}
+
+export interface StoreProductImage {
+    url: string;
+    alt_text?: string | null;
+}
+
+export interface StoreProductSummary {
+    id: number;
+    name: string;
+    slug: string;
+    category?: Pick<Category, 'id' | 'name' | 'slug'> | null;
+    brand?: Pick<Brand, 'id' | 'name' | 'slug'> | null;
+    min_price_cents: number;
+    max_price_cents: number;
+    has_stock: boolean;
+    primary_image?: StoreProductImage | null;
+}
+
+export interface StoreProductVariant {
+    id: number;
+    sku: string;
+    name: string;
+    price_cents: number;
+    compare_at_price_cents?: number | null;
+    stock_quantity: number;
+    in_stock: boolean;
+}
+
+export interface StoreProductDetail {
+    id: number;
+    name: string;
+    slug: string;
+    description?: string | null;
+    meta_title?: string | null;
+    meta_description?: string | null;
+    category?: Pick<Category, 'id' | 'name' | 'slug'> | null;
+    brand?: Pick<Brand, 'id' | 'name' | 'slug'> | null;
+    variants: StoreProductVariant[];
+    images: Array<{
+        id: number;
+        url: string;
+        alt_text?: string | null;
+        is_primary: boolean;
+    }>;
+}

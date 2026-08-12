@@ -1,18 +1,12 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\Store\ProductController as StoreProductController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+Route::get('/', [StoreProductController::class, 'index'])->name('store.home');
+Route::get('/categories/{category:slug}', [StoreProductController::class, 'index'])->name('store.categories.show');
+Route::get('/products/{slug}', [StoreProductController::class, 'show'])->name('store.products.show');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

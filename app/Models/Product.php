@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Database\Factories\ProductFactory;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -51,6 +53,24 @@ class Product extends Model
     public function images(): HasMany
     {
         return $this->hasMany(ProductImage::class)->orderBy('sort_order')->orderBy('id');
+    }
+
+    #[Scope]
+    protected function active(Builder $query): void
+    {
+        $query->where('is_active', true);
+    }
+
+    #[Scope]
+    protected function visibleInStorefront(Builder $query): void
+    {
+        $query->active()
+            ->whereHas('category', fn (Builder $query) => $query->where('is_active', true))
+            ->where(function (Builder $query): void {
+                $query->whereNull('brand_id')
+                    ->orWhereHas('brand', fn (Builder $query) => $query->where('is_active', true));
+            })
+            ->whereHas('variants', fn (Builder $query) => $query->where('is_active', true));
     }
 
     public static function generateUniqueSlug(string $name, ?int $ignoreId = null): string
