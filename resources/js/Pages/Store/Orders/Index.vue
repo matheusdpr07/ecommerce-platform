@@ -19,6 +19,22 @@ const formatDate = (isoDate?: string | null) => {
         timeStyle: 'short',
     }).format(new Date(isoDate));
 };
+
+const statusClasses = (status: string) => {
+    if (status === 'paid') {
+        return 'bg-green-100 text-green-800';
+    }
+
+    if (['payment_failed', 'cancelled', 'charged_back'].includes(status)) {
+        return 'bg-red-100 text-red-800';
+    }
+
+    if (['refunded', 'partially_refunded'].includes(status)) {
+        return 'bg-blue-100 text-blue-800';
+    }
+
+    return 'bg-yellow-100 text-yellow-800';
+};
 </script>
 
 <template>
@@ -51,7 +67,8 @@ const formatDate = (isoDate?: string | null) => {
                             {{ order.item_count === 1 ? 'item' : 'itens' }}
                         </p>
                         <span
-                            class="mt-2 inline-flex rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800"
+                            class="mt-2 inline-flex rounded-full px-2 py-0.5 text-xs font-medium"
+                            :class="statusClasses(order.status)"
                         >
                             {{ order.status_label }}
                         </span>

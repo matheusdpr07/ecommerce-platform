@@ -126,11 +126,10 @@ class PaymentService
             $payment->refresh();
         }
 
-        $this->gateway->refundOrder(
+        $payload = $this->gateway->refundOrder(
             $payment->provider_order_id,
             $payment->refund_idempotency_key,
         );
-        $payload = $this->gateway->findOrder($payment->provider_order_id);
 
         return $this->syncFromProvider($payment, $payload);
     }
@@ -157,6 +156,8 @@ class PaymentService
             'expires_at' => $payment->expires_at?->toIso8601String(),
             'paid_at' => $payment->paid_at?->toIso8601String(),
             'refunded_at' => $payment->refunded_at?->toIso8601String(),
+            'can_retry' => $payment->provider_order_id === null
+                && $payment->order->status === OrderStatus::PendingPayment,
         ];
     }
 

@@ -341,6 +341,22 @@ export interface OrderItemDetail {
     line_total_cents: number;
 }
 
+export interface PaymentDetail {
+    id: number;
+    method: string;
+    status: string;
+    status_label: string;
+    status_detail?: string | null;
+    amount_cents: number;
+    pix_qr_code?: string | null;
+    pix_qr_code_base64?: string | null;
+    pix_ticket_url?: string | null;
+    expires_at?: string | null;
+    paid_at?: string | null;
+    refunded_at?: string | null;
+    can_retry: boolean;
+}
+
 export interface OrderDetail {
     id: number;
     number: string;
@@ -369,4 +385,5 @@ export interface OrderDetail {
     };
     placed_at?: string | null;
     items: OrderItemDetail[];
+    payment?: PaymentDetail | null;
 }

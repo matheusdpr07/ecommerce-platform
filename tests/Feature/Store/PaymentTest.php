@@ -119,6 +119,26 @@ test('customers cannot generate pix for another users order', function () {
     Http::assertNothingSent();
 });
 
+test('order detail exposes pix instructions only to its owner', function () {
+    $user = User::factory()->create();
+    $order = Order::factory()->for($user)->create();
+    Payment::factory()->for($order)->create([
+        'pix_qr_code' => 'pix-do-pedido',
+        'pix_qr_code_base64' => 'imagem-pix',
+        'pix_ticket_url' => 'https://www.mercadopago.com.br/payments/order/ticket',
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('store.orders.show', $order))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('Store/Orders/Show')
+            ->where('order.payment.status', PaymentStatus::Pending->value)
+            ->where('order.payment.pix_qr_code', 'pix-do-pedido')
+            ->where('order.payment.can_retry', false)
+        );
+});
+
 test('gateway failures preserve the payment attempt for a safe retry', function () {
     $user = User::factory()->create();
     $order = Order::factory()->for($user)->create();
