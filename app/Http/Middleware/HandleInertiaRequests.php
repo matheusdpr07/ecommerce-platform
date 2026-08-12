@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Services\CartService;
+use App\Services\CustomerNotificationService;
 use App\Services\WishlistService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -58,6 +59,9 @@ class HandleInertiaRequests extends Middleware
             'wishlist' => fn () => $request->user()
                 ? app(WishlistService::class)->getSummary($request->user())
                 : ['item_count' => 0],
+            'notifications' => fn () => $request->user()
+                ? ['unread_count' => app(CustomerNotificationService::class)->unreadCount($request->user())]
+                : ['unread_count' => 0],
         ];
     }
 }

@@ -17,6 +17,7 @@ class ReviewService
 {
     public function __construct(
         private readonly AdminAuditService $auditService,
+        private readonly CustomerNotificationService $notificationService,
     ) {}
 
     /**
@@ -69,6 +70,8 @@ class ReviewService
         ?string $notes,
         User $admin,
     ): Review {
+        $previousStatus = $review->status;
+
         $review->update([
             'status' => $status,
             'moderation_notes' => $notes,
@@ -83,6 +86,10 @@ class ReviewService
             "Avaliação #{$review->id} marcada como {$status->label()}.",
             ['status' => $status->value],
         );
+
+        if ($previousStatus !== $status) {
+            $this->notificationService->reviewModerated($review);
+        }
 
         return $review->refresh();
     }

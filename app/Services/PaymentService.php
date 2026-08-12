@@ -23,6 +23,7 @@ class PaymentService
 {
     public function __construct(
         private readonly PaymentGateway $gateway,
+        private readonly CustomerNotificationService $notificationService,
     ) {}
 
     public function isConfigured(): bool
@@ -251,6 +252,7 @@ class PaymentService
 
         if ($order->status === OrderStatus::PendingPayment) {
             $order->update(['status' => OrderStatus::Paid]);
+            $this->notificationService->orderStatusChanged($order);
         }
     }
 
@@ -258,6 +260,7 @@ class PaymentService
     {
         if ($order->status === OrderStatus::Paid) {
             $order->update(['status' => OrderStatus::PartiallyRefunded]);
+            $this->notificationService->orderStatusChanged($order);
         }
     }
 
@@ -265,6 +268,7 @@ class PaymentService
     {
         if (in_array($order->status, [OrderStatus::Paid, OrderStatus::PartiallyRefunded], true)) {
             $order->update(['status' => OrderStatus::ChargedBack]);
+            $this->notificationService->orderStatusChanged($order);
         }
     }
 
@@ -294,6 +298,7 @@ class PaymentService
         }
 
         $order->update($orderData);
+        $this->notificationService->orderStatusChanged($order);
     }
 
     private function releaseInventoryAndCoupon(Payment $payment, Order $order): void

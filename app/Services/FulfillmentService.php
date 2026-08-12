@@ -13,6 +13,7 @@ class FulfillmentService
 {
     public function __construct(
         private readonly AdminAuditService $auditService,
+        private readonly CustomerNotificationService $notificationService,
     ) {}
 
     public function updateStatus(
@@ -89,6 +90,10 @@ class FulfillmentService
                     'has_tracking_url' => $trackingUrl !== null,
                 ],
             );
+
+            if ($targetStatus !== $currentStatus) {
+                $this->notificationService->fulfillmentChanged($lockedOrder);
+            }
 
             return $lockedOrder->fresh();
         });

@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Store\AddressController;
 use App\Http\Controllers\Store\CartController;
 use App\Http\Controllers\Store\CheckoutController;
+use App\Http\Controllers\Store\NotificationController;
 use App\Http\Controllers\Store\OrderController;
 use App\Http\Controllers\Store\PaymentController;
 use App\Http\Controllers\Store\ProductController as StoreProductController;
@@ -34,6 +35,13 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])
+        ->name('store.notifications.index');
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])
+        ->name('store.notifications.read-all');
+    Route::patch('/notifications/{notification}', [NotificationController::class, 'update'])
+        ->name('store.notifications.update');
+
     Route::post('/products/{product:slug}/reviews', [ReviewController::class, 'store'])
         ->name('store.products.reviews.store');
     Route::put('/reviews/{review}', [ReviewController::class, 'update'])

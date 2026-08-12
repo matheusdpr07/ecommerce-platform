@@ -22,6 +22,7 @@ class OrderService
         private readonly CouponService $couponService,
         private readonly ShippingService $shippingService,
         private readonly PromotionService $promotionService,
+        private readonly CustomerNotificationService $notificationService,
     ) {}
 
     public function placeOrder(Request $request): Order
@@ -136,6 +137,7 @@ class OrderService
                 $this->couponService->recordUsage($cart->coupon);
             }
 
+            $this->notificationService->orderPlaced($order);
             $this->cartService->clearCart($cart);
 
             return $order->fresh(['items']);

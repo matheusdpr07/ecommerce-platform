@@ -29,4 +29,7 @@ export type PageProps<
     wishlist: {
         item_count: number;
     };
+    notifications: {
+        unread_count: number;
+    };
 };

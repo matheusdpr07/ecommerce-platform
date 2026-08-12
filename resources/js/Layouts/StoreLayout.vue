@@ -20,6 +20,7 @@ const user = computed(() => page.props.auth.user);
 const store = computed(() => page.props.store);
 const cart = computed(() => page.props.cart);
 const wishlist = computed(() => page.props.wishlist);
+const notifications = computed(() => page.props.notifications);
 const menuOpen = ref(false);
 const search = ref('');
 
@@ -195,6 +196,35 @@ const submitSearch = () => {
                 </Link>
 
                 <Link
+                    v-if="user"
+                    :href="route('store.notifications.index')"
+                    view-transition
+                    class="relative grid size-11 place-items-center rounded-full transition hover:bg-white/60"
+                    aria-label="Abrir notificações"
+                >
+                    <svg
+                        viewBox="0 0 24 24"
+                        class="size-5"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                    >
+                        <path d="M6 17h12l-1.5-2.5V10a4.5 4.5 0 0 0-9 0v4.5L6 17Z" />
+                        <path d="M10 20h4" />
+                    </svg>
+                    <span
+                        v-if="notifications.unread_count > 0"
+                        class="absolute right-0 top-0 grid size-5 place-items-center rounded-full bg-[var(--store-coral)] text-[0.6rem] font-bold text-white"
+                    >
+                        {{
+                            notifications.unread_count > 9
+                                ? '9+'
+                                : notifications.unread_count
+                        }}
+                    </span>
+                </Link>
+
+                <Link
                     :href="route('store.cart.index')"
                     view-transition
                     class="relative grid size-11 place-items-center rounded-full bg-[var(--store-ink)] text-white transition hover:-translate-y-0.5"
@@ -279,6 +309,14 @@ const submitSearch = () => {
                         Meus pedidos
                     </Link>
                     <Link
+                        v-if="user"
+                        :href="route('store.notifications.index')"
+                        view-transition
+                        class="border-b border-[var(--store-ink)]/10 py-3"
+                    >
+                        Notificações ({{ notifications.unread_count }})
+                    </Link>
+                    <Link
                         :href="user ? route('dashboard') : route('login')"
                         view-transition
                         class="border-b border-[var(--store-ink)]/10 py-3"
@@ -361,6 +399,13 @@ const submitSearch = () => {
                             view-transition
                         >
                             Acompanhar pedidos
+                        </Link>
+                        <Link
+                            v-if="user"
+                            :href="route('store.notifications.index')"
+                            view-transition
+                        >
+                            Ver notificações
                         </Link>
                         <Link
                             v-if="user"
