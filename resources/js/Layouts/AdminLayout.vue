@@ -53,6 +53,12 @@ const user = computed(() => page.props.auth.user!);
                                 Produtos
                             </NavLink>
                             <NavLink
+                                :href="route('admin.inventory.index')"
+                                :active="route().current('admin.inventory.*')"
+                            >
+                                Estoque
+                            </NavLink>
+                            <NavLink
                                 :href="route('admin.coupons.index')"
                                 :active="route().current('admin.coupons.*')"
                             >
@@ -185,6 +191,12 @@ const user = computed(() => page.props.auth.user!);
                         :active="route().current('admin.products.*')"
                     >
                         Produtos
+                    </ResponsiveNavLink>
+                    <ResponsiveNavLink
+                        :href="route('admin.inventory.index')"
+                        :active="route().current('admin.inventory.*')"
+                    >
+                        Estoque
                     </ResponsiveNavLink>
                     <ResponsiveNavLink
                         :href="route('admin.coupons.index')"

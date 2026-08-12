@@ -40,7 +40,6 @@ class ProductCatalogService
                     ? (int) $variantData['compare_at_price_cents']
                     : null,
                 'stock_quantity' => (int) $variantData['stock_quantity'],
-                'low_stock_threshold' => (int) ($variantData['low_stock_threshold'] ?? 5),
                 'is_active' => (bool) $variantData['is_active'],
                 'sort_order' => (int) ($variantData['sort_order'] ?? $index),
             ];

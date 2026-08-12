@@ -404,3 +404,39 @@ export interface AdminOrderDetail extends OrderDetail {
         email: string;
     };
 }
+
+export interface InventoryVariant {
+    id: number;
+    sku: string;
+    name: string;
+    stock_quantity: number;
+    low_stock_threshold: number;
+    is_active: boolean;
+    stock_status: 'in_stock' | 'low_stock' | 'out_of_stock' | 'inactive';
+    product: {
+        id: number;
+        name: string;
+        slug: string;
+        is_active: boolean;
+    };
+    latest_movement?: {
+        quantity_change: number;
+        reason_label: string;
+        user_name?: string | null;
+        created_at?: string | null;
+    } | null;
+}
+
+export interface StockMovementItem {
+    id: number;
+    quantity_change: number;
+    quantity_after: number;
+    reason: string;
+    reason_label: string;
+    notes?: string | null;
+    user?: {
+        id: number;
+        name: string;
+    } | null;
+    created_at?: string | null;
+}

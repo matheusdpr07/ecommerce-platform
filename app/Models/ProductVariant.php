@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ProductVariant extends Model
 {
@@ -45,5 +46,10 @@ class ProductVariant extends Model
     public function stockMovements(): HasMany
     {
         return $this->hasMany(StockMovement::class)->latest();
+    }
+
+    public function latestStockMovement(): HasOne
+    {
+        return $this->hasOne(StockMovement::class)->latestOfMany();
     }
 }
