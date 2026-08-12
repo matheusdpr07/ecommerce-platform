@@ -28,6 +28,8 @@ Monolito modular Laravel com frontend Inertia (Vue 3 + TypeScript). Uma unica ap
 - Valores monetarios em **centavos** (inteiros), nunca `float`
 - Backend e fonte de verdade para precos, estoque, descontos e permissoes
 - Operacoes financeiras, checkout e estoque usam **transacoes**
+- Criacao e reembolso de pagamentos usam chaves de idempotencia persistidas
+- Webhooks financeiros sao autenticados e reconciliados com consulta ao provedor
 - Paginacao em listagens que possam crescer
 - Eager loading para evitar N+1
 
@@ -41,16 +43,26 @@ Monolito modular Laravel com frontend Inertia (Vue 3 + TypeScript). Uma unica ap
 ## Seguranca (diretrizes)
 
 - CSRF, validacao rigorosa, rate limiting em auth
+- Webhook do Mercado Pago fora do CSRF, com assinatura HMAC, tolerancia temporal e rate limiting dedicado
 - Policies para operacoes sensiveis
 - Segredos somente em variaveis de ambiente
 - Sem credenciais administrativas em seeders versionados
 
-## Integracoes futuras
+## Integracoes
 
-- **Pagamentos:** abstracao simples; Mercado Pago como primeira integracao (Fase 10)
+- **Pagamentos:** `PaymentGateway` isola o dominio do `MercadoPagoGateway`; `PaymentService` concentra idempotencia, sincronizacao de estados e reversao de estoque/cupom
+- **Mercado Pago:** Checkout API Orders para Pix, consulta da order no processamento de webhooks e reembolso integral administrativo
 - **Frete externo:** provedores de transportadora em fase dedicada; Fase 8 usa metodos internos (`ShippingService`)
 
-## Estrutura de rotas (planejada)
+## Fluxo de pagamento
+
+1. O checkout cria o pedido e reserva o estoque dentro da transacao local existente.
+2. `PaymentService` persiste o pagamento e sua chave de idempotencia antes de chamar o provedor.
+3. O Mercado Pago retorna os dados do Pix, armazenados para exibicao na area do cliente.
+4. O webhook validado consulta `/v1/orders/{id}` e sincroniza pagamento e pedido em transacao.
+5. Falha terminal, expiracao, cancelamento ou reembolso restauram estoque e cupom uma unica vez.
+
+## Estrutura de rotas
 
 ```
 /              Loja publica (vitrine)
@@ -61,6 +73,8 @@ Monolito modular Laravel com frontend Inertia (Vue 3 + TypeScript). Uma unica ap
 /addresses     Enderecos do cliente (auth)
 /checkout      Checkout (auth)
 /orders        Pedidos do cliente (auth)
+/orders/{id}/payment/pix  Criacao ou retry de Pix (auth)
+/webhooks/mercado-pago    Notificacoes financeiras assinadas
 /dashboard     Area autenticada (cliente)
-/admin/*       Painel administrativo (cupons, promocoes, frete, catalogo)
+/admin/*       Painel administrativo (pedidos, cupons, promocoes, frete, catalogo)
 ```

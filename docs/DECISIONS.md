@@ -182,3 +182,14 @@ Registro objetivo de decisoes relevantes. Novas entradas devem incluir data, con
 
 **Consequencias:** Rotas `/orders`; movimentacao de estoque com motivo `sale`; carrinho esvaziado apos pedido; pagamento Mercado Pago na proxima fase.
 
+---
+
+## 2026-08-12 — Pix e reconciliacao financeira via Mercado Pago
+
+**Contexto:** Fase 10 — pagamento Pix, webhooks e reembolsos sobre os pedidos da Fase 9.
+
+**Decisao:** Usar a Checkout API Orders atras do contrato `PaymentGateway`; persistir pagamento, payloads e chaves de idempotencia; validar a assinatura HMAC do webhook e consultar a order no Mercado Pago antes de aplicar qualquer transicao local; disponibilizar apenas reembolso integral no admin nesta fase.
+
+**Motivo:** Desacoplar o dominio do SDK/provedor, tornar retries seguros e impedir que payloads de notificacao nao verificados sejam a fonte direta de estados financeiros.
+
+**Consequencias:** `PaymentService` centraliza sincronizacao e reversao idempotente de estoque/cupom; `webhook_events` mantem deduplicacao e auditoria; falhas externas preservam a chave para nova tentativa; reembolso parcial permanece fora do escopo.

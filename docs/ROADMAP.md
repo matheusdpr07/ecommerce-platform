@@ -11,7 +11,7 @@
 7. **Cupons e promocoes** — concluida
 8. **Enderecos, frete e checkout** — concluida
 9. **Pedidos e controle transacional de estoque** — concluida
-10. Mercado Pago, Pix, webhooks e reembolsos
+10. **Mercado Pago, Pix, webhooks e reembolsos** — concluida
 11. Painel administrativo completo
 12. Avaliacoes, conteudo e notificacoes
 13. SEO, acessibilidade e desempenho
@@ -199,7 +199,7 @@
 
 ### Proxima fase recomendada
 
-**Fase 9:** Pedidos e controle transacional de estoque
+**Fase 8:** Enderecos, frete e checkout
 
 ---
 
@@ -236,7 +236,7 @@
 
 ### Proxima fase recomendada
 
-**Fase 10:** Mercado Pago, Pix, webhooks e reembolsos
+**Fase 9:** Pedidos e controle transacional de estoque
 
 ---
 
@@ -272,3 +272,44 @@
 ### Proxima fase recomendada
 
 **Fase 10:** Mercado Pago, Pix, webhooks e reembolsos
+
+---
+
+## Fase 10 — Mercado Pago, Pix, webhooks e reembolsos
+
+**Status:** concluida
+
+### Concluido
+
+- Tabelas `payments` e `webhook_events` com estados tipados e payloads auditaveis
+- Abstracao `PaymentGateway` e integracao Mercado Pago Checkout API Orders
+- Criacao automatica de Pix no checkout, com QR Code, Copia e Cola e link de pagamento
+- Chaves de idempotencia persistidas para criacao e reembolso
+- Webhook publico `POST /webhooks/mercado-pago` com validacao HMAC e tolerancia temporal
+- Consulta da order no provedor antes de sincronizar estados financeiros locais
+- Transicoes de pedido para pago, falha, cancelamento, expiracao, reembolso e contestacao
+- Reversao idempotente de estoque e uso de cupom quando a cobranca e encerrada ou reembolsada
+- Listagem e detalhe de pedidos no admin, com reembolso integral autorizado por policy
+- Interface do cliente para acompanhar o pagamento e gerar novamente um Pix ainda nao criado
+
+### Pendente nesta fase
+
+- Nenhum
+
+### Decisoes
+
+- O banco local e a fonte persistente das chaves de idempotencia e do historico de webhooks
+- Notificacoes nunca atualizam o pagamento apenas com o payload recebido; a order e consultada na API
+- Reembolso administrativo e integral nesta fase; reembolso parcial permanece fora do escopo
+- Falha, expiracao, cancelamento e reembolso liberam estoque e uso do cupom no maximo uma vez
+
+### Testes relacionados
+
+- `tests/Feature/Store/PaymentTest.php`
+- `tests/Feature/Webhooks/MercadoPagoWebhookTest.php`
+- `tests/Feature/Admin/OrderManagementTest.php`
+- `tests/Feature/Store/OrderTest.php`
+
+### Proxima fase recomendada
+
+**Fase 11:** Painel administrativo completo

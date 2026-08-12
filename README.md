@@ -17,9 +17,7 @@ Consulte [docs/SETUP.md](docs/SETUP.md) para configuracao detalhada do ambiente 
 
 ```bash
 composer install
-cp .env.eRemove unused import - check AppServiceProvider for BrandPolicy CategoryPolicy unused - they are used in Gate::policy
-
-Create commits now.ample .env
+cp .env.example .env
 php artisan key:generate
 php artisan migrate
 npm install
@@ -33,7 +31,7 @@ php artisan serve
 |-----------|-----------|
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Fases do projeto e progresso |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Arquitetura e padroes |
-| [docs/DATABASE.md](docs/DATABASE.md) | Modelo de dados planejado |
+| [docs/DATABASE.md](docs/DATABASE.md) | Modelo de dados e convencoes |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Decisoes tecnicas |
 | [docs/SETUP.md](docs/SETUP.md) | Configuracao do ambiente |
 

@@ -46,6 +46,33 @@ php artisan storage:link
 
 Com Herd, o site pode ficar disponivel em `http://ecommerce-platform.test`. Ajuste `APP_URL` no `.env` conforme o dominio local.
 
+## Mercado Pago e Pix
+
+Configure as credenciais da aplicacao Mercado Pago somente no `.env` local:
+
+```env
+MERCADO_PAGO_ACCESS_TOKEN=seu_access_token
+MERCADO_PAGO_WEBHOOK_SECRET=seu_webhook_secret
+MERCADO_PAGO_BASE_URL=https://api.mercadopago.com
+MERCADO_PAGO_PIX_EXPIRATION=PT30M
+MERCADO_PAGO_WEBHOOK_TOLERANCE_SECONDS=300
+```
+
+- `MERCADO_PAGO_ACCESS_TOKEN` autentica criacao, consulta e reembolso de orders.
+- `MERCADO_PAGO_WEBHOOK_SECRET` valida a assinatura HMAC das notificacoes.
+- `MERCADO_PAGO_PIX_EXPIRATION` usa o formato de duracao ISO 8601.
+- `MERCADO_PAGO_WEBHOOK_TOLERANCE_SECONDS` limita a idade aceita da assinatura.
+
+No painel do Mercado Pago, habilite notificacoes do topico **Order** para a URL publica HTTPS:
+
+```text
+https://seu-dominio.com/webhooks/mercado-pago
+```
+
+Em desenvolvimento, use um tunnel HTTPS apontando para o dominio local. A criacao local do pedido continua funcionando sem credenciais, mas gerar o Pix exige um access token valido.
+
+> Nunca registre ou commite access tokens e secrets. O endpoint de webhook e publico, mas rejeita assinaturas ausentes, invalidas ou expiradas.
+
 ## Frontend
 
 ```bash
@@ -87,5 +114,7 @@ O usuario deve estar cadastrado previamente. Por padrao, o e-mail precisa estar 
 | Problema | Solucao |
 |----------|---------|
 | Erro de conexao MySQL | Verifique servico, host, porta e credenciais no `.env` |
+| Pix nao e gerado | Verifique access token, URL base e logs da aplicacao |
+| Webhook retorna `401` | Confirme o secret, o topico Order e a URL configurada no Mercado Pago |
 | `npm run build` falha | Execute `npm install` e verifique Node 20+ |
 | Permissao em `storage/` ou `bootstrap/cache/` | `php artisan storage:link` e permissões de escrita |

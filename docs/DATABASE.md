@@ -98,7 +98,7 @@ MySQL em desenvolvimento e producao. SQLite in-memory apenas nos testes automati
 | user_id | bigint nullable | FK `users`, admin que registrou |
 | quantity_change | integer | positivo ou negativo |
 | quantity_after | unsigned int | saldo apos movimentacao |
-| reason | string | `initial`, `manual_adjustment`, `restock`, `sale` |
+| reason | string | `initial`, `manual_adjustment`, `restock`, `sale`, `order_reversal` |
 | notes | text nullable | |
 | created_at | timestamp | index |
 
@@ -230,6 +230,8 @@ MySQL em desenvolvimento e producao. SQLite in-memory apenas nos testes automati
 | state | string(2) | |
 | placed_at | timestamp | index |
 
+Estados: `pending_payment`, `paid`, `payment_failed`, `cancelled`, `partially_refunded`, `refunded`, `charged_back`.
+
 #### `order_items`
 
 | Coluna | Tipo | Observacao |
@@ -247,9 +249,50 @@ MySQL em desenvolvimento e producao. SQLite in-memory apenas nos testes automati
 | original_unit_price_cents | unsigned int nullable | preco original se houve promocao |
 | line_total_cents | unsigned int | |
 
+#### `payments`
+
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | bigint | PK |
+| order_id | bigint unique | FK `orders`, cascade on delete; um pagamento por pedido |
+| provider | string | default `mercado_pago`, index |
+| provider_order_id | string nullable unique | identificador da order no provedor |
+| provider_payment_id | string nullable unique | identificador da transacao no provedor |
+| method | string | default `pix` |
+| status | string | enum `PaymentStatus`, index |
+| status_detail | string nullable | detalhe retornado pelo provedor |
+| amount_cents | unsigned int | valor financeiro local |
+| idempotency_key | uuid unique | criacao segura do Pix |
+| refund_idempotency_key | uuid nullable unique | retry seguro do reembolso |
+| pix_qr_code | long text nullable | codigo Copia e Cola |
+| pix_qr_code_base64 | long text nullable | imagem do QR Code |
+| pix_ticket_url | text nullable | pagina hospedada pelo provedor |
+| expires_at | timestamp nullable | validade do Pix |
+| paid_at | timestamp nullable | confirmacao do pagamento |
+| refunded_at | timestamp nullable | confirmacao do reembolso integral |
+| inventory_released_at | timestamp nullable | guarda idempotente da reversao local |
+| provider_payload | json nullable | ultimo snapshot reconciliado |
+
+Estados: `pending`, `processing`, `approved`, `failed`, `cancelled`, `expired`, `partially_refunded`, `refunded`, `charged_back`.
+
+#### `webhook_events`
+
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | bigint | PK |
+| provider | string | index |
+| provider_event_id | string | unico em conjunto com `provider` |
+| event_type | string | topico da notificacao, index |
+| action | string nullable | acao informada pelo provedor |
+| resource_id | string nullable | order relacionada, index |
+| request_id | uuid nullable | header de rastreio do Mercado Pago |
+| payload | json | notificacao recebida |
+| status | string | `pending`, `processed`, `ignored`, `failed`; index |
+| error | text nullable | erro sanitizado de processamento |
+| processed_at | timestamp nullable | conclusao do evento |
+
 ### Planejadas (fases futuras)
 
-- `payments`, `webhook_events`
 - `banners`, `reviews`, `admin_audit_logs`
 
 ## Diagrama simplificado
@@ -273,7 +316,8 @@ users ──┬── carts ── cart_items
         │            ├── addresses (shipping_address_id)
         │            └── shipping_methods (shipping_method_id)
         ├── addresses
-        ├── orders ── order_items
+        ├── orders ──┬── order_items
+        │            └── payments
         ├── wishlist_items
         └── stock_movements (admin e vendas)
 
@@ -281,4 +325,6 @@ shipping_methods ──┬── carts (frete selecionado)
                    └── orders (snapshot)
 
 coupons ── orders (nullable)
+
+payments ── webhook_events (vinculo logico por provider/resource_id)
 ```
