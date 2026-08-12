@@ -22,6 +22,7 @@ class Payment extends Model
         'status',
         'status_detail',
         'amount_cents',
+        'refunded_amount_cents',
         'idempotency_key',
         'refund_idempotency_key',
         'pix_qr_code',
@@ -39,6 +40,7 @@ class Payment extends Model
         return [
             'status' => PaymentStatus::class,
             'amount_cents' => 'integer',
+            'refunded_amount_cents' => 'integer',
             'expires_at' => 'datetime',
             'paid_at' => 'datetime',
             'refunded_at' => 'datetime',

@@ -27,6 +27,7 @@ class PaymentFactory extends Factory
             'status' => PaymentStatus::Pending,
             'status_detail' => 'waiting_transfer',
             'amount_cents' => fake()->numberBetween(1000, 100000),
+            'refunded_amount_cents' => 0,
             'idempotency_key' => (string) Str::uuid(),
             'expires_at' => now()->addMinutes(30),
             'provider_payload' => [],

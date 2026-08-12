@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\FulfillmentStatus;
 use App\Enums\OrderStatus;
 use Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,6 +20,10 @@ class Order extends Model
         'user_id',
         'number',
         'status',
+        'fulfillment_status',
+        'tracking_code',
+        'tracking_url',
+        'internal_notes',
         'subtotal_cents',
         'discount_cents',
         'shipping_cents',
@@ -38,17 +43,26 @@ class Order extends Model
         'city',
         'state',
         'placed_at',
+        'preparing_at',
+        'shipped_at',
+        'delivered_at',
+        'fulfillment_cancelled_at',
     ];
 
     protected function casts(): array
     {
         return [
             'status' => OrderStatus::class,
+            'fulfillment_status' => FulfillmentStatus::class,
             'subtotal_cents' => 'integer',
             'discount_cents' => 'integer',
             'shipping_cents' => 'integer',
             'total_cents' => 'integer',
             'placed_at' => 'datetime',
+            'preparing_at' => 'datetime',
+            'shipped_at' => 'datetime',
+            'delivered_at' => 'datetime',
+            'fulfillment_cancelled_at' => 'datetime',
         ];
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\FulfillmentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Enums\StockMovementReason;
@@ -130,7 +131,10 @@ test('expired payment releases stock and coupon only once', function () {
     expect($payment->fresh())
         ->status->toBe(PaymentStatus::Expired)
         ->inventory_released_at->not->toBeNull();
-    expect($order->fresh()->status)->toBe(OrderStatus::Cancelled);
+    expect($order->fresh())
+        ->status->toBe(OrderStatus::Cancelled)
+        ->fulfillment_status->toBe(FulfillmentStatus::Cancelled)
+        ->fulfillment_cancelled_at->not->toBeNull();
     expect($variant->fresh()->stock_quantity)->toBe(5);
     expect($coupon->fresh()->usage_count)->toBe(0);
     expect(StockMovement::query()

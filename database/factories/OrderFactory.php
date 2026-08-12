@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\FulfillmentStatus;
 use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\User;
@@ -28,6 +29,7 @@ class OrderFactory extends Factory
             'user_id' => User::factory(),
             'number' => 'PED-'.fake()->unique()->numerify('########'),
             'status' => OrderStatus::PendingPayment,
+            'fulfillment_status' => FulfillmentStatus::Pending,
             'subtotal_cents' => $subtotal,
             'discount_cents' => $discount,
             'shipping_cents' => $shipping,

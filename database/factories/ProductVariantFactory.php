@@ -22,6 +22,7 @@ class ProductVariantFactory extends Factory
             'price_cents' => fake()->numberBetween(1000, 50000),
             'compare_at_price_cents' => null,
             'stock_quantity' => fake()->numberBetween(0, 100),
+            'low_stock_threshold' => 5,
             'is_active' => true,
             'sort_order' => 0,
         ];

@@ -20,6 +20,7 @@ class ProductVariant extends Model
         'price_cents',
         'compare_at_price_cents',
         'stock_quantity',
+        'low_stock_threshold',
         'is_active',
         'sort_order',
     ];
@@ -30,6 +31,7 @@ class ProductVariant extends Model
             'price_cents' => 'integer',
             'compare_at_price_cents' => 'integer',
             'stock_quantity' => 'integer',
+            'low_stock_threshold' => 'integer',
             'is_active' => 'boolean',
             'sort_order' => 'integer',
         ];

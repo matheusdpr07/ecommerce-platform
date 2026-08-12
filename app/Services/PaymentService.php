@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\PaymentGateway;
+use App\Enums\FulfillmentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Enums\StockMovementReason;
@@ -75,10 +76,9 @@ class PaymentService
 
             $this->assertPayloadMatchesPayment($lockedPayment, $payload);
 
-            $providerPayment = data_get($payload, 'transactions.payments.0', []);
-            $paymentMethod = is_array($providerPayment)
-                ? data_get($providerPayment, 'payment_method', [])
-                : [];
+            $providerPaymentData = data_get($payload, 'transactions.payments.0', []);
+            $providerPayment = is_array($providerPaymentData) ? $providerPaymentData : [];
+            $paymentMethod = data_get($providerPayment, 'payment_method', []);
             $providerStatus = (string) ($payload['status'] ?? data_get($providerPayment, 'status', 'created'));
             $statusDetail = (string) ($payload['status_detail'] ?? data_get($providerPayment, 'status_detail', ''));
             $status = $this->mapProviderStatus($providerStatus, $statusDetail);
@@ -90,6 +90,12 @@ class PaymentService
                     : $lockedPayment->provider_payment_id,
                 'status' => $status,
                 'status_detail' => $statusDetail !== '' ? $statusDetail : null,
+                'refunded_amount_cents' => $this->refundedAmountCents(
+                    $payload,
+                    $providerPayment,
+                    $status,
+                    $lockedPayment,
+                ),
                 'pix_qr_code' => data_get($paymentMethod, 'qr_code', $lockedPayment->pix_qr_code),
                 'pix_qr_code_base64' => data_get($paymentMethod, 'qr_code_base64', $lockedPayment->pix_qr_code_base64),
                 'pix_ticket_url' => data_get($paymentMethod, 'ticket_url', $lockedPayment->pix_ticket_url),
@@ -159,6 +165,7 @@ class PaymentService
             'status_label' => $payment->status->label(),
             'status_detail' => $payment->status_detail,
             'amount_cents' => $payment->amount_cents,
+            'refunded_amount_cents' => $payment->refunded_amount_cents,
             'pix_qr_code' => $payment->pix_qr_code,
             'pix_qr_code_base64' => $payment->pix_qr_code_base64,
             'pix_ticket_url' => $payment->pix_ticket_url,
@@ -273,7 +280,18 @@ class PaymentService
         }
 
         $this->releaseInventoryAndCoupon($payment, $order);
-        $order->update(['status' => $status]);
+
+        $orderData = ['status' => $status];
+
+        if (in_array($order->fulfillment_status, [
+            FulfillmentStatus::Pending,
+            FulfillmentStatus::Preparing,
+        ], true)) {
+            $orderData['fulfillment_status'] = FulfillmentStatus::Cancelled;
+            $orderData['fulfillment_cancelled_at'] = now();
+        }
+
+        $order->update($orderData);
     }
 
     private function releaseInventoryAndCoupon(Payment $payment, Order $order): void
@@ -326,6 +344,47 @@ class PaymentService
         $fraction = str_pad($matches[2] ?? '', 2, '0');
 
         return ((int) $matches[1] * 100) + (int) $fraction;
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     * @param  array<string, mixed>  $providerPayment
+     */
+    private function refundedAmountCents(
+        array $payload,
+        array $providerPayment,
+        PaymentStatus $status,
+        Payment $payment,
+    ): int {
+        if ($status === PaymentStatus::Refunded) {
+            return $payment->amount_cents;
+        }
+
+        $paymentAmountRefunded = data_get($providerPayment, 'amount_refunded');
+
+        if (is_string($paymentAmountRefunded) || is_numeric($paymentAmountRefunded)) {
+            return min(
+                $payment->amount_cents,
+                $this->decimalToCents((string) $paymentAmountRefunded),
+            );
+        }
+
+        $refunds = data_get($payload, 'transactions.refunds', []);
+
+        if (! is_array($refunds) || $refunds === []) {
+            return $payment->refunded_amount_cents;
+        }
+
+        $refundedAmount = collect($refunds)
+            ->sum(function (mixed $refund): int {
+                $amount = is_array($refund) ? ($refund['amount'] ?? null) : null;
+
+                return is_string($amount) || is_numeric($amount)
+                    ? $this->decimalToCents((string) $amount)
+                    : 0;
+            });
+
+        return min($payment->amount_cents, $refundedAmount);
     }
 
     private function pixExpiresAt(): Carbon

@@ -92,6 +92,7 @@ test('admins can fully refund approved pix payment only once', function () {
 
     expect($payment->fresh())
         ->status->toBe(PaymentStatus::Refunded)
+        ->refunded_amount_cents->toBe(10000)
         ->refunded_at->not->toBeNull()
         ->refund_idempotency_key->not->toBeNull()
         ->inventory_released_at->not->toBeNull();
