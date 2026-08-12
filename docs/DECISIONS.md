@@ -61,3 +61,28 @@ Registro objetivo de decisoes relevantes. Novas entradas devem incluir data, con
 **Motivo:** Loja voltada ao publico brasileiro.
 
 **Consequencias:** Traducoes Laravel e textos de interface devem usar pt_BR; codigo permanece em ingles.
+
+---
+
+## 2026-08-12 — Roles de usuario via enum
+
+**Contexto:** Fase 2 — separacao cliente/admin.
+
+**Decisao:** Enum `UserRole` com valores `customer` e `admin`; coluna indexada em `users`.
+
+**Motivo:** Tipagem clara, consultas eficientes e autorizacao explicita no backend.
+
+**Consequencias:** Cadastro publico sempre cria `customer`; promocao admin apenas via `admin:promote`.
+
+---
+
+## 2026-08-12 — Promocao administrativa via CLI
+
+**Contexto:** Requisito de seguranca — sem credenciais admin em seeders.
+
+**Decisao:** Comando `php artisan admin:promote {email}` com validacao de e-mail verificado.
+
+**Motivo:** Evita escalacao de privilegio via HTTP e mantem rastro operacional no terminal.
+
+**Consequencias:** Primeiro admin: cadastrar-se pela loja, verificar e-mail, executar o comando.
+

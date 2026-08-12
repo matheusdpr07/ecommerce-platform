@@ -16,7 +16,7 @@ PostgreSQL em desenvolvimento e producao. SQLite in-memory apenas nos testes aut
 
 ### Usuarios e autenticacao
 
-- `users` — clientes e administradores (role separada na fase 2)
+- `users` — clientes e administradores via coluna `role` (`customer`, `admin`)
 - `password_reset_tokens`, `sessions` — padrao Laravel
 
 ### Catalogo

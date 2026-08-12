@@ -72,7 +72,13 @@ Testes usam SQLite in-memory (configurado em `phpunit.xml`); nao e necessario Po
 
 ## Primeiro administrador
 
-Nao existem credenciais administrativas padrao. Na Fase 2 sera criado um comando Artisan seguro para promover o primeiro administrador.
+Nao existem credenciais administrativas padrao. Para promover um usuario existente:
+
+```bash
+php artisan admin:promote usuario@example.com
+```
+
+O usuario deve estar cadastrado previamente. Por padrao, o e-mail precisa estar verificado. Use `--force` apenas em ambiente local se necessario.
 
 ## Problemas comuns
 
