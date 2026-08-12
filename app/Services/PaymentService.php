@@ -82,6 +82,12 @@ class PaymentService
             $providerStatus = (string) ($payload['status'] ?? data_get($providerPayment, 'status', 'created'));
             $statusDetail = (string) ($payload['status_detail'] ?? data_get($providerPayment, 'status_detail', ''));
             $status = $this->mapProviderStatus($providerStatus, $statusDetail);
+            $refundedAmountCents = $this->refundedAmountCents(
+                $payload,
+                $providerPayment,
+                $status,
+                $lockedPayment,
+            );
 
             $lockedPayment->update([
                 'provider_order_id' => (string) $payload['id'],
@@ -90,19 +96,15 @@ class PaymentService
                     : $lockedPayment->provider_payment_id,
                 'status' => $status,
                 'status_detail' => $statusDetail !== '' ? $statusDetail : null,
-                'refunded_amount_cents' => $this->refundedAmountCents(
-                    $payload,
-                    $providerPayment,
-                    $status,
-                    $lockedPayment,
-                ),
+                'refunded_amount_cents' => $refundedAmountCents,
                 'pix_qr_code' => data_get($paymentMethod, 'qr_code', $lockedPayment->pix_qr_code),
                 'pix_qr_code_base64' => data_get($paymentMethod, 'qr_code_base64', $lockedPayment->pix_qr_code_base64),
                 'pix_ticket_url' => data_get($paymentMethod, 'ticket_url', $lockedPayment->pix_ticket_url),
                 'paid_at' => $status === PaymentStatus::Approved
                     ? ($lockedPayment->paid_at ?? now())
                     : $lockedPayment->paid_at,
-                'refunded_at' => $status === PaymentStatus::Refunded
+                'refunded_at' => in_array($status, [PaymentStatus::PartiallyRefunded, PaymentStatus::Refunded], true)
+                    && $refundedAmountCents > 0
                     ? ($lockedPayment->refunded_at ?? now())
                     : $lockedPayment->refunded_at,
                 'provider_payload' => $payload,

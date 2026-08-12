@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Models\Address;
 use App\Models\Cart;
@@ -8,6 +9,7 @@ use App\Models\Order;
 use App\Models\Payment;
 use App\Models\ShippingMethod;
 use App\Models\User;
+use App\Services\PaymentService;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -225,6 +227,42 @@ test('provider payload must match local order reference and amount', function ()
         ->assertSessionHas('error');
 
     expect(Payment::query()->sole()->provider_order_id)->toBeNull();
+});
+
+test('partial refunds persist their amount and occurrence time', function () {
+    $order = Order::factory()->create([
+        'number' => 'PED-00000030',
+        'status' => OrderStatus::Paid,
+        'total_cents' => 10000,
+    ]);
+    $payment = Payment::factory()->for($order)->create([
+        'provider_order_id' => 'ORD01PARTIAL',
+        'status' => PaymentStatus::Approved,
+        'amount_cents' => 10000,
+    ]);
+    $payload = [
+        'id' => 'ORD01PARTIAL',
+        'external_reference' => $order->number,
+        'total_amount' => '100.00',
+        'status' => 'processed',
+        'status_detail' => 'partially_refunded',
+        'transactions' => [
+            'payments' => [[
+                'id' => $payment->provider_payment_id,
+                'status' => 'processed',
+                'status_detail' => 'partially_refunded',
+                'amount_refunded' => '25.00',
+            ]],
+        ],
+    ];
+
+    app(PaymentService::class)->syncFromProvider($payment, $payload);
+
+    expect($payment->fresh())
+        ->status->toBe(PaymentStatus::PartiallyRefunded)
+        ->refunded_amount_cents->toBe(2500)
+        ->refunded_at->not->toBeNull();
+    expect($order->fresh()->status)->toBe(OrderStatus::PartiallyRefunded);
 });
 
 /**
