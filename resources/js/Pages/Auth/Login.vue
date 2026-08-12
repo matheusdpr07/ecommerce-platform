@@ -10,6 +10,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 defineProps<{
     canResetPassword?: boolean;
     status?: string;
+    checkoutIntent?: boolean;
 }>();
 
 const form = useForm({
@@ -30,6 +31,21 @@ const submit = () => {
 <template>
     <GuestLayout>
         <Head title="Entrar" />
+
+        <div class="mb-6">
+            <h1 class="text-xl font-semibold text-gray-900">
+                {{ checkoutIntent ? 'Continue sua compra' : 'Entre na sua conta' }}
+            </h1>
+            <p class="mt-2 text-sm text-gray-600">
+                <template v-if="checkoutIntent">
+                    Seu carrinho esta salvo. Depois de entrar, voce voltara
+                    automaticamente ao checkout.
+                </template>
+                <template v-else>
+                    Acesse seus pedidos, enderecos e dados da conta.
+                </template>
+            </p>
+        </div>
 
         <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
             {{ status }}
@@ -92,5 +108,15 @@ const submit = () => {
                 </PrimaryButton>
             </div>
         </form>
+
+        <div class="mt-6 border-t border-gray-200 pt-5 text-center text-sm text-gray-600">
+            Ainda nao possui conta?
+            <Link
+                :href="route('register')"
+                class="font-medium text-indigo-600 hover:text-indigo-800"
+            >
+                Criar conta
+            </Link>
+        </div>
     </GuestLayout>
 </template>

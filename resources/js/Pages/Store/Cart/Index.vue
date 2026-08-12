@@ -275,15 +275,16 @@ const removeCoupon = () => {
                     </Link>
                     <Link
                         v-else
-                        :href="route('login')"
+                        :href="route('store.checkout.index')"
                         class="mt-6 block"
                     >
                         <PrimaryButton class="w-full">
-                            Entrar para checkout
+                            Entrar e continuar compra
                         </PrimaryButton>
                     </Link>
                     <p class="mt-4 text-xs text-gray-500">
-                        Frete calculado no checkout. Pagamento na Fase 10.
+                        Seu carrinho sera preservado durante o acesso. Frete e
+                        pagamento sao concluidos no checkout.
                     </p>
                 </div>
             </aside>

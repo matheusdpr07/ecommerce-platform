@@ -6,6 +6,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const props = defineProps<{
     status?: string;
+    checkoutIntent?: boolean;
 }>();
 
 const form = useForm({});
@@ -21,20 +22,30 @@ const verificationLinkSent = computed(
 
 <template>
     <GuestLayout>
-        <Head title="Email Verification" />
+        <Head title="Verificar e-mail" />
 
-        <div class="mb-4 text-sm text-gray-600">
-            Thanks for signing up! Before getting started, could you verify your
-            email address by clicking on the link we just emailed to you? If you
-            didn't receive the email, we will gladly send you another.
+        <div class="mb-4">
+            <h1 class="text-xl font-semibold text-gray-900">
+                Verifique seu e-mail
+            </h1>
+            <p class="mt-2 text-sm text-gray-600">
+                Enviamos um link de confirmacao para o seu e-mail. Abra esse
+                link para ativar a conta.
+            </p>
+            <p
+                v-if="checkoutIntent"
+                class="mt-3 rounded-md bg-indigo-50 p-3 text-sm text-indigo-800"
+            >
+                Seu carrinho esta salvo e a compra continuara no checkout assim
+                que o e-mail for confirmado.
+            </p>
         </div>
 
         <div
             class="mb-4 text-sm font-medium text-green-600"
             v-if="verificationLinkSent"
         >
-            A new verification link has been sent to the email address you
-            provided during registration.
+            Um novo link de verificacao foi enviado para o seu e-mail.
         </div>
 
         <form @submit.prevent="submit">
@@ -43,7 +54,7 @@ const verificationLinkSent = computed(
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    Resend Verification Email
+                    Reenviar verificacao
                 </PrimaryButton>
 
                 <Link
@@ -51,7 +62,7 @@ const verificationLinkSent = computed(
                     method="post"
                     as="button"
                     class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >Log Out</Link
+                    >Sair</Link
                 >
             </div>
         </form>

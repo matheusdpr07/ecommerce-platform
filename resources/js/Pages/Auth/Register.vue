@@ -6,6 +6,10 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
+defineProps<{
+    checkoutIntent?: boolean;
+}>();
+
 const form = useForm({
     name: '',
     email: '',
@@ -25,6 +29,19 @@ const submit = () => {
 <template>
     <GuestLayout>
         <Head title="Cadastro" />
+
+        <div class="mb-6">
+            <h1 class="text-xl font-semibold text-gray-900">Crie sua conta</h1>
+            <p class="mt-2 text-sm text-gray-600">
+                <template v-if="checkoutIntent">
+                    Seu carrinho esta salvo. Apos confirmar seu e-mail, voce
+                    continuara a compra no checkout.
+                </template>
+                <template v-else>
+                    Cadastre-se para acompanhar pedidos e salvar enderecos.
+                </template>
+            </p>
+        </div>
 
         <form @submit.prevent="submit">
             <div>

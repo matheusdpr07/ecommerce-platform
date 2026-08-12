@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\CartService;
+use App\Services\CheckoutRedirectService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,14 +20,17 @@ class RegisteredUserController extends Controller
 {
     public function __construct(
         private readonly CartService $cartService,
+        private readonly CheckoutRedirectService $checkoutRedirectService,
     ) {}
 
     /**
      * Display the registration view.
      */
-    public function create(): Response
+    public function create(Request $request): Response
     {
-        return Inertia::render('Auth/Register');
+        return Inertia::render('Auth/Register', [
+            'checkoutIntent' => $this->checkoutRedirectService->isCheckoutIntended($request),
+        ]);
     }
 
     /**
@@ -36,6 +40,8 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $checkoutIntent = $this->checkoutRedirectService->isCheckoutIntended($request);
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
@@ -54,6 +60,10 @@ class RegisteredUserController extends Controller
 
         $this->cartService->mergeGuestCartForRequest($request, $user);
 
-        return redirect(route('dashboard', absolute: false));
+        if ($checkoutIntent && ! $user->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice');
+        }
+
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 }
