@@ -4,11 +4,15 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import StoreLayout from '@/Layouts/StoreLayout.vue';
 import type { CartPayload } from '@/types/catalog';
 import { formatMoneyFromCents } from '@/utils/money';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
 
 defineProps<{
     cart: CartPayload;
 }>();
+
+const couponForm = useForm({
+    code: '',
+});
 
 const updateQuantity = (itemId: number, quantity: number) => {
     router.patch(route('store.cart.items.update', itemId), { quantity });
@@ -20,6 +24,21 @@ const removeItem = (itemId: number) => {
 
 const clearCart = () => {
     router.delete(route('store.cart.clear'));
+};
+
+const applyCoupon = () => {
+    couponForm.post(route('store.cart.coupon.apply'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            couponForm.reset();
+        },
+    });
+};
+
+const removeCoupon = () => {
+    router.delete(route('store.cart.coupon.remove'), {
+        preserveScroll: true,
+    });
 };
 </script>
 
@@ -88,6 +107,12 @@ const clearCart = () => {
                                 {{ item.variant.name }} · {{ item.variant.sku }}
                             </p>
                             <p
+                                v-if="item.has_promotion"
+                                class="mt-1 text-xs font-medium text-red-600"
+                            >
+                                Preco promocional aplicado
+                            </p>
+                            <p
                                 v-if="!item.is_available"
                                 class="mt-1 text-sm text-red-600"
                             >
@@ -140,27 +165,105 @@ const clearCart = () => {
                 </article>
             </section>
 
-            <aside
-                class="h-fit rounded-lg border border-gray-200 bg-white p-6"
-            >
-                <h2 class="text-lg font-semibold text-gray-900">Resumo</h2>
-                <dl class="mt-4 space-y-2 text-sm">
-                    <div class="flex justify-between">
-                        <dt class="text-gray-600">Itens</dt>
-                        <dd class="font-medium text-gray-900">
-                            {{ cart.item_count }}
-                        </dd>
+            <aside class="space-y-4">
+                <div class="rounded-lg border border-gray-200 bg-white p-6">
+                    <h2 class="text-lg font-semibold text-gray-900">
+                        Cupom de desconto
+                    </h2>
+
+                    <form
+                        v-if="!cart.coupon"
+                        class="mt-4 flex gap-2"
+                        @submit.prevent="applyCoupon"
+                    >
+                        <input
+                            v-model="couponForm.code"
+                            type="text"
+                            placeholder="Codigo do cupom"
+                            class="block w-full rounded-md border-gray-300 uppercase shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        />
+                        <PrimaryButton
+                            type="submit"
+                            :disabled="couponForm.processing"
+                        >
+                            Aplicar
+                        </PrimaryButton>
+                    </form>
+
+                    <p
+                        v-if="couponForm.errors.code"
+                        class="mt-2 text-sm text-red-600"
+                    >
+                        {{ couponForm.errors.code }}
+                    </p>
+
+                    <div
+                        v-if="cart.coupon"
+                        class="mt-4 flex items-center justify-between rounded-md bg-green-50 px-3 py-2 text-sm"
+                    >
+                        <div>
+                            <p class="font-medium text-green-800">
+                                {{ cart.coupon.code }}
+                            </p>
+                            <p class="text-green-700">
+                                -{{
+                                    formatMoneyFromCents(
+                                        cart.coupon.discount_cents,
+                                    )
+                                }}
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            class="text-green-800 hover:text-green-900"
+                            @click="removeCoupon"
+                        >
+                            Remover
+                        </button>
                     </div>
-                    <div class="flex justify-between border-t border-gray-200 pt-2">
-                        <dt class="font-medium text-gray-900">Subtotal</dt>
-                        <dd class="text-lg font-bold text-gray-900">
-                            {{ formatMoneyFromCents(cart.subtotal_cents) }}
-                        </dd>
-                    </div>
-                </dl>
-                <p class="mt-4 text-xs text-gray-500">
-                    Frete e checkout disponiveis nas proximas fases.
-                </p>
+                </div>
+
+                <div
+                    class="h-fit rounded-lg border border-gray-200 bg-white p-6"
+                >
+                    <h2 class="text-lg font-semibold text-gray-900">Resumo</h2>
+                    <dl class="mt-4 space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <dt class="text-gray-600">Itens</dt>
+                            <dd class="font-medium text-gray-900">
+                                {{ cart.item_count }}
+                            </dd>
+                        </div>
+                        <div class="flex justify-between">
+                            <dt class="text-gray-600">Subtotal</dt>
+                            <dd class="font-medium text-gray-900">
+                                {{ formatMoneyFromCents(cart.subtotal_cents) }}
+                            </dd>
+                        </div>
+                        <div
+                            v-if="cart.discount_cents > 0"
+                            class="flex justify-between text-green-700"
+                        >
+                            <dt>Desconto</dt>
+                            <dd class="font-medium">
+                                -{{
+                                    formatMoneyFromCents(cart.discount_cents)
+                                }}
+                            </dd>
+                        </div>
+                        <div
+                            class="flex justify-between border-t border-gray-200 pt-2"
+                        >
+                            <dt class="font-medium text-gray-900">Total</dt>
+                            <dd class="text-lg font-bold text-gray-900">
+                                {{ formatMoneyFromCents(cart.total_cents) }}
+                            </dd>
+                        </div>
+                    </dl>
+                    <p class="mt-4 text-xs text-gray-500">
+                        Frete e checkout disponiveis nas proximas fases.
+                    </p>
+                </div>
             </aside>
         </div>
 

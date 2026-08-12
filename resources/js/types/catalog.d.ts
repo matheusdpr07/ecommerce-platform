@@ -130,6 +130,8 @@ export interface StoreProductSummary {
     brand?: Pick<Brand, 'id' | 'name' | 'slug'> | null;
     min_price_cents: number;
     max_price_cents: number;
+    min_original_price_cents?: number | null;
+    has_promotion?: boolean;
     has_stock: boolean;
     primary_image?: StoreProductImage | null;
 }
@@ -139,6 +141,8 @@ export interface StoreProductVariant {
     sku: string;
     name: string;
     price_cents: number;
+    original_price_cents?: number | null;
+    has_promotion?: boolean;
     compare_at_price_cents?: number | null;
     stock_quantity: number;
     in_stock: boolean;
@@ -166,6 +170,8 @@ export interface CartItemPayload {
     id: number;
     quantity: number;
     unit_price_cents: number;
+    original_unit_price_cents?: number;
+    has_promotion?: boolean;
     line_total_cents: number;
     is_available: boolean;
     max_quantity: number;
@@ -186,7 +192,52 @@ export interface CartItemPayload {
 export interface CartPayload {
     item_count: number;
     subtotal_cents: number;
+    discount_cents: number;
+    total_cents: number;
+    coupon?: {
+        code: string;
+        name: string;
+        discount_cents: number;
+    } | null;
     items: CartItemPayload[];
+}
+
+export interface Coupon {
+    id: number;
+    code: string;
+    name: string;
+    type: 'percentage' | 'fixed_amount';
+    value: number;
+    min_order_cents?: number | null;
+    max_discount_cents?: number | null;
+    usage_limit?: number | null;
+    usage_count: number;
+    starts_at?: string | null;
+    expires_at?: string | null;
+    is_active: boolean;
+}
+
+export interface Promotion {
+    id: number;
+    name: string;
+    type: 'percentage' | 'fixed_amount';
+    value: number;
+    scope: 'all_products' | 'category' | 'brand' | 'product';
+    category_id?: number | null;
+    brand_id?: number | null;
+    product_id?: number | null;
+    priority: number;
+    starts_at?: string | null;
+    expires_at?: string | null;
+    is_active: boolean;
+    category?: Pick<Category, 'id' | 'name'> | null;
+    brand?: Pick<Brand, 'id' | 'name'> | null;
+    product?: Pick<ProductListItem, 'id' | 'name'> | null;
+}
+
+export interface PromotionScopeOption {
+    value: Promotion['scope'];
+    label: string;
 }
 
 export interface CartSummary {

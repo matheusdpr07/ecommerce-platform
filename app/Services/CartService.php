@@ -13,6 +13,11 @@ use Illuminate\Validation\ValidationException;
 
 class CartService
 {
+    public function __construct(
+        private readonly PromotionService $promotionService,
+        private readonly CouponService $couponService,
+    ) {}
+
     public function resolveCart(Request $request): Cart
     {
         if ($user = $request->user()) {
@@ -69,6 +74,10 @@ class CartService
                     'product_variant_id' => $guestItem->product_variant_id,
                     'quantity' => $guestItem->quantity,
                 ]);
+            }
+
+            if ($guestCart->coupon_id !== null && $userCart->coupon_id === null) {
+                $userCart->update(['coupon_id' => $guestCart->coupon_id]);
             }
 
             $guestCart->delete();
@@ -129,6 +138,20 @@ class CartService
     public function clearCart(Cart $cart): void
     {
         $cart->items()->delete();
+        $this->couponService->removeFromCart($cart);
+    }
+
+    public function applyCoupon(Request $request, string $code): void
+    {
+        $cart = $this->resolveCart($request);
+        $subtotal = $this->calculateSubtotalForCart($cart);
+        $this->couponService->applyToCart($cart, $code, $subtotal);
+    }
+
+    public function removeCoupon(Request $request): void
+    {
+        $cart = $this->resolveCart($request);
+        $this->couponService->removeFromCart($cart);
     }
 
     public function cartBelongsToRequest(Cart $cart, Request $request): bool
@@ -144,6 +167,9 @@ class CartService
      * @return array{
      *     item_count: int,
      *     subtotal_cents: int,
+     *     discount_cents: int,
+     *     total_cents: int,
+     *     coupon: array{code: string, name: string, discount_cents: int}|null,
      *     items: list<array<string, mixed>>
      * }
      */
@@ -151,17 +177,23 @@ class CartService
     {
         $cart = $this->resolveCart($request);
         $cart->load([
+            'coupon',
             'items.variant.product.category',
             'items.variant.product.brand',
             'items.variant.product.images',
         ]);
 
         $items = $cart->items->map(fn (CartItem $item) => $this->transformItem($item))->values()->all();
-        $subtotal = collect($items)->sum('line_total_cents');
+        $subtotal = (int) collect($items)->sum('line_total_cents');
+        $coupon = $this->couponService->resolveCartCoupon($cart, $subtotal);
+        $discount = $coupon['discount_cents'] ?? 0;
 
         return [
             'item_count' => (int) collect($items)->sum('quantity'),
             'subtotal_cents' => $subtotal,
+            'discount_cents' => $discount,
+            'total_cents' => max($subtotal - $discount, 0),
+            'coupon' => $coupon,
             'items' => $items,
         ];
     }
@@ -186,7 +218,8 @@ class CartService
     {
         $variant = $item->variant;
         $product = $variant->product;
-        $unitPrice = $variant->price_cents;
+        $pricing = $this->promotionService->resolveVariantPricing($variant, $product);
+        $unitPrice = $pricing['price_cents'];
         $isAvailable = $variant->is_active
             && $product->is_active
             && $variant->stock_quantity >= $item->quantity;
@@ -197,6 +230,8 @@ class CartService
             'id' => $item->id,
             'quantity' => $item->quantity,
             'unit_price_cents' => $unitPrice,
+            'original_unit_price_cents' => $pricing['original_price_cents'],
+            'has_promotion' => $pricing['has_promotion'],
             'line_total_cents' => $unitPrice * $item->quantity,
             'is_available' => $isAvailable,
             'max_quantity' => $variant->stock_quantity,
@@ -216,6 +251,18 @@ class CartService
                 ] : null,
             ],
         ];
+    }
+
+    private function calculateSubtotalForCart(Cart $cart): int
+    {
+        $cart->load([
+            'items.variant.product.category',
+            'items.variant.product.brand',
+        ]);
+
+        return (int) $cart->items
+            ->map(fn (CartItem $item) => $this->transformItem($item)['line_total_cents'])
+            ->sum();
     }
 
     private function findPurchasableVariant(int $variantId): ProductVariant

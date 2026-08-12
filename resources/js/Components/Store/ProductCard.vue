@@ -59,9 +59,27 @@ const priceLabel = computed(() => {
             </p>
 
             <div class="mt-auto flex items-center justify-between pt-4">
-                <span class="text-lg font-bold text-gray-900">
-                    {{ priceLabel }}
-                </span>
+                <div>
+                    <span
+                        v-if="product.has_promotion && product.min_original_price_cents"
+                        class="mr-2 text-sm text-gray-400 line-through"
+                    >
+                        {{
+                            formatMoneyFromCents(
+                                product.min_original_price_cents,
+                            )
+                        }}
+                    </span>
+                    <span class="text-lg font-bold text-gray-900">
+                        {{ priceLabel }}
+                    </span>
+                    <span
+                        v-if="product.has_promotion"
+                        class="ml-2 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700"
+                    >
+                        Promocao
+                    </span>
+                </div>
                 <span
                     class="rounded-full px-2 py-1 text-xs font-medium"
                     :class="

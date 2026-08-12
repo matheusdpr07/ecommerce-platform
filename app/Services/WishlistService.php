@@ -11,6 +11,7 @@ class WishlistService
 {
     public function __construct(
         private readonly CartService $cartService,
+        private readonly PromotionService $promotionService,
     ) {}
 
     public function addItem(User $user, int $productId): WishlistItem
@@ -113,7 +114,9 @@ class WishlistService
     {
         $product = $item->product;
         $activeVariants = $product->variants;
-        $minPrice = (int) $activeVariants->min('price_cents');
+        $minPrice = (int) $activeVariants
+            ->map(fn ($variant) => $this->promotionService->resolveVariantPricing($variant, $product)['price_cents'])
+            ->min();
         $primaryImage = $product->images->firstWhere('is_primary', true) ?? $product->images->first();
 
         return [

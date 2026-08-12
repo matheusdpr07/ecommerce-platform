@@ -46,7 +46,7 @@ watch(selectedVariantId, (variantId) => {
     }
 });
 
-const hasDiscount = computed(() => {
+const hasCompareAtDiscount = computed(() => {
     const variant = selectedVariant.value;
 
     return (
@@ -54,6 +54,24 @@ const hasDiscount = computed(() => {
         variant?.compare_at_price_cents !== undefined &&
         variant.compare_at_price_cents > variant.price_cents
     );
+});
+
+const hasPromotion = computed(
+    () => selectedVariant.value?.has_promotion ?? false,
+);
+
+const originalPriceCents = computed(() => {
+    const variant = selectedVariant.value;
+
+    if (hasPromotion.value && variant?.original_price_cents) {
+        return variant.original_price_cents;
+    }
+
+    if (hasCompareAtDiscount.value && variant?.compare_at_price_cents) {
+        return variant.compare_at_price_cents;
+    }
+
+    return null;
 });
 
 const canAddToCart = computed(
@@ -170,14 +188,18 @@ const toggleWishlist = () => {
                             }}
                         </span>
                         <span
-                            v-if="hasDiscount"
+                            v-if="originalPriceCents"
                             class="pb-1 text-lg text-gray-400 line-through"
                         >
                             {{
-                                formatMoneyFromCents(
-                                    selectedVariant.compare_at_price_cents!,
-                                )
+                                formatMoneyFromCents(originalPriceCents)
                             }}
+                        </span>
+                        <span
+                            v-if="hasPromotion"
+                            class="pb-1 text-sm font-medium text-red-600"
+                        >
+                            Promocao
                         </span>
                     </div>
 

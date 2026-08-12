@@ -16,6 +16,8 @@ Route::post('/cart/items', [CartController::class, 'store'])->name('store.cart.i
 Route::patch('/cart/items/{cartItem}', [CartController::class, 'update'])->name('store.cart.items.update');
 Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroy'])->name('store.cart.items.destroy');
 Route::delete('/cart', [CartController::class, 'clear'])->name('store.cart.clear');
+Route::post('/cart/coupon', [CartController::class, 'applyCoupon'])->name('store.cart.coupon.apply');
+Route::delete('/cart/coupon', [CartController::class, 'removeCoupon'])->name('store.cart.coupon.remove');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

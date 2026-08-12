@@ -4,11 +4,15 @@ namespace App\Providers;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Coupon;
 use App\Models\Product;
+use App\Models\Promotion;
 use App\Models\User;
 use App\Policies\BrandPolicy;
 use App\Policies\CategoryPolicy;
+use App\Policies\CouponPolicy;
 use App\Policies\ProductPolicy;
+use App\Policies\PromotionPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Vite;
@@ -33,6 +37,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Category::class, CategoryPolicy::class);
         Gate::policy(Brand::class, BrandPolicy::class);
         Gate::policy(Product::class, ProductPolicy::class);
+        Gate::policy(Coupon::class, CouponPolicy::class);
+        Gate::policy(Promotion::class, PromotionPolicy::class);
 
         Vite::prefetch(concurrency: 3);
     }

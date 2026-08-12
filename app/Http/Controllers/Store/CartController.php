@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Store\ApplyCartCouponRequest;
 use App\Http\Requests\Store\StoreCartItemRequest;
 use App\Http\Requests\Store\UpdateCartItemRequest;
 use App\Models\CartItem;
@@ -65,6 +66,23 @@ class CartController extends Controller
         $this->cartService->clearCart($cart);
 
         return back()->with('success', 'Carrinho esvaziado.');
+    }
+
+    public function applyCoupon(ApplyCartCouponRequest $request): RedirectResponse
+    {
+        $this->cartService->applyCoupon(
+            $request,
+            $request->validated('code'),
+        );
+
+        return back()->with('success', 'Cupom aplicado com sucesso.');
+    }
+
+    public function removeCoupon(Request $request): RedirectResponse
+    {
+        $this->cartService->removeCoupon($request);
+
+        return back()->with('success', 'Cupom removido.');
     }
 
     private function authorizeCartItem(Request $request, CartItem $cartItem): void

@@ -14,6 +14,10 @@ use Illuminate\Support\Collection;
 
 class StorefrontCatalogService
 {
+    public function __construct(
+        private readonly PromotionService $promotionService,
+    ) {}
+
     /**
      * @return array{
      *     search: string,
@@ -166,8 +170,13 @@ class StorefrontCatalogService
     {
         /** @var Collection<int, ProductVariant> $variants */
         $variants = $product->variants;
-        $minPrice = (int) $variants->min('price_cents');
-        $maxPrice = (int) $variants->max('price_cents');
+        $pricingResults = $variants->map(
+            fn (ProductVariant $variant) => $this->promotionService->resolveVariantPricing($variant, $product),
+        );
+        $minPrice = (int) $pricingResults->min('price_cents');
+        $maxPrice = (int) $pricingResults->max('price_cents');
+        $minOriginalPrice = (int) $pricingResults->min('original_price_cents');
+        $hasPromotion = $pricingResults->contains(fn (array $pricing) => $pricing['has_promotion']);
         $primaryImage = $this->resolvePrimaryImage($product);
 
         return [
@@ -186,6 +195,8 @@ class StorefrontCatalogService
             ] : null,
             'min_price_cents' => $minPrice,
             'max_price_cents' => $maxPrice,
+            'min_original_price_cents' => $hasPromotion ? $minOriginalPrice : null,
+            'has_promotion' => $hasPromotion,
             'has_stock' => $variants->sum('stock_quantity') > 0,
             'primary_image' => $primaryImage,
         ];
@@ -213,15 +224,23 @@ class StorefrontCatalogService
                 'name' => $product->brand->name,
                 'slug' => $product->brand->slug,
             ] : null,
-            'variants' => $product->variants->map(fn (ProductVariant $variant) => [
-                'id' => $variant->id,
-                'sku' => $variant->sku,
-                'name' => $variant->name,
-                'price_cents' => $variant->price_cents,
-                'compare_at_price_cents' => $variant->compare_at_price_cents,
-                'stock_quantity' => $variant->stock_quantity,
-                'in_stock' => $variant->stock_quantity > 0,
-            ])->values()->all(),
+            'variants' => $product->variants->map(function (ProductVariant $variant) use ($product) {
+                $pricing = $this->promotionService->resolveVariantPricing($variant, $product);
+
+                return [
+                    'id' => $variant->id,
+                    'sku' => $variant->sku,
+                    'name' => $variant->name,
+                    'price_cents' => $pricing['price_cents'],
+                    'original_price_cents' => $pricing['has_promotion']
+                        ? $pricing['original_price_cents']
+                        : null,
+                    'has_promotion' => $pricing['has_promotion'],
+                    'compare_at_price_cents' => $variant->compare_at_price_cents,
+                    'stock_quantity' => $variant->stock_quantity,
+                    'in_stock' => $variant->stock_quantity > 0,
+                ];
+            })->values()->all(),
             'images' => $product->images->map(fn (ProductImage $image) => [
                 'id' => $image->id,
                 'url' => $image->url(),
