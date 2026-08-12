@@ -3,6 +3,7 @@
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Enums\StockMovementReason;
+use App\Models\AdminAuditLog;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
@@ -101,6 +102,9 @@ test('admins can fully refund approved pix payment only once', function () {
     expect(StockMovement::query()
         ->where('reason', StockMovementReason::OrderReversal)
         ->count())->toBe(1);
+    expect(AdminAuditLog::query()->sole())
+        ->action->toBe('order.refunded')
+        ->metadata->toMatchArray(['amount_cents' => 10000]);
 
     Http::assertSent(function (Request $request) use ($payment): bool {
         return $request->method() === 'POST'

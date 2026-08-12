@@ -324,6 +324,8 @@ export interface OrderSummary {
     number: string;
     status: string;
     status_label: string;
+    fulfillment_status: string;
+    fulfillment_status_label: string;
     item_count: number;
     total_cents: number;
     placed_at?: string | null;
@@ -348,6 +350,7 @@ export interface PaymentDetail {
     status_label: string;
     status_detail?: string | null;
     amount_cents: number;
+    refunded_amount_cents: number;
     pix_qr_code?: string | null;
     pix_qr_code_base64?: string | null;
     pix_ticket_url?: string | null;
@@ -362,6 +365,14 @@ export interface OrderDetail {
     number: string;
     status: string;
     status_label: string;
+    fulfillment_status: string;
+    fulfillment_status_label: string;
+    tracking_code?: string | null;
+    tracking_url?: string | null;
+    preparing_at?: string | null;
+    shipped_at?: string | null;
+    delivered_at?: string | null;
+    fulfillment_cancelled_at?: string | null;
     subtotal_cents: number;
     discount_cents: number;
     shipping_cents: number;
@@ -403,6 +414,7 @@ export interface AdminOrderDetail extends OrderDetail {
         name: string;
         email: string;
     };
+    internal_notes?: string | null;
 }
 
 export interface InventoryVariant {

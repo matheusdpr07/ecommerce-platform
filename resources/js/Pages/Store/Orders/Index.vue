@@ -72,6 +72,12 @@ const statusClasses = (status: string) => {
                         >
                             {{ order.status_label }}
                         </span>
+                        <span
+                            v-if="['paid', 'partially_refunded'].includes(order.status)"
+                            class="ml-2 mt-2 inline-flex rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-800"
+                        >
+                            {{ order.fulfillment_status_label }}
+                        </span>
                     </div>
 
                     <div class="text-left sm:text-right">

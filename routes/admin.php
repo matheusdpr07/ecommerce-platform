@@ -16,6 +16,10 @@ Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
 Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 Route::post('orders/{order}/refund', [OrderController::class, 'refund'])->name('orders.refund');
+Route::patch('orders/{order}/fulfillment', [OrderController::class, 'updateFulfillment'])
+    ->name('orders.fulfillment.update');
+Route::patch('orders/{order}/notes', [OrderController::class, 'updateNotes'])
+    ->name('orders.notes.update');
 
 Route::get('inventory', [InventoryController::class, 'index'])->name('inventory.index');
 Route::get('inventory/{variant}', [InventoryController::class, 'show'])->name('inventory.show');

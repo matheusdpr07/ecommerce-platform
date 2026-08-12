@@ -98,6 +98,58 @@ const statusClasses = (status: string) => {
 
         <div class="grid gap-8 lg:grid-cols-[1fr_320px]">
             <section class="space-y-6">
+                <div
+                    v-if="['paid', 'partially_refunded'].includes(order.status)"
+                    class="rounded-lg border border-gray-200 bg-white p-6"
+                >
+                    <div class="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-900">
+                                Acompanhamento da entrega
+                            </h2>
+                            <p class="mt-1 text-sm text-gray-600">
+                                {{ order.fulfillment_status_label }}
+                            </p>
+                        </div>
+                        <a
+                            v-if="order.tracking_url"
+                            :href="order.tracking_url"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-sm font-medium text-indigo-600 hover:text-indigo-800"
+                        >
+                            Rastrear entrega
+                        </a>
+                    </div>
+
+                    <ol class="mt-5 grid gap-3 sm:grid-cols-3">
+                        <li class="rounded-md border p-3" :class="order.preparing_at ? 'border-green-200 bg-green-50' : 'border-gray-200'">
+                            <p class="text-sm font-medium text-gray-900">Em separação</p>
+                            <p class="mt-1 text-xs text-gray-500">{{ order.preparing_at ? formatDate(order.preparing_at) : 'Próxima etapa' }}</p>
+                        </li>
+                        <li class="rounded-md border p-3" :class="order.shipped_at ? 'border-green-200 bg-green-50' : 'border-gray-200'">
+                            <p class="text-sm font-medium text-gray-900">Enviado</p>
+                            <p class="mt-1 text-xs text-gray-500">{{ order.shipped_at ? formatDate(order.shipped_at) : 'Pendente' }}</p>
+                        </li>
+                        <li class="rounded-md border p-3" :class="order.delivered_at ? 'border-green-200 bg-green-50' : 'border-gray-200'">
+                            <p class="text-sm font-medium text-gray-900">Entregue</p>
+                            <p class="mt-1 text-xs text-gray-500">{{ order.delivered_at ? formatDate(order.delivered_at) : 'Pendente' }}</p>
+                        </li>
+                    </ol>
+
+                    <p v-if="order.tracking_code" class="mt-4 text-sm text-gray-600">
+                        Código de rastreio:
+                        <span class="font-medium text-gray-900">{{ order.tracking_code }}</span>
+                    </p>
+                </div>
+
+                <div
+                    v-else-if="order.fulfillment_status === 'cancelled'"
+                    class="rounded-lg border border-gray-200 bg-gray-50 p-5 text-sm text-gray-700"
+                >
+                    A operação de entrega deste pedido foi encerrada.
+                </div>
+
                 <div class="rounded-lg border border-gray-200 bg-white p-6">
                     <h2 class="text-lg font-semibold text-gray-900">Itens</h2>
                     <ul class="mt-4 divide-y divide-gray-200">

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\FulfillmentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\StockMovementReason;
 use App\Models\Cart;
@@ -157,9 +158,15 @@ class OrderService
     /**
      * @return LengthAwarePaginator<int, array<string, mixed>>
      */
-    public function paginateForAdmin(string $search, string $status): LengthAwarePaginator
-    {
+    public function paginateForAdmin(
+        string $search,
+        string $status,
+        string $fulfillmentStatus = '',
+        string $dateFrom = '',
+        string $dateTo = '',
+    ): LengthAwarePaginator {
         $statusEnum = OrderStatus::tryFrom($status);
+        $fulfillmentStatusEnum = FulfillmentStatus::tryFrom($fulfillmentStatus);
 
         return Order::query()
             ->with(['user:id,name,email', 'payment'])
@@ -173,6 +180,10 @@ class OrderService
                 });
             })
             ->when($statusEnum !== null, fn ($query) => $query->where('status', $statusEnum))
+            ->when($fulfillmentStatusEnum !== null, fn ($query) => $query
+                ->where('fulfillment_status', $fulfillmentStatusEnum))
+            ->when($dateFrom !== '', fn ($query) => $query->whereDate('placed_at', '>=', $dateFrom))
+            ->when($dateTo !== '', fn ($query) => $query->whereDate('placed_at', '<=', $dateTo))
             ->latest('placed_at')
             ->paginate(15)
             ->withQueryString()
@@ -201,6 +212,8 @@ class OrderService
             'number' => $order->number,
             'status' => $order->status->value,
             'status_label' => $order->status->label(),
+            'fulfillment_status' => $order->fulfillment_status->value,
+            'fulfillment_status_label' => $order->fulfillment_status->label(),
             'item_count' => (int) ($order->items_count ?? $order->items()->count()),
             'total_cents' => $order->total_cents,
             'placed_at' => $order->placed_at?->toIso8601String(),
@@ -219,6 +232,14 @@ class OrderService
             'number' => $order->number,
             'status' => $order->status->value,
             'status_label' => $order->status->label(),
+            'fulfillment_status' => $order->fulfillment_status->value,
+            'fulfillment_status_label' => $order->fulfillment_status->label(),
+            'tracking_code' => $order->tracking_code,
+            'tracking_url' => $order->tracking_url,
+            'preparing_at' => $order->preparing_at?->toIso8601String(),
+            'shipped_at' => $order->shipped_at?->toIso8601String(),
+            'delivered_at' => $order->delivered_at?->toIso8601String(),
+            'fulfillment_cancelled_at' => $order->fulfillment_cancelled_at?->toIso8601String(),
             'subtotal_cents' => $order->subtotal_cents,
             'discount_cents' => $order->discount_cents,
             'shipping_cents' => $order->shipping_cents,

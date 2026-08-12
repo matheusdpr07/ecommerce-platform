@@ -5,7 +5,6 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import type {
     AdminOrderSummary,
-    CatalogFilters,
     Paginated,
 } from '@/types/catalog';
 import { formatMoneyFromCents } from '@/utils/money';
@@ -14,19 +13,44 @@ import { ref } from 'vue';
 
 const props = defineProps<{
     orders: Paginated<AdminOrderSummary>;
-    filters: CatalogFilters;
+    filters: {
+        search: string;
+        status: string;
+        fulfillment_status: string;
+        date_from: string;
+        date_to: string;
+    };
     statuses: Array<{ value: string; label: string }>;
+    fulfillmentStatuses: Array<{ value: string; label: string }>;
 }>();
 
 const search = ref(props.filters.search);
 const status = ref(props.filters.status);
+const fulfillmentStatus = ref(props.filters.fulfillment_status);
+const dateFrom = ref(props.filters.date_from);
+const dateTo = ref(props.filters.date_to);
 
 const applyFilters = () => {
     router.get(
         route('admin.orders.index'),
-        { search: search.value, status: status.value },
+        {
+            search: search.value,
+            status: status.value,
+            fulfillment_status: fulfillmentStatus.value,
+            date_from: dateFrom.value,
+            date_to: dateTo.value,
+        },
         { preserveState: true, replace: true },
     );
+};
+
+const clearFilters = () => {
+    search.value = '';
+    status.value = '';
+    fulfillmentStatus.value = '';
+    dateFrom.value = '';
+    dateTo.value = '';
+    applyFilters();
 };
 
 const formatDate = (isoDate?: string | null) => {
@@ -55,6 +79,22 @@ const statusClasses = (orderStatus: string) => {
 
     return 'bg-yellow-100 text-yellow-800';
 };
+
+const fulfillmentClasses = (fulfillmentStatusValue: string) => {
+    if (fulfillmentStatusValue === 'delivered') {
+        return 'bg-green-100 text-green-800';
+    }
+
+    if (fulfillmentStatusValue === 'shipped') {
+        return 'bg-blue-100 text-blue-800';
+    }
+
+    if (fulfillmentStatusValue === 'cancelled') {
+        return 'bg-gray-100 text-gray-700';
+    }
+
+    return 'bg-yellow-100 text-yellow-800';
+};
 </script>
 
 <template>
@@ -72,10 +112,10 @@ const statusClasses = (orderStatus: string) => {
         <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
             <div class="border-b border-gray-200 p-4">
                 <form
-                    class="flex flex-col gap-3 md:flex-row md:items-end"
+                    class="grid gap-3 md:grid-cols-2 xl:grid-cols-6 xl:items-end"
                     @submit.prevent="applyFilters"
                 >
-                    <div class="flex-1">
+                    <div class="md:col-span-2 xl:col-span-2">
                         <label class="block text-sm font-medium text-gray-700">
                             Buscar por pedido ou cliente
                         </label>
@@ -103,7 +143,54 @@ const statusClasses = (orderStatus: string) => {
                             </option>
                         </select>
                     </div>
-                    <PrimaryButton type="submit">Filtrar</PrimaryButton>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                            Entrega
+                        </label>
+                        <select
+                            v-model="fulfillmentStatus"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        >
+                            <option value="">Todas</option>
+                            <option
+                                v-for="option in fulfillmentStatuses"
+                                :key="option.value"
+                                :value="option.value"
+                            >
+                                {{ option.label }}
+                            </option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                            De
+                        </label>
+                        <input
+                            v-model="dateFrom"
+                            type="date"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                            Até
+                        </label>
+                        <input
+                            v-model="dateTo"
+                            type="date"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        />
+                    </div>
+                    <div class="flex gap-2">
+                        <PrimaryButton type="submit">Filtrar</PrimaryButton>
+                        <button
+                            type="button"
+                            class="rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                            @click="clearFilters"
+                        >
+                            Limpar
+                        </button>
+                    </div>
                 </form>
             </div>
 
@@ -118,7 +205,10 @@ const statusClasses = (orderStatus: string) => {
                                 Cliente
                             </th>
                             <th class="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
-                                Status
+                                Pagamento
+                            </th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                                Entrega
                             </th>
                             <th class="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
                                 Total
@@ -150,6 +240,14 @@ const statusClasses = (orderStatus: string) => {
                                     {{ order.status_label }}
                                 </span>
                             </td>
+                            <td class="px-4 py-3 text-sm">
+                                <span
+                                    class="rounded-full px-2 py-1 text-xs font-medium"
+                                    :class="fulfillmentClasses(order.fulfillment_status)"
+                                >
+                                    {{ order.fulfillment_status_label }}
+                                </span>
+                            </td>
                             <td class="px-4 py-3 text-sm font-medium text-gray-900">
                                 {{ formatMoneyFromCents(order.total_cents) }}
                             </td>
@@ -163,7 +261,7 @@ const statusClasses = (orderStatus: string) => {
                             </td>
                         </tr>
                         <tr v-if="orders.data.length === 0">
-                            <td colspan="5" class="px-4 py-10 text-center text-sm text-gray-500">
+                            <td colspan="6" class="px-4 py-10 text-center text-sm text-gray-500">
                                 Nenhum pedido encontrado.
                             </td>
                         </tr>

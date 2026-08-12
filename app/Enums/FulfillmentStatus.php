@@ -30,4 +30,14 @@ enum FulfillmentStatus: string
             self::Delivered, self::Cancelled => false,
         };
     }
+
+    public function next(): ?self
+    {
+        return match ($this) {
+            self::Pending => self::Preparing,
+            self::Preparing => self::Shipped,
+            self::Shipped => self::Delivered,
+            self::Delivered, self::Cancelled => null,
+        };
+    }
 }
