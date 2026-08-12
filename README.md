@@ -4,7 +4,7 @@ Plataforma completa de e-commerce com catalogo, experiencia editorial, carrinho,
 
 ## Estado atual
 
-A Fase 12 esta concluida. A aplicacao inclui:
+A Fase 12 esta concluida e a Fase 13 esta em andamento. A aplicacao inclui:
 
 - Loja publica, busca, filtros, carrinho, wishlist, cupons e promocoes
 - Checkout autenticado com enderecos, frete, pedidos e controle transacional de estoque
@@ -15,6 +15,7 @@ A Fase 12 esta concluida. A aplicacao inclui:
 - Banners administraveis com imagem, tema, posicao, agendamento e CTA
 - Avaliacoes moderadas exclusivas para compras entregues e verificadas
 - Central de notificacoes com alertas no banco e por e-mail para pedido, pagamento, entrega e avaliacao
+- Homepage narrativa em quatro capitulos, com cenarios responsivos que evoluem durante a rolagem nativa
 
 ## Stack
 

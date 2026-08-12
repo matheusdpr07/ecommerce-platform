@@ -144,5 +144,6 @@ O usuario deve estar cadastrado previamente. Por padrao, o e-mail precisa estar 
 | Erro de conexao MySQL | Verifique servico, host, porta e credenciais no `.env` |
 | Pix nao e gerado | Verifique access token, URL base e logs da aplicacao |
 | Webhook retorna `401` | Confirme o secret, o topico Order e a URL configurada no Mercado Pago |
+| HTML abre, mas a interface demora ou nao aparece | Confirme se o servidor indicado em `public/hot` esta respondendo; reinicie `npm run dev` ou remova o arquivo obsoleto depois de executar `npm run build` |
 | `npm run build` falha | Execute `npm install` e verifique Node 20+ |
 | Permissao em `storage/` ou `bootstrap/cache/` | `php artisan storage:link` e permissões de escrita |

@@ -14,7 +14,7 @@
 10. **Mercado Pago, Pix, webhooks e reembolsos** — concluida
 11. **Painel administrativo completo** — concluida
 12. **Avaliacoes, conteudo e notificacoes** — concluida
-13. SEO, acessibilidade e desempenho
+13. **SEO, acessibilidade e desempenho** — em andamento
 14. Seguranca, testes, CI e preparacao para producao
 
 ---
@@ -416,3 +416,45 @@
 ### Proxima fase recomendada
 
 **Fase 13:** SEO, acessibilidade e desempenho
+
+---
+
+## Fase 13 — SEO, acessibilidade e desempenho
+
+**Status:** em andamento
+
+### Concluido
+
+- Homepage reorganizada em quatro capitulos narrativos ligados a rolagem
+- Cenarios construidos com CSS, banners e produtos reais da loja, sem ativos copiados da referencia visual
+- Troca de cena por `IntersectionObserver`, sem listener continuo e sem capturar o gesto de rolagem
+- Rolagem nativa preservada em mouse, toque e teclado
+- Experiencia responsiva validada visualmente em desktop e celular
+- Fallback de `prefers-reduced-motion` validado com todos os capitulos visiveis e interativos
+- Hierarquia da homepage corrigida para um unico `h1`
+- Ferramenta `website-scraper` isolada em `devDependencies`, fora do bundle entregue ao cliente
+- Vite local travado identificado e o build de producao restaurado para a navegacao local
+
+### Pendente nesta fase
+
+- Metadados canonicos, Open Graph e Twitter Cards por pagina
+- Dados estruturados de organizacao, produto, breadcrumbs e avaliacoes
+- `sitemap.xml`, `robots.txt` e politica de indexacao
+- Variantes responsivas, dimensoes e formatos modernos para imagens administraveis
+- Auditoria completa de teclado, contraste, landmarks, rotulos e mensagens dinamicas
+- Medicao Lighthouse e orcamento para Core Web Vitals
+- Cache e compressao recomendados para o ambiente de producao
+
+### Decisoes
+
+- Referencias externas orientam principios de composicao e interacao, nunca a copia de marca, texto, imagem ou codigo
+- A narrativa usa `position: sticky` e `IntersectionObserver`; nenhuma biblioteca de scroll hijacking entra no runtime
+- Produtos, categorias e banners continuam sendo a unica fonte de conteudo comercial da homepage
+- Sem movimento, os capitulos voltam ao fluxo normal e nenhuma acao fica oculta
+
+### Testes relacionados
+
+- `tests/Feature/Store/StorefrontTest.php`
+- `npm run build`
+- Revisao visual automatizada em 1440x1000 e 390x844
+- Emulacao de `prefers-reduced-motion: reduce`
