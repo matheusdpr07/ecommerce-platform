@@ -84,7 +84,10 @@ const formatDate = (isoDate?: string | null) => {
                             class="text-xl tracking-[0.08em] text-[var(--store-coral)]"
                             :aria-label="`${reviews.summary.average} de 5 estrelas`"
                         >
-                            ★★★★★
+                            {{ '★'.repeat(Math.round(reviews.summary.average))
+                            }}<span class="text-[var(--store-line)]">{{
+                                '★'.repeat(5 - Math.round(reviews.summary.average))
+                            }}</span>
                         </p>
                         <p class="mt-1 text-xs text-[var(--store-muted)]">
                             {{ reviews.summary.total }}

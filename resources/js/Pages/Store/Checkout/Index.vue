@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import FlashAlert from '@/Components/FlashAlert.vue';
 import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import StoreLayout from '@/Layouts/StoreLayout.vue';
 import type { CheckoutPayload } from '@/types/catalog';
 import { formatMoneyFromCents } from '@/utils/money';
@@ -11,267 +9,283 @@ import { computed } from 'vue';
 const props = defineProps<CheckoutPayload>();
 
 const form = useForm({
-    shipping_address_id: props.selected_address_id ?? props.addresses.find((address) => address.is_default)?.id ?? null,
+    shipping_address_id:
+        props.selected_address_id ??
+        props.addresses.find((address) => address.is_default)?.id ??
+        null,
     shipping_method_id: props.selected_shipping_method_id,
 });
-
 const confirmForm = useForm({});
 
 const submit = () => {
-    form.patch(route('store.checkout.update'), {
-        preserveScroll: true,
-    });
+    form.patch(route('store.checkout.update'), { preserveScroll: true });
 };
-
 const confirmOrder = () => {
-    confirmForm.post(route('store.checkout.store'), {
-        preserveScroll: true,
-    });
+    confirmForm.post(route('store.checkout.store'), { preserveScroll: true });
 };
-
 const confirmError = computed(() => {
     const errors = confirmForm.errors as Record<string, string | undefined>;
-
     return errors.checkout || errors.cart || '';
 });
-
 const deliveryEstimate = (min?: number | null, max?: number | null) => {
-    if (min && max) {
-        return `${min} a ${max} dias uteis`;
-    }
-
-    if (min) {
-        return `A partir de ${min} dias uteis`;
-    }
-
+    if (min && max) return `${min} a ${max} dias úteis`;
+    if (min) return `A partir de ${min} dias úteis`;
     return null;
 };
 </script>
 
 <template>
-    <Head title="Checkout" />
+    <Head title="Finalizar compra" />
 
     <StoreLayout>
-        <FlashAlert />
-
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Checkout</h1>
-            <p class="mt-2 text-gray-600">
-                Selecione endereco e frete para revisar o total da compra.
-            </p>
+        <div class="mb-10 border-b border-[var(--store-ink)]/15 pb-8">
+            <Link
+                :href="route('store.cart.index')"
+                view-transition
+                class="text-xs font-bold text-[var(--store-muted)] underline underline-offset-4"
+            >
+                ← Voltar ao carrinho
+            </Link>
+            <div
+                class="mt-5 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between"
+            >
+                <div>
+                    <p
+                        class="text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[var(--store-coral)]"
+                    >
+                        Última etapa
+                    </p>
+                    <h1
+                        class="mt-2 font-serif text-5xl leading-none tracking-[-0.06em] sm:text-7xl"
+                    >
+                        Entrega e revisão
+                    </h1>
+                </div>
+                <ol class="flex items-center gap-2 text-[0.62rem] font-bold uppercase tracking-[0.12em]">
+                    <li class="flex items-center gap-2 opacity-45">
+                        <span class="grid size-7 place-items-center rounded-full border">1</span>
+                        Carrinho
+                    </li>
+                    <li class="h-px w-5 bg-[var(--store-line)]" />
+                    <li class="flex items-center gap-2">
+                        <span class="grid size-7 place-items-center rounded-full bg-[var(--store-ink)] text-white">2</span>
+                        Entrega
+                    </li>
+                    <li class="h-px w-5 bg-[var(--store-line)]" />
+                    <li class="flex items-center gap-2" :class="is_ready ? '' : 'opacity-35'">
+                        <span class="grid size-7 place-items-center rounded-full border">3</span>
+                        Pagamento
+                    </li>
+                </ol>
+            </div>
         </div>
 
-        <div class="grid gap-8 lg:grid-cols-[1fr_320px]">
-            <form class="space-y-6" @submit.prevent="submit">
-                <section class="rounded-lg border border-gray-200 bg-white p-6">
-                    <div class="flex items-center justify-between">
-                        <h2 class="text-lg font-semibold text-gray-900">
-                            Endereco de entrega
-                        </h2>
+        <div class="grid gap-12 lg:grid-cols-[1fr_24rem] xl:gap-20">
+            <form class="space-y-8" @submit.prevent="submit">
+                <section>
+                    <div class="flex flex-wrap items-end justify-between gap-3">
+                        <div>
+                            <span
+                                class="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[var(--store-muted)]"
+                            >
+                                Passo 01
+                            </span>
+                            <h2 class="mt-1 font-serif text-3xl tracking-[-0.035em]">
+                                Onde devemos entregar?
+                            </h2>
+                        </div>
                         <Link
                             :href="route('store.addresses.index')"
-                            class="text-sm text-indigo-600 hover:text-indigo-800"
+                            class="text-xs font-bold underline underline-offset-4"
                         >
-                            Gerenciar enderecos
+                            Gerenciar endereços
                         </Link>
                     </div>
 
                     <div
                         v-if="addresses.length === 0"
-                        class="mt-4 rounded-md bg-yellow-50 p-4 text-sm text-yellow-800"
+                        class="mt-5 rounded-[1.5rem] bg-amber-50 p-5 text-sm text-amber-900"
                     >
-                        Cadastre um endereco antes de continuar.
+                        Falta cadastrar o endereço de entrega.
                         <Link
                             :href="route('store.addresses.create')"
-                            class="ml-1 font-medium underline"
+                            class="ml-1 font-bold underline"
                         >
-                            Cadastrar endereco
+                            Cadastrar agora
                         </Link>
                     </div>
-
-                    <div v-else class="mt-4 space-y-3">
+                    <div v-else class="mt-5 grid gap-3 sm:grid-cols-2">
                         <label
                             v-for="address in addresses"
                             :key="address.id"
-                            class="flex cursor-pointer gap-3 rounded-md border p-4"
+                            class="relative cursor-pointer rounded-[1.5rem] border p-5 transition"
                             :class="
                                 form.shipping_address_id === address.id
-                                    ? 'border-indigo-500 bg-indigo-50'
-                                    : 'border-gray-200'
+                                    ? 'border-[var(--store-ink)] bg-[var(--store-paper)] shadow-md'
+                                    : 'border-[var(--store-ink)]/12 hover:border-[var(--store-ink)]/40'
                             "
                         >
                             <input
                                 v-model="form.shipping_address_id"
                                 type="radio"
-                                class="mt-1 text-indigo-600 focus:ring-indigo-500"
+                                class="absolute right-5 top-5 text-[var(--store-ink)] focus:ring-[var(--store-ink)]"
                                 :value="address.id"
                             />
-                            <span>
-                                <span class="font-medium text-gray-900">
-                                    {{ address.label }}
-                                </span>
-                                <span
-                                    v-if="address.is_default"
-                                    class="ml-2 text-xs text-indigo-700"
-                                >
-                                    Padrao
-                                </span>
-                                <span class="mt-1 block text-sm text-gray-600">
-                                    {{ address.recipient_name }} ·
-                                    {{ address.summary }}
-                                </span>
+                            <span class="font-serif text-xl">{{ address.label }}</span>
+                            <span
+                                v-if="address.is_default"
+                                class="ml-2 rounded-full bg-[var(--store-accent)] px-2 py-1 text-[0.55rem] font-bold uppercase tracking-wider"
+                            >
+                                Padrão
+                            </span>
+                            <span class="mt-3 block text-sm font-semibold">
+                                {{ address.recipient_name }}
+                            </span>
+                            <span class="mt-1 block pr-6 text-sm leading-6 text-[var(--store-muted)]">
+                                {{ address.summary }}
                             </span>
                         </label>
                     </div>
-                    <InputError
-                        class="mt-2"
-                        :message="form.errors.shipping_address_id"
-                    />
+                    <InputError class="mt-2" :message="form.errors.shipping_address_id" />
                 </section>
 
-                <section class="rounded-lg border border-gray-200 bg-white p-6">
-                    <h2 class="text-lg font-semibold text-gray-900">
-                        Frete
+                <section class="border-t border-[var(--store-ink)]/15 pt-8">
+                    <span
+                        class="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[var(--store-muted)]"
+                    >
+                        Passo 02
+                    </span>
+                    <h2 class="mt-1 font-serif text-3xl tracking-[-0.035em]">
+                        Como prefere receber?
                     </h2>
 
-                    <div
+                    <p
                         v-if="!form.shipping_address_id"
-                        class="mt-4 text-sm text-gray-500"
+                        class="mt-5 text-sm text-[var(--store-muted)]"
                     >
-                        Selecione um endereco para ver as opcoes de frete.
-                    </div>
-
+                        Escolha um endereço para liberar as opções de entrega.
+                    </p>
                     <div
                         v-else-if="shipping_methods.length === 0"
-                        class="mt-4 rounded-md bg-yellow-50 p-4 text-sm text-yellow-800"
+                        class="mt-5 rounded-[1.5rem] bg-amber-50 p-5 text-sm text-amber-900"
                     >
-                        Nenhuma opcao de frete disponivel para este pedido.
+                        Nenhuma opção de frete está disponível para este pedido.
                     </div>
-
-                    <div v-else class="mt-4 space-y-3">
+                    <div v-else class="mt-5 space-y-3">
                         <label
                             v-for="method in shipping_methods"
                             :key="method.id"
-                            class="flex cursor-pointer items-start justify-between gap-4 rounded-md border p-4"
+                            class="flex cursor-pointer items-start gap-4 rounded-[1.5rem] border p-5 transition"
                             :class="
                                 form.shipping_method_id === method.id
-                                    ? 'border-indigo-500 bg-indigo-50'
-                                    : 'border-gray-200'
+                                    ? 'border-[var(--store-ink)] bg-[var(--store-paper)] shadow-md'
+                                    : 'border-[var(--store-ink)]/12 hover:border-[var(--store-ink)]/40'
                             "
                         >
-                            <span class="flex gap-3">
-                                <input
-                                    v-model="form.shipping_method_id"
-                                    type="radio"
-                                    class="mt-1 text-indigo-600 focus:ring-indigo-500"
-                                    :value="method.id"
-                                />
-                                <span>
-                                    <span class="font-medium text-gray-900">
-                                        {{ method.name }}
-                                    </span>
-                                    <span
-                                        v-if="method.description"
-                                        class="mt-1 block text-sm text-gray-600"
-                                    >
-                                        {{ method.description }}
-                                    </span>
-                                    <span
-                                        v-if="
-                                            deliveryEstimate(
-                                                method.estimated_days_min,
-                                                method.estimated_days_max,
-                                            )
-                                        "
-                                        class="mt-1 block text-xs text-gray-500"
-                                    >
-                                        {{
-                                            deliveryEstimate(
-                                                method.estimated_days_min,
-                                                method.estimated_days_max,
-                                            )
-                                        }}
-                                    </span>
+                            <input
+                                v-model="form.shipping_method_id"
+                                type="radio"
+                                class="mt-1 text-[var(--store-ink)] focus:ring-[var(--store-ink)]"
+                                :value="method.id"
+                            />
+                            <span class="min-w-0 flex-1">
+                                <span class="font-serif text-xl">{{ method.name }}</span>
+                                <span
+                                    v-if="method.description"
+                                    class="mt-1 block text-sm text-[var(--store-muted)]"
+                                >
+                                    {{ method.description }}
+                                </span>
+                                <span
+                                    v-if="deliveryEstimate(method.estimated_days_min, method.estimated_days_max)"
+                                    class="mt-2 block text-xs font-semibold"
+                                >
+                                    {{ deliveryEstimate(method.estimated_days_min, method.estimated_days_max) }}
                                 </span>
                             </span>
-                            <span class="font-semibold text-gray-900">
-                                {{
-                                    method.price_cents === 0
-                                        ? 'Gratis'
-                                        : formatMoneyFromCents(
-                                              method.price_cents,
-                                          )
-                                }}
+                            <span class="font-bold">
+                                {{ method.price_cents === 0 ? 'Grátis' : formatMoneyFromCents(method.price_cents) }}
                             </span>
                         </label>
                     </div>
-                    <InputError
-                        class="mt-2"
-                        :message="form.errors.shipping_method_id"
-                    />
+                    <InputError class="mt-2" :message="form.errors.shipping_method_id" />
                 </section>
 
-                <PrimaryButton type="submit" :disabled="form.processing">
-                    Salvar selecoes
-                </PrimaryButton>
+                <button
+                    type="submit"
+                    class="flex w-full items-center justify-between rounded-full border border-[var(--store-ink)] px-6 py-4 text-sm font-bold transition hover:bg-[var(--store-ink)] hover:text-white disabled:opacity-50 sm:w-auto sm:min-w-72"
+                    :disabled="form.processing || !form.shipping_address_id"
+                >
+                    Atualizar entrega e total
+                    <span aria-hidden="true">↻</span>
+                </button>
             </form>
 
-            <aside class="h-fit rounded-lg border border-gray-200 bg-white p-6">
-                <h2 class="text-lg font-semibold text-gray-900">Resumo</h2>
-                <dl class="mt-4 space-y-2 text-sm">
-                    <div class="flex justify-between">
-                        <dt class="text-gray-600">Subtotal</dt>
-                        <dd>{{ formatMoneyFromCents(cart.subtotal_cents) }}</dd>
-                    </div>
-                    <div
-                        v-if="cart.discount_cents > 0"
-                        class="flex justify-between text-green-700"
-                    >
-                        <dt>Desconto</dt>
-                        <dd>-{{ formatMoneyFromCents(cart.discount_cents) }}</dd>
-                    </div>
-                    <div class="flex justify-between">
-                        <dt class="text-gray-600">Frete</dt>
-                        <dd>
-                            {{
-                                shipping_cents === 0 && is_ready
-                                    ? 'Gratis'
-                                    : formatMoneyFromCents(shipping_cents)
-                            }}
-                        </dd>
-                    </div>
-                    <div
-                        class="flex justify-between border-t border-gray-200 pt-2 font-semibold"
-                    >
-                        <dt>Total</dt>
-                        <dd>{{ formatMoneyFromCents(grand_total_cents) }}</dd>
-                    </div>
-                </dl>
-
+            <aside class="h-fit lg:sticky lg:top-28">
                 <div
-                    v-if="is_ready"
-                    class="mt-4 space-y-3"
+                    class="rounded-[2rem] bg-[var(--store-ink)] p-7 text-[var(--store-paper)] shadow-[0_25px_60px_rgba(23,24,17,0.18)]"
                 >
-                    <div class="rounded-md bg-green-50 p-4 text-sm text-green-800">
-                        Endereco e frete selecionados. Confirme o pedido para
-                        concluir a compra.
-                    </div>
-                    <PrimaryButton
-                        type="button"
-                        :disabled="confirmForm.processing"
-                        @click="confirmOrder"
+                    <p
+                        class="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[var(--store-accent)]"
                     >
-                        Confirmar pedido
-                    </PrimaryButton>
-                    <InputError :message="confirmError" />
-                </div>
+                        Revisão final
+                    </p>
+                    <dl class="mt-6 space-y-3 text-sm">
+                        <div class="flex justify-between text-white/65">
+                            <dt>{{ cart.item_count }} item(ns)</dt>
+                            <dd>{{ formatMoneyFromCents(cart.subtotal_cents) }}</dd>
+                        </div>
+                        <div
+                            v-if="cart.discount_cents > 0"
+                            class="flex justify-between text-[var(--store-accent)]"
+                        >
+                            <dt>Desconto</dt>
+                            <dd>-{{ formatMoneyFromCents(cart.discount_cents) }}</dd>
+                        </div>
+                        <div class="flex justify-between text-white/65">
+                            <dt>Entrega</dt>
+                            <dd>
+                                {{ shipping_cents === 0 && is_ready ? 'Grátis' : formatMoneyFromCents(shipping_cents) }}
+                            </dd>
+                        </div>
+                        <div
+                            class="mt-5 flex items-end justify-between border-t border-white/15 pt-5"
+                        >
+                            <dt class="font-bold">Total</dt>
+                            <dd class="font-serif text-3xl tracking-[-0.04em]">
+                                {{ formatMoneyFromCents(grand_total_cents) }}
+                            </dd>
+                        </div>
+                    </dl>
 
-                <Link
-                    :href="route('store.cart.index')"
-                    class="mt-4 inline-block text-sm text-gray-600 hover:text-gray-900"
-                >
-                    Voltar ao carrinho
-                </Link>
+                    <div v-if="is_ready" class="mt-7">
+                        <div
+                            class="mb-4 rounded-2xl bg-white/8 p-4 text-xs leading-5 text-white/65"
+                        >
+                            Tudo certo. Ao confirmar, criaremos o pedido e você
+                            seguirá para o pagamento seguro via Pix.
+                        </div>
+                        <button
+                            type="button"
+                            class="flex w-full items-center justify-between rounded-full bg-[var(--store-accent)] px-6 py-4 text-sm font-bold text-[var(--store-ink)] transition hover:-translate-y-0.5 disabled:opacity-50"
+                            :disabled="confirmForm.processing"
+                            @click="confirmOrder"
+                        >
+                            Confirmar e ir para pagamento
+                            <span aria-hidden="true">→</span>
+                        </button>
+                        <InputError class="mt-3" :message="confirmError" />
+                    </div>
+                    <div
+                        v-else
+                        class="mt-7 rounded-2xl border border-white/15 p-4 text-xs leading-5 text-white/55"
+                    >
+                        Selecione endereço e frete e atualize o total para liberar a confirmação.
+                    </div>
+                </div>
+                <p class="mt-4 text-center text-xs text-[var(--store-muted)]">
+                    ✓ Pagamento protegido · seus dados permanecem seguros
+                </p>
             </aside>
         </div>
     </StoreLayout>

@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import FlashAlert from '@/Components/FlashAlert.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import StoreLayout from '@/Layouts/StoreLayout.vue';
 import type { WishlistPayload } from '@/types/catalog';
 import { formatMoneyFromCents } from '@/utils/money';
 import { Head, Link, router } from '@inertiajs/vue3';
 
-defineProps<{
-    wishlist: WishlistPayload;
-}>();
+defineProps<{ wishlist: WishlistPayload }>();
 
 const removeItem = (itemId: number) => {
-    router.delete(route('store.wishlist.items.destroy', itemId));
+    router.delete(route('store.wishlist.items.destroy', itemId), {
+        preserveScroll: true,
+    });
 };
-
 const moveToCart = (itemId: number) => {
-    router.post(route('store.wishlist.items.move-to-cart', itemId));
+    router.post(
+        route('store.wishlist.items.move-to-cart', itemId),
+        {},
+        { preserveScroll: true },
+    );
 };
 </script>
 
@@ -23,76 +24,86 @@ const moveToCart = (itemId: number) => {
     <Head title="Favoritos" />
 
     <StoreLayout>
-        <FlashAlert />
-
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Lista de desejos</h1>
-            <p class="mt-2 text-gray-600">
-                Salve produtos para comprar depois.
+        <div class="mb-10 border-b border-[var(--store-ink)]/15 pb-8">
+            <p
+                class="text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[var(--store-coral)]"
+            >
+                Para reencontrar
+            </p>
+            <h1
+                class="mt-2 font-serif text-6xl leading-none tracking-[-0.06em] sm:text-7xl"
+            >
+                Seus favoritos
+            </h1>
+            <p class="mt-3 text-sm text-[var(--store-muted)]">
+                {{ wishlist.item_count }}
+                {{ wishlist.item_count === 1 ? 'escolha guardada' : 'escolhas guardadas' }}
             </p>
         </div>
 
         <div
             v-if="wishlist.items.length > 0"
-            class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3"
+            class="grid gap-x-5 gap-y-12 sm:grid-cols-2 lg:grid-cols-3"
         >
             <article
                 v-for="item in wishlist.items"
                 :key="item.id"
-                class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm"
+                class="store-reveal group"
             >
                 <Link
                     :href="route('store.products.show', item.product.slug)"
-                    class="block aspect-square bg-gray-100"
+                    view-transition
+                    class="relative block aspect-[4/5] overflow-hidden rounded-[1.75rem] bg-[#e7e0d5]"
                 >
                     <img
                         v-if="item.product.primary_image"
                         :src="item.product.primary_image.url"
-                        :alt="
-                            item.product.primary_image.alt_text ??
-                            item.product.name
-                        "
-                        class="h-full w-full object-cover"
+                        :alt="item.product.primary_image.alt_text ?? item.product.name"
+                        loading="lazy"
+                        decoding="async"
+                        class="size-full object-cover transition duration-700 group-hover:scale-[1.035]"
                     />
+                    <span
+                        v-if="!item.product.has_stock"
+                        class="absolute left-4 top-4 rounded-full bg-[var(--store-ink)] px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-wider text-white"
+                    >
+                        Esgotado
+                    </span>
                 </Link>
 
-                <div class="p-4">
+                <div class="px-1 pt-5">
                     <p
                         v-if="item.product.category"
-                        class="text-xs uppercase tracking-wide text-gray-500"
+                        class="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[var(--store-muted)]"
                     >
                         {{ item.product.category.name }}
                     </p>
                     <Link
                         :href="route('store.products.show', item.product.slug)"
-                        class="mt-1 block font-semibold text-gray-900 hover:text-indigo-600"
+                        view-transition
+                        class="mt-1 block font-serif text-2xl tracking-[-0.03em]"
                     >
                         {{ item.product.name }}
                     </Link>
-                    <p class="mt-2 font-bold text-gray-900">
-                        {{
-                            formatMoneyFromCents(item.product.min_price_cents)
-                        }}
+                    <p class="mt-2 text-sm font-bold">
+                        {{ formatMoneyFromCents(item.product.min_price_cents) }}
                     </p>
-
-                    <div class="mt-4 flex flex-wrap gap-2">
-                        <PrimaryButton
+                    <div class="mt-5 flex gap-2">
+                        <button
                             type="button"
+                            class="flex-1 rounded-full bg-[var(--store-ink)] px-5 py-3 text-sm font-bold text-white disabled:opacity-40"
                             :disabled="!item.product.has_stock"
                             @click="moveToCart(item.id)"
                         >
-                            {{
-                                item.product.has_stock
-                                    ? 'Mover para carrinho'
-                                    : 'Sem estoque'
-                            }}
-                        </PrimaryButton>
+                            {{ item.product.has_stock ? 'Mover para carrinho' : 'Sem estoque' }}
+                        </button>
                         <button
                             type="button"
-                            class="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                            class="grid size-11 place-items-center rounded-full border border-[var(--store-ink)]/20 text-lg"
+                            aria-label="Remover dos favoritos"
                             @click="removeItem(item.id)"
                         >
-                            Remover
+                            ×
                         </button>
                     </div>
                 </div>
@@ -101,16 +112,26 @@ const moveToCart = (itemId: number) => {
 
         <div
             v-else
-            class="rounded-lg border border-dashed border-gray-300 bg-white p-12 text-center"
+            class="rounded-[2.5rem] border border-dashed border-[var(--store-ink)]/25 bg-[var(--store-paper)] px-6 py-20 text-center"
         >
-            <p class="text-lg font-medium text-gray-900">
-                Nenhum favorito ainda
+            <span
+                class="mx-auto grid size-16 place-items-center rounded-full bg-[var(--store-accent)] text-2xl"
+                aria-hidden="true"
+            >
+                ♡
+            </span>
+            <p class="mt-6 font-serif text-4xl tracking-[-0.04em]">
+                Guarde o que fizer seus olhos brilharem
             </p>
-            <p class="mt-2 text-sm text-gray-500">
-                Salve produtos pela pagina de detalhes.
+            <p class="mt-2 text-sm text-[var(--store-muted)]">
+                Seus produtos favoritos aparecerão aqui.
             </p>
-            <Link :href="route('store.home')" class="mt-6 inline-block">
-                <PrimaryButton>Ver produtos</PrimaryButton>
+            <Link
+                :href="route('store.home')"
+                view-transition
+                class="mt-7 inline-flex rounded-full bg-[var(--store-ink)] px-7 py-3.5 text-sm font-bold text-white"
+            >
+                Explorar produtos
             </Link>
         </div>
     </StoreLayout>

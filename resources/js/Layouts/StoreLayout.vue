@@ -360,7 +360,7 @@ const submitSearch = () => {
             :class="
                 immersive
                     ? 'min-h-[60vh]'
-                    : 'mx-auto min-h-[60vh] max-w-[90rem] px-4 py-10 sm:px-6 lg:px-10 lg:py-16'
+                    : 'mx-auto min-h-[60vh] w-full max-w-[90rem] px-4 py-10 sm:px-6 lg:px-10 lg:py-16'
             "
         >
             <slot />

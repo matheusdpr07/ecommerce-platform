@@ -171,6 +171,13 @@ const statusClasses = (status: string) => {
                                 <p class="text-sm text-gray-500">
                                     Qtd: {{ item.quantity }}
                                 </p>
+                                <Link
+                                    v-if="order.fulfillment_status === 'delivered'"
+                                    :href="`${route('store.products.show', item.product_slug)}#avaliacoes`"
+                                    class="mt-2 inline-block text-xs font-semibold text-indigo-600 underline underline-offset-4"
+                                >
+                                    Avaliar compra verificada
+                                </Link>
                             </div>
                             <div class="text-sm sm:text-right">
                                 <p class="font-medium text-gray-900">

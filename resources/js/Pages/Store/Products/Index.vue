@@ -133,9 +133,11 @@ const clearFilters = () => {
             />
 
             <div
-                class="mx-auto grid min-h-[calc(100svh-7.4rem)] max-w-[90rem] items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:py-16"
+                class="mx-auto grid min-h-[calc(100svh-7.4rem)] w-full max-w-[90rem] items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:py-16"
             >
-                <div class="relative z-10 max-w-4xl">
+                <div
+                    class="relative z-10 min-w-0 w-full max-w-[calc(100vw-2rem)] sm:max-w-4xl"
+                >
                     <p
                         class="mb-5 flex items-center gap-3 text-[0.67rem] font-bold uppercase tracking-[0.24em]"
                     >
@@ -147,21 +149,21 @@ const clearFilters = () => {
                     </p>
                     <h1
                         v-if="heroBanner"
-                        class="max-w-4xl font-serif text-[clamp(4rem,8vw,8rem)] leading-[0.84] tracking-[-0.07em]"
+                        class="max-w-4xl font-serif text-[clamp(3rem,8vw,8rem)] leading-[0.84] tracking-[-0.07em]"
                     >
                         {{ heroBanner.title }}
                     </h1>
                     <h1
                         v-else
-                        class="font-serif text-[clamp(4rem,9vw,8.8rem)] leading-[0.8] tracking-[-0.075em]"
+                        class="font-serif text-[clamp(3rem,9vw,8.8rem)] leading-[0.8] tracking-[-0.075em]"
                     >
                         O extraordinário
-                        <span class="ml-[0.34em] block italic text-[var(--store-coral)]">
+                        <span class="block italic text-[var(--store-coral)] sm:ml-[0.34em]">
                             mora nos detalhes.
                         </span>
                     </h1>
                     <p
-                        class="mt-8 max-w-lg text-base leading-7 text-[var(--store-muted)] sm:text-lg"
+                        class="mt-8 w-full max-w-[calc(100vw-2rem)] break-words text-base leading-7 text-[var(--store-muted)] sm:max-w-lg sm:text-lg"
                     >
                         {{
                             heroBanner?.description ??
@@ -195,7 +197,7 @@ const clearFilters = () => {
                     </div>
                 </div>
 
-                <div class="relative mx-auto w-full max-w-xl lg:justify-self-end">
+                <div class="relative mx-auto min-w-0 w-full max-w-full sm:max-w-xl lg:justify-self-end">
                     <div
                         v-if="heroBanner?.image_url || heroProduct"
                         class="group relative block aspect-[4/5] w-[82%] overflow-hidden rounded-[3rem] bg-[#ded6c8] shadow-[0_30px_80px_rgba(23,24,17,0.18)] sm:w-[76%]"
