@@ -2,7 +2,7 @@
 
 ## Motor
 
-PostgreSQL em desenvolvimento e producao. SQLite in-memory apenas nos testes automatizados.
+MySQL em desenvolvimento e producao. SQLite in-memory apenas nos testes automatizados.
 
 ## Convencoes
 
@@ -12,7 +12,7 @@ PostgreSQL em desenvolvimento e producao. SQLite in-memory apenas nos testes aut
 - Soft deletes apenas quando fizer sentido de negocio
 - Indices em colunas de filtro, busca e foreign keys
 
-## Entidades planejadas (fases futuras)
+## Entidades implementadas
 
 ### Usuarios e autenticacao
 
@@ -21,43 +21,50 @@ PostgreSQL em desenvolvimento e producao. SQLite in-memory apenas nos testes aut
 
 ### Catalogo
 
-- `categories` — hierarquia de categorias
-- `brands` — marcas
-- `products` — produtos com slug, precos, status, SEO
-- `product_variants` — variacoes (tamanho, cor, SKU, estoque)
-- `product_images` — galeria ordenada
+#### `categories`
 
-### Estoque
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | bigint | PK |
+| parent_id | bigint nullable | FK self, hierarquia |
+| name | string | index |
+| slug | string unique | URLs amigaveis |
+| description | text nullable | |
+| is_active | boolean | index, default true |
+| sort_order | unsigned int | default 0, index |
+| meta_title | string nullable | SEO |
+| meta_description | string nullable | SEO |
+| deleted_at | timestamp nullable | soft delete |
 
-- `stock_movements` — historico imutavel de movimentacoes
+#### `brands`
 
-### Vendas
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | bigint | PK |
+| name | string | index |
+| slug | string unique | |
+| description | text nullable | |
+| is_active | boolean | index, default true |
+| meta_title | string nullable | SEO |
+| meta_description | string nullable | SEO |
+| deleted_at | timestamp nullable | soft delete |
 
-- `orders` — pedidos com estados controlados
-- `order_items` — snapshot imutavel dos itens na compra
-- `coupons`, `promotions` — descontos
+### Planejadas (fases futuras)
 
-### Enderecos e frete
-
-- `addresses` — enderecos de clientes
-- Campos de endereco copiados no pedido no checkout
-
-### Pagamentos
-
-- `payments` — status, gateway externo, historico
-- `webhook_events` — processamento idempotente
-
-### Conteudo e admin
-
+- `products`, `product_variants`, `product_images`
+- `stock_movements`
+- `orders`, `order_items`, `coupons`, `promotions`
+- `addresses`, `payments`, `webhook_events`
 - `banners`, `reviews`, `admin_audit_logs`
 
-## Diagrama simplificado (visao futura)
+## Diagrama simplificado
 
 ```
-users ──┬── orders ── order_items
-        │              │
-        └── addresses    └── product_variants ── products ── categories
-                                              └── brands
-```
+categories ──┬── categories (parent_id)
+             └── products (fase 4)
 
-Detalhamento das migrations sera adicionado conforme cada fase for implementada.
+brands ──────── products (fase 4)
+
+users ──┬── orders (fase 9)
+        └── addresses (fase 8)
+```

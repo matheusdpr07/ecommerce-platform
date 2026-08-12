@@ -5,7 +5,7 @@
 - PHP 8.4+
 - Composer 2.x
 - Node.js 20+ e npm
-- PostgreSQL 15+
+- MySQL 8+
 - Herd (recomendado no Windows/macOS) ou equivalente
 
 ## Instalacao
@@ -18,15 +18,15 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-## Banco de dados (PostgreSQL)
+## Banco de dados (MySQL)
 
-1. Crie o banco `ecommerce_platform` no PostgreSQL.
+1. Crie o banco `ecommerce_platform` no MySQL.
 2. Configure credenciais no `.env`:
 
 ```env
-DB_CONNECTION=pgsql
+DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
-DB_PORT=5432
+DB_PORT=3306
 DB_DATABASE=ecommerce_platform
 DB_USERNAME=seu_usuario
 DB_PASSWORD=sua_senha
@@ -68,7 +68,7 @@ php artisan test           # Pest
 npm run build              # verificar build TypeScript/Vite
 ```
 
-Testes usam SQLite in-memory (configurado em `phpunit.xml`); nao e necessario PostgreSQL para rodar a suite.
+Testes usam SQLite in-memory (configurado em `phpunit.xml`); nao e necessario MySQL para rodar a suite.
 
 ## Primeiro administrador
 
@@ -84,6 +84,6 @@ O usuario deve estar cadastrado previamente. Por padrao, o e-mail precisa estar 
 
 | Problema | Solucao |
 |----------|---------|
-| Erro de conexao PostgreSQL | Verifique servico, host, porta e credenciais no `.env` |
+| Erro de conexao MySQL | Verifique servico, host, porta e credenciais no `.env` |
 | `npm run build` falha | Execute `npm install` e verifique Node 20+ |
 | Permissao em `storage/` ou `bootstrap/cache/` | `php artisan storage:link` e permissões de escrita |

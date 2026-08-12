@@ -86,3 +86,27 @@ Registro objetivo de decisoes relevantes. Novas entradas devem incluir data, con
 
 **Consequencias:** Primeiro admin: cadastrar-se pela loja, verificar e-mail, executar o comando.
 
+---
+
+## 2026-08-12 — Migracao de PostgreSQL para MySQL
+
+**Contexto:** Decisao explicita do projeto na Fase 3.
+
+**Decisao:** MySQL como banco principal em desenvolvimento e producao.
+
+**Motivo:** Alinhamento com ambiente local do time (Herd/MySQL).
+
+**Consequencias:** `.env.example` e documentacao atualizados; testes continuam com SQLite in-memory.
+
+---
+
+## 2026-08-12 — Catalogo base: categorias e marcas
+
+**Contexto:** Fase 3 — CRUD administrativo.
+
+**Decisao:** Tabelas `categories` (com hierarquia) e `brands`; soft deletes; slug unico gerado no backend.
+
+**Motivo:** Base do catalogo antes de produtos na Fase 4.
+
+**Consequencias:** Rotas `/admin/categories` e `/admin/brands`; exclusao de categoria bloqueada se houver filhos.
+

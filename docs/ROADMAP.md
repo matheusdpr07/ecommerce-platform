@@ -4,7 +4,7 @@
 
 1. **Fundacao, documentacao e ambiente** — concluida
 2. **Autenticacao, usuarios e autorizacao administrativa** — concluida
-3. Categorias e marcas
+3. **Categorias e marcas** — concluida
 4. Produtos, variacoes, imagens e estoque
 5. Loja publica, busca, filtros e pagina do produto
 6. Carrinho e lista de desejos
@@ -19,46 +19,21 @@
 
 ---
 
-## Fase 1 — Fundacao, documentacao e ambiente
+## Fase 3 — Categorias e marcas
 
 **Status:** concluida
 
 ### Concluido
 
-- Laravel 12 instalado na raiz do repositorio
-- Laravel Breeze com Inertia, Vue 3 e TypeScript
-- Tailwind CSS 4 via `@tailwindcss/vite`
-- Laravel Sanctum instalado
-- Pest configurado para testes
-- Laravel Pint disponivel
-- PostgreSQL configurado em `.env.example`
-- Locale padrao `pt_BR` em `.env.example`
-- Documentacao inicial (`docs/`, `.cursor/rules/`)
-- Testes basicos de boot e pagina inicial
-
-### Proxima fase recomendada
-
-**Fase 2:** Autenticacao, usuarios e autorizacao administrativa
-
----
-
-## Fase 2 — Autenticacao, usuarios e autorizacao administrativa
-
-**Status:** concluida
-
-### Concluido
-
-- Enum `UserRole` (`customer`, `admin`)
-- Coluna `role` em `users` com indice
-- Cadastro sempre cria clientes; `role` fora do mass assignment
-- Verificacao de e-mail obrigatoria (`MustVerifyEmail`)
-- Middleware `admin` e rotas `/admin`
-- Policy `UserPolicy` com controle de acesso administrativo
-- Comando `admin:promote` para promover administradores com seguranca
-- Rate limiting em login e cadastro
-- Interface de auth e area logada em portugues do Brasil
-- Pagina inicial do painel administrativo (`/admin`)
-- Link de administracao visivel apenas para admins
+- Migracao do banco principal para **MySQL** (`.env.example`)
+- Tabelas `categories` e `brands` com slug, status, SEO basico e soft deletes
+- Hierarquia de categorias via `parent_id`
+- CRUD administrativo em `/admin/categories` e `/admin/brands`
+- Paginacao, busca e filtro por status nas listagens
+- Policies `CategoryPolicy` e `BrandPolicy` (somente admin)
+- Form Requests com validacao e mensagens em portugues
+- Layout administrativo com navegacao dedicada
+- Protecao contra exclusao de categoria com subcategorias
 
 ### Pendente nesta fase
 
@@ -66,16 +41,15 @@
 
 ### Decisoes
 
-- Roles via enum string no banco; promocao admin somente via CLI
-- Middleware + Policy em camadas (defesa em profundidade)
-- Area do cliente em `/dashboard`; admin em `/admin`
+- MySQL substitui PostgreSQL por decisao do projeto (documentado em `DECISIONS.md`)
+- Slug gerado automaticamente quando omitido no formulario
+- Soft deletes em categorias e marcas
 
 ### Testes relacionados
 
-- `tests/Feature/Auth/UserRoleTest.php`
-- `tests/Feature/Admin/AdminAccessTest.php`
-- `tests/Feature/Auth/RegistrationTest.php` (assertiva de role)
+- `tests/Feature/Admin/CategoryManagementTest.php`
+- `tests/Feature/Admin/BrandManagementTest.php`
 
 ### Proxima fase recomendada
 
-**Fase 3:** Categorias e marcas
+**Fase 4:** Produtos, variacoes, imagens e estoque

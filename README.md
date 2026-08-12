@@ -6,7 +6,7 @@ Plataforma completa de e-commerce com catalogo, carrinho, pagamentos e painel ad
 
 - PHP 8.4
 - Laravel 12
-- PostgreSQL
+- MySQL
 - Vue 3 + TypeScript + Inertia.js
 - Tailwind CSS 4
 - Pest + Laravel Pint
@@ -17,7 +17,9 @@ Consulte [docs/SETUP.md](docs/SETUP.md) para configuracao detalhada do ambiente 
 
 ```bash
 composer install
-cp .env.example .env
+cp .env.eRemove unused import - check AppServiceProvider for BrandPolicy CategoryPolicy unused - they are used in Gate::policy
+
+Create commits now.ample .env
 php artisan key:generate
 php artisan migrate
 npm install

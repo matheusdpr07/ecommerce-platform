@@ -7,7 +7,7 @@ alwaysApply: true
 
 ## Stack obrigatoria
 
-PHP 8.4, Laravel 12, PostgreSQL, Laravel Sanctum, Vue 3, TypeScript, Inertia.js, Tailwind CSS 4, Vite, Pest, Laravel Pint.
+PHP 8.4, Laravel 12, MySQL, Laravel Sanctum, Vue 3, TypeScript, Inertia.js, Tailwind CSS 4, Vite, Pest, Laravel Pint.
 
 Nao altere versoes ou troque a stack sem autorizacao explicita.
 
