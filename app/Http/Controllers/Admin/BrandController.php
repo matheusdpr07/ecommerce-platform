@@ -86,6 +86,10 @@ class BrandController extends Controller
     {
         $this->authorize('delete', $brand);
 
+        if ($brand->products()->exists()) {
+            return back()->with('error', 'Nao e possivel excluir uma marca com produtos vinculados.');
+        }
+
         $brand->delete();
 
         return redirect()

@@ -97,6 +97,10 @@ class CategoryController extends Controller
             return back()->with('error', 'Nao e possivel excluir uma categoria com subcategorias.');
         }
 
+        if ($category->products()->exists()) {
+            return back()->with('error', 'Nao e possivel excluir uma categoria com produtos vinculados.');
+        }
+
         $category->delete();
 
         return redirect()
