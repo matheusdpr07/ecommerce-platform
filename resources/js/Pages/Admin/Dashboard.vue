@@ -169,7 +169,10 @@ const formatDate = (value?: string | null, withTime = false) =>
             </section>
 
             <aside class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                <h3 class="font-semibold text-gray-900">Atividade administrativa</h3>
+                <div class="flex items-center justify-between gap-3">
+                    <h3 class="font-semibold text-gray-900">Atividade administrativa</h3>
+                    <Link :href="route('admin.activity.index')" class="text-xs font-medium text-indigo-600">Ver histórico</Link>
+                </div>
                 <ul v-if="recent_activity.length" class="mt-4 divide-y divide-gray-200">
                     <li v-for="activity in recent_activity" :key="activity.id" class="py-3 first:pt-0">
                         <p class="text-sm text-gray-800">{{ activity.description }}</p>
