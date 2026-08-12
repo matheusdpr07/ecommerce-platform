@@ -9,7 +9,7 @@
 5. **Loja publica, busca, filtros e pagina do produto** — concluida
 6. **Carrinho e lista de desejos** — concluida
 7. **Cupons e promocoes** — concluida
-8. Enderecos, frete e checkout
+8. **Enderecos, frete e checkout** — concluida
 9. Pedidos e controle transacional de estoque
 10. Mercado Pago, Pix, webhooks e reembolsos
 11. Painel administrativo completo
@@ -199,4 +199,41 @@
 
 ### Proxima fase recomendada
 
-**Fase 8:** Enderecos, frete e checkout
+**Fase 9:** Pedidos e controle transacional de estoque
+
+---
+
+## Fase 8 — Enderecos, frete e checkout
+
+**Status:** concluida
+
+### Concluido
+
+- Tabelas `addresses`, `shipping_methods` e campos de checkout em `carts`
+- CRUD de enderecos do cliente em `/addresses` (auth + e-mail verificado)
+- CRUD administrativo de frete em `/admin/shipping-methods`
+- Checkout em `/checkout` com selecao de endereco e metodo de envio
+- Calculo de frete no backend (`ShippingService`), incluindo frete gratis por subtotal
+- Total do checkout = subtotal promocional − desconto do cupom + frete
+- Limpeza dos campos de checkout ao esvaziar o carrinho
+- Validacao de UF brasileira via `BrazilianStates`
+
+### Pendente nesta fase
+
+- Nenhum (criacao de pedido e reserva de estoque na Fase 9)
+
+### Decisoes
+
+- Checkout exige login e e-mail verificado; carrinho de convidado redireciona para auth
+- Frete configurado internamente; integracao com transportadoras fica para fase dedicada
+- Pedido ainda nao e criado nesta fase — apenas preparacao do carrinho para a Fase 9
+
+### Testes relacionados
+
+- `tests/Feature/Store/AddressManagementTest.php`
+- `tests/Feature/Admin/ShippingMethodManagementTest.php`
+- `tests/Feature/Store/CheckoutTest.php`
+
+### Proxima fase recomendada
+
+**Fase 9:** Pedidos e controle transacional de estoque

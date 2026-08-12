@@ -47,8 +47,8 @@ Monolito modular Laravel com frontend Inertia (Vue 3 + TypeScript). Uma unica ap
 
 ## Integracoes futuras
 
-- **Pagamentos:** abstracao simples; Mercado Pago como primeira integracao
-- **Frete:** abstracao simples; provedores externos em fases dedicadas
+- **Pagamentos:** abstracao simples; Mercado Pago como primeira integracao (Fase 10)
+- **Frete externo:** provedores de transportadora em fase dedicada; Fase 8 usa metodos internos (`ShippingService`)
 
 ## Estrutura de rotas (planejada)
 
@@ -58,6 +58,8 @@ Monolito modular Laravel com frontend Inertia (Vue 3 + TypeScript). Uma unica ap
 /categories/*  Listagem por categoria
 /cart          Carrinho
 /wishlist      Lista de desejos (auth)
+/addresses     Enderecos do cliente (auth)
+/checkout      Checkout (auth)
 /dashboard     Area autenticada (cliente)
-/admin/*       Painel administrativo (cupons, promocoes, catalogo)
+/admin/*       Painel administrativo (cupons, promocoes, frete, catalogo)
 ```

@@ -109,6 +109,10 @@ MySQL em desenvolvimento e producao. SQLite in-memory apenas nos testes automati
 | id | bigint | PK |
 | user_id | bigint nullable | FK `users`, unique, cascade on delete |
 | session_id | uuid nullable | unique, carrinho de convidado |
+| coupon_id | bigint nullable | FK `coupons`, null on delete |
+| shipping_address_id | bigint nullable | FK `addresses`, null on delete |
+| shipping_method_id | bigint nullable | FK `shipping_methods`, null on delete |
+| shipping_cents | unsigned int nullable | frete calculado no checkout |
 | created_at, updated_at | timestamp | |
 
 #### `cart_items`
@@ -164,10 +168,44 @@ MySQL em desenvolvimento e producao. SQLite in-memory apenas nos testes automati
 | expires_at | timestamp nullable | |
 | is_active | boolean | index, default true |
 
+#### `addresses`
+
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | bigint | PK |
+| user_id | bigint | FK `users`, cascade on delete |
+| label | string | ex.: "Casa", "Trabalho" |
+| recipient_name | string | destinatario |
+| recipient_phone | string nullable | |
+| postal_code | string(8) | CEP sem mascara |
+| street | string | logradouro |
+| number | string | |
+| complement | string nullable | |
+| neighborhood | string | bairro |
+| city | string | |
+| state | string(2) | UF (enum validado no backend) |
+| is_default | boolean | index, default false |
+
+#### `shipping_methods`
+
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | bigint | PK |
+| name | string | |
+| description | string nullable | |
+| price_cents | unsigned int | valor base do frete |
+| free_above_cents | unsigned int nullable | frete gratis acima deste subtotal |
+| min_order_cents | unsigned int nullable | pedido minimo para elegibilidade |
+| max_order_cents | unsigned int nullable | pedido maximo para elegibilidade |
+| estimated_days_min | unsigned tinyint nullable | prazo minimo em dias |
+| estimated_days_max | unsigned tinyint nullable | prazo maximo em dias |
+| sort_order | unsigned int | default 0, index |
+| is_active | boolean | index, default true |
+
 ### Planejadas (fases futuras)
 
 - `orders`, `order_items`
-- `addresses`, `payments`, `webhook_events`
+- `payments`, `webhook_events`
 - `banners`, `reviews`, `admin_audit_logs`
 
 ## Diagrama simplificado
@@ -187,9 +225,13 @@ categories ── promotions (escopo category)
 brands ────── promotions (escopo brand)
 
 users ──┬── carts ── cart_items
-        │            └── coupons (nullable FK em carts)
+        │            ├── coupons (nullable FK em carts)
+        │            ├── addresses (shipping_address_id)
+        │            └── shipping_methods (shipping_method_id)
+        ├── addresses
         ├── wishlist_items
         ├── orders (fase 9)
-        ├── addresses (fase 8)
         └── stock_movements (admin, fase 4)
+
+shipping_methods ── carts (frete selecionado)
 ```

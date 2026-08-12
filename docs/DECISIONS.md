@@ -158,3 +158,15 @@ Registro objetivo de decisoes relevantes. Novas entradas devem incluir data, con
 
 **Consequencias:** CRUD em `/admin/coupons` e `/admin/promotions`; incremento de `usage_count` do cupom fica para a fase de pedidos.
 
+---
+
+## 2026-08-12 — Enderecos, frete e checkout
+
+**Contexto:** Fase 8 — preparacao para pedidos sem criar ordem ainda.
+
+**Decisao:** Enderecos CRUD por usuario; metodos de frete administrados em `/admin/shipping-methods`; checkout em `/checkout` persiste endereco e frete no carrinho; total = subtotal promocional − cupom + frete.
+
+**Motivo:** Separar dados de entrega e custo logico antes da transacao de pedido; frete gratis via `free_above_cents` no metodo.
+
+**Consequencias:** Confirmacao do pedido e baixa de estoque ficam para a Fase 9; pagamento para a Fase 10; checkout exige autenticacao, e-mail verificado e carrinho com itens disponiveis.
+
