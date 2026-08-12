@@ -75,6 +75,7 @@ MySQL em desenvolvimento e producao. SQLite in-memory apenas nos testes automati
 | price_cents | unsigned int | preco de venda |
 | compare_at_price_cents | unsigned int nullable | preco comparativo |
 | stock_quantity | unsigned int | default 0 |
+| low_stock_threshold | unsigned int | limite de alerta, default 5 |
 | is_active | boolean | index, default true |
 | sort_order | unsigned int | default 0, index |
 
@@ -210,6 +211,10 @@ MySQL em desenvolvimento e producao. SQLite in-memory apenas nos testes automati
 | user_id | bigint | FK `users`, cascade on delete |
 | number | string unique | ex.: `PED-00000001` |
 | status | string | enum `OrderStatus`, index |
+| fulfillment_status | string | enum `FulfillmentStatus`, index |
+| tracking_code | string nullable | codigo de rastreio |
+| tracking_url | text nullable | link HTTP/HTTPS de rastreio |
+| internal_notes | text nullable | uso exclusivo do admin |
 | subtotal_cents | unsigned int | subtotal promocional |
 | discount_cents | unsigned int | desconto do cupom |
 | shipping_cents | unsigned int | frete |
@@ -229,8 +234,14 @@ MySQL em desenvolvimento e producao. SQLite in-memory apenas nos testes automati
 | city | string | |
 | state | string(2) | |
 | placed_at | timestamp | index |
+| preparing_at | timestamp nullable | inicio da separacao |
+| shipped_at | timestamp nullable | confirmacao do envio |
+| delivered_at | timestamp nullable | confirmacao da entrega |
+| fulfillment_cancelled_at | timestamp nullable | encerramento antes do envio |
 
 Estados: `pending_payment`, `paid`, `payment_failed`, `cancelled`, `partially_refunded`, `refunded`, `charged_back`.
+
+Estados logisticos: `pending`, `preparing`, `shipped`, `delivered`, `cancelled`.
 
 #### `order_items`
 
@@ -262,6 +273,7 @@ Estados: `pending_payment`, `paid`, `payment_failed`, `cancelled`, `partially_re
 | status | string | enum `PaymentStatus`, index |
 | status_detail | string nullable | detalhe retornado pelo provedor |
 | amount_cents | unsigned int | valor financeiro local |
+| refunded_amount_cents | unsigned int | total reembolsado, default 0 |
 | idempotency_key | uuid unique | criacao segura do Pix |
 | refund_idempotency_key | uuid nullable unique | retry seguro do reembolso |
 | pix_qr_code | long text nullable | codigo Copia e Cola |
@@ -269,7 +281,7 @@ Estados: `pending_payment`, `paid`, `payment_failed`, `cancelled`, `partially_re
 | pix_ticket_url | text nullable | pagina hospedada pelo provedor |
 | expires_at | timestamp nullable | validade do Pix |
 | paid_at | timestamp nullable | confirmacao do pagamento |
-| refunded_at | timestamp nullable | confirmacao do reembolso integral |
+| refunded_at | timestamp nullable | primeira confirmacao de reembolso |
 | inventory_released_at | timestamp nullable | guarda idempotente da reversao local |
 | provider_payload | json nullable | ultimo snapshot reconciliado |
 
@@ -291,9 +303,24 @@ Estados: `pending`, `processing`, `approved`, `failed`, `cancelled`, `expired`, 
 | error | text nullable | erro sanitizado de processamento |
 | processed_at | timestamp nullable | conclusao do evento |
 
+#### `admin_audit_logs`
+
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | bigint | PK |
+| user_id | bigint nullable | FK `users`, null on delete |
+| action | string | identificador da acao, index |
+| auditable_type | string nullable | tipo polimorfico do registro afetado |
+| auditable_id | bigint nullable | id polimorfico do registro afetado |
+| description | string | resumo seguro para exibicao |
+| metadata | json nullable | contexto tecnico nao exibido na listagem |
+| ip_address | string(45) nullable | origem da requisicao |
+| user_agent | text nullable | agente da requisicao |
+| created_at, updated_at | timestamp | `created_at` indexado |
+
 ### Planejadas (fases futuras)
 
-- `banners`, `reviews`, `admin_audit_logs`
+- `banners`, `reviews`
 
 ## Diagrama simplificado
 
@@ -319,7 +346,8 @@ users ──┬── carts ── cart_items
         ├── orders ──┬── order_items
         │            └── payments
         ├── wishlist_items
-        └── stock_movements (admin e vendas)
+        ├── stock_movements (admin e vendas)
+        └── admin_audit_logs (acoes administrativas)
 
 shipping_methods ──┬── carts (frete selecionado)
                    └── orders (snapshot)
@@ -327,4 +355,6 @@ shipping_methods ──┬── carts (frete selecionado)
 coupons ── orders (nullable)
 
 payments ── webhook_events (vinculo logico por provider/resource_id)
+
+orders e product_variants ── admin_audit_logs (vinculo polimorfico)
 ```

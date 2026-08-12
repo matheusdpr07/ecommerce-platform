@@ -12,7 +12,7 @@
 8. **Enderecos, frete e checkout** — concluida
 9. **Pedidos e controle transacional de estoque** — concluida
 10. **Mercado Pago, Pix, webhooks e reembolsos** — concluida
-11. Painel administrativo completo
+11. **Painel administrativo completo** — concluida
 12. Avaliacoes, conteudo e notificacoes
 13. SEO, acessibilidade e desempenho
 14. Seguranca, testes, CI e preparacao para producao
@@ -313,3 +313,55 @@
 ### Proxima fase recomendada
 
 **Fase 11:** Painel administrativo completo
+
+---
+
+## Fase 11 — Painel administrativo completo
+
+**Status:** concluida
+
+### Concluido
+
+- Dashboard administrativo com periodos de 7, 30 e 90 dias
+- Receita liquida de reembolsos, pedidos pagos, ticket medio, pagamentos pendentes, reembolsos e novos clientes
+- Tendencia diaria, pedidos recentes, alertas operacionais e atividade administrativa
+- Inventario dedicado em `/admin/inventory`, com busca e filtros de saldo, estoque baixo, falta e inatividade
+- Reposicao e correcao atomica de saldo com `lockForUpdate`, movimentacao e auditoria
+- Limite de estoque baixo configuravel por variacao
+- Status logistico separado do financeiro, com fluxo `pending` → `preparing` → `shipped` → `delivered`
+- Codigo e link de rastreio, datas de cada etapa e observacoes internas do pedido
+- Acompanhamento da entrega na area do cliente sem exposicao de observacoes internas
+- Filtros administrativos de pedidos por financeiro, logistica e periodo
+- Consulta somente leitura de clientes, enderecos, pedidos, gasto liquido e ticket medio
+- Auditoria de ajustes de estoque, rastreio, etapas logisticas, observacoes e reembolsos
+- Historico filtravel em `/admin/activity`, sem exposicao dos metadados tecnicos
+- Navegacao administrativa reorganizada em menu lateral responsivo
+
+### Pendente nesta fase
+
+- Nenhum
+
+### Decisoes
+
+- `OrderStatus` permanece financeiro; `FulfillmentStatus` representa exclusivamente a operacao de entrega
+- A logistica so avanca depois do pagamento e sempre na ordem definida
+- Encerramentos financeiros cancelam a logistica somente antes do envio
+- Clientes sao apenas consultados no admin; papel, senha e exclusao nao sao alterados por essas telas
+- Receita e gasto de cliente usam `amount_cents - refunded_amount_cents`
+- Graficos do dashboard usam Vue e CSS, sem dependencia externa
+
+### Testes relacionados
+
+- `tests/Feature/Admin/AdminOperationalFoundationTest.php`
+- `tests/Feature/Admin/InventoryManagementTest.php`
+- `tests/Feature/Admin/OrderFulfillmentManagementTest.php`
+- `tests/Feature/Admin/CustomerManagementTest.php`
+- `tests/Feature/Admin/DashboardTest.php`
+- `tests/Feature/Admin/AdminActivityTest.php`
+- `tests/Feature/Admin/OrderManagementTest.php`
+- `tests/Feature/Store/PaymentTest.php`
+- `tests/Feature/Webhooks/MercadoPagoWebhookTest.php`
+
+### Proxima fase recomendada
+
+**Fase 12:** Avaliacoes, conteudo e notificacoes

@@ -30,6 +30,9 @@ Monolito modular Laravel com frontend Inertia (Vue 3 + TypeScript). Uma unica ap
 - Operacoes financeiras, checkout e estoque usam **transacoes**
 - Criacao e reembolso de pagamentos usam chaves de idempotencia persistidas
 - Webhooks financeiros sao autenticados e reconciliados com consulta ao provedor
+- Status financeiro (`OrderStatus`) e status logistico (`FulfillmentStatus`) evoluem separadamente
+- Ajustes administrativos de estoque usam `lockForUpdate`, movimentacao e auditoria na mesma transacao
+- Acoes operacionais sensiveis geram registros em `admin_audit_logs`
 - Paginacao em listagens que possam crescer
 - Eager loading para evitar N+1
 
@@ -52,6 +55,7 @@ Monolito modular Laravel com frontend Inertia (Vue 3 + TypeScript). Uma unica ap
 
 - **Pagamentos:** `PaymentGateway` isola o dominio do `MercadoPagoGateway`; `PaymentService` concentra idempotencia, sincronizacao de estados e reversao de estoque/cupom
 - **Mercado Pago:** Checkout API Orders para Pix, consulta da order no processamento de webhooks e reembolso integral administrativo
+- **Operacao administrativa:** `InventoryService`, `FulfillmentService`, `DashboardService` e `AdminAuditService` concentram regras que nao pertencem aos controllers
 - **Frete externo:** provedores de transportadora em fase dedicada; Fase 8 usa metodos internos (`ShippingService`)
 
 ## Fluxo de pagamento
@@ -61,6 +65,14 @@ Monolito modular Laravel com frontend Inertia (Vue 3 + TypeScript). Uma unica ap
 3. O Mercado Pago retorna os dados do Pix, armazenados para exibicao na area do cliente.
 4. O webhook validado consulta `/v1/orders/{id}` e sincroniza pagamento e pedido em transacao.
 5. Falha terminal, expiracao, cancelamento ou reembolso restauram estoque e cupom uma unica vez.
+
+## Fluxo operacional do pedido
+
+1. O pedido aguarda confirmacao financeira sem iniciar a separacao.
+2. Depois do pagamento, a operacao avanca sequencialmente por `pending`, `preparing`, `shipped` e `delivered`.
+3. Codigo e link de rastreio ficam associados ao pedido e sao exibidos ao cliente.
+4. Observacoes internas nunca integram o payload da area do cliente.
+5. Encerramentos financeiros cancelam a operacao apenas enquanto o pedido ainda nao foi enviado.
 
 ## Estrutura de rotas
 
@@ -76,5 +88,9 @@ Monolito modular Laravel com frontend Inertia (Vue 3 + TypeScript). Uma unica ap
 /orders/{id}/payment/pix  Criacao ou retry de Pix (auth)
 /webhooks/mercado-pago    Notificacoes financeiras assinadas
 /dashboard     Area autenticada (cliente)
-/admin/*       Painel administrativo (pedidos, cupons, promocoes, frete, catalogo)
+/admin/*       Painel administrativo
+/admin/inventory       Inventario, alertas e movimentacoes
+/admin/orders          Pagamento, separacao, rastreio e entrega
+/admin/customers       Consulta de clientes, enderecos e compras
+/admin/activity        Historico de auditoria operacional
 ```

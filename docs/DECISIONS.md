@@ -193,3 +193,15 @@ Registro objetivo de decisoes relevantes. Novas entradas devem incluir data, con
 **Motivo:** Desacoplar o dominio do SDK/provedor, tornar retries seguros e impedir que payloads de notificacao nao verificados sejam a fonte direta de estados financeiros.
 
 **Consequencias:** `PaymentService` centraliza sincronizacao e reversao idempotente de estoque/cupom; `webhook_events` mantem deduplicacao e auditoria; falhas externas preservam a chave para nova tentativa; reembolso parcial permanece fora do escopo.
+
+---
+
+## 2026-08-12 — Operacao administrativa separada do financeiro
+
+**Contexto:** Fase 11 — painel administrativo completo para a rotina da loja.
+
+**Decisao:** Manter `OrderStatus` exclusivamente financeiro e criar `FulfillmentStatus` para separacao, envio e entrega; centralizar ajustes de inventario em `InventoryService`, transicoes logisticas em `FulfillmentService` e indicadores em `DashboardService`; registrar acoes operacionais sensiveis em `admin_audit_logs`.
+
+**Motivo:** Evitar que atualizacoes de pagamento e webhooks sobrescrevam o andamento da entrega, preservar consistencia de estoque concorrente e fornecer rastreabilidade administrativa sem expor dados internos ao cliente.
+
+**Consequencias:** A logistica so avanca apos pagamento e em sequencia; pedidos ainda nao enviados sao cancelados quando o financeiro e encerrado; estoque passa a ter limite minimo por SKU; dashboard e gastos de clientes usam receita liquida de reembolsos; clientes permanecem somente leitura no admin e promocao de administradores continua exclusiva da CLI.
