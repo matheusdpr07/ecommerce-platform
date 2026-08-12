@@ -8,4 +8,5 @@ enum StockMovementReason: string
     case ManualAdjustment = 'manual_adjustment';
     case Restock = 'restock';
     case Sale = 'sale';
+    case OrderReversal = 'order_reversal';
 }

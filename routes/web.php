@@ -5,6 +5,7 @@ use App\Http\Controllers\Store\AddressController;
 use App\Http\Controllers\Store\CartController;
 use App\Http\Controllers\Store\CheckoutController;
 use App\Http\Controllers\Store\OrderController;
+use App\Http\Controllers\Store\PaymentController;
 use App\Http\Controllers\Store\ProductController as StoreProductController;
 use App\Http\Controllers\Store\WishlistController;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/orders', [OrderController::class, 'index'])->name('store.orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('store.orders.show');
+    Route::post('/orders/{order}/payment/pix', [PaymentController::class, 'store'])->name('store.orders.payment.pix');
 
     Route::resource('addresses', AddressController::class)
         ->except(['show'])
