@@ -6,6 +6,7 @@ import { computed } from 'vue';
 
 const props = defineProps<{
     product: StoreProductSummary;
+    index?: number;
 }>();
 
 const priceLabel = computed(() => {
@@ -18,77 +19,105 @@ const priceLabel = computed(() => {
 </script>
 
 <template>
-    <article
-        class="flex h-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition hover:shadow-md"
-    >
+    <article class="store-reveal group flex h-full flex-col">
         <Link
             :href="route('store.products.show', product.slug)"
-            class="block aspect-square overflow-hidden bg-gray-100"
+            view-transition
+            class="relative block aspect-[4/5] overflow-hidden rounded-[1.75rem] bg-[#e8e2d7]"
         >
             <img
                 v-if="product.primary_image"
                 :src="product.primary_image.url"
                 :alt="product.primary_image.alt_text ?? product.name"
-                class="h-full w-full object-cover transition hover:scale-105"
+                :loading="index === 0 ? 'eager' : 'lazy'"
+                decoding="async"
+                class="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.035]"
             />
             <div
                 v-else
-                class="flex h-full items-center justify-center text-sm text-gray-400"
+                class="relative flex h-full items-center justify-center overflow-hidden"
             >
-                Sem imagem
+                <div
+                    class="absolute -left-12 top-12 size-44 rounded-full bg-[var(--store-accent)]/70 blur-sm"
+                />
+                <div
+                    class="absolute -bottom-16 -right-8 size-52 rounded-full bg-[var(--store-coral)]/55 blur-md"
+                />
+                <span
+                    class="relative font-serif text-2xl italic text-[var(--store-ink)]/65"
+                >
+                    Imagem em breve
+                </span>
             </div>
+
+            <div
+                class="absolute inset-x-4 top-4 flex items-start justify-between gap-3"
+            >
+                <span
+                    v-if="product.has_promotion"
+                    class="rounded-full bg-[var(--store-coral)] px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-white"
+                >
+                    Oferta
+                </span>
+                <span
+                    v-else-if="product.category"
+                    class="rounded-full bg-[var(--store-paper)]/90 px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.14em] backdrop-blur"
+                >
+                    {{ product.category.name }}
+                </span>
+
+                <span
+                    v-if="!product.has_stock"
+                    class="ml-auto rounded-full bg-[var(--store-ink)] px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-white"
+                >
+                    Esgotado
+                </span>
+            </div>
+
+            <span
+                class="absolute bottom-4 left-4 right-4 flex translate-y-4 items-center justify-between rounded-full bg-[var(--store-ink)] px-5 py-3 text-sm font-semibold text-white opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100"
+            >
+                Conhecer produto
+                <span aria-hidden="true">↗</span>
+            </span>
         </Link>
 
-        <div class="flex flex-1 flex-col p-4">
-            <p
-                v-if="product.category"
-                class="text-xs font-medium uppercase tracking-wide text-gray-500"
-            >
-                {{ product.category.name }}
-            </p>
-
-            <Link
-                :href="route('store.products.show', product.slug)"
-                class="mt-1 text-base font-semibold text-gray-900 hover:text-indigo-600"
-            >
-                {{ product.name }}
-            </Link>
-
-            <p v-if="product.brand" class="mt-1 text-sm text-gray-500">
-                {{ product.brand.name }}
-            </p>
-
-            <div class="mt-auto flex items-center justify-between pt-4">
+        <div class="flex flex-1 flex-col px-1 pt-5">
+            <div class="flex items-start justify-between gap-4">
                 <div>
-                    <span
-                        v-if="product.has_promotion && product.min_original_price_cents"
-                        class="mr-2 text-sm text-gray-400 line-through"
+                    <p
+                        v-if="product.brand"
+                        class="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[var(--store-muted)]"
                     >
-                        {{
-                            formatMoneyFromCents(
-                                product.min_original_price_cents,
-                            )
-                        }}
-                    </span>
-                    <span class="text-lg font-bold text-gray-900">
-                        {{ priceLabel }}
-                    </span>
-                    <span
-                        v-if="product.has_promotion"
-                        class="ml-2 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700"
+                        {{ product.brand.name }}
+                    </p>
+                    <Link
+                        :href="route('store.products.show', product.slug)"
+                        view-transition
+                        class="mt-1 block font-serif text-[1.45rem] leading-tight tracking-[-0.025em] transition group-hover:opacity-60"
                     >
-                        Promocao
-                    </span>
+                        {{ product.name }}
+                    </Link>
                 </div>
+
                 <span
-                    class="rounded-full px-2 py-1 text-xs font-medium"
+                    class="mt-1 size-2 shrink-0 rounded-full"
                     :class="
                         product.has_stock
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-gray-100 text-gray-600'
+                            ? 'bg-emerald-600'
+                            : 'bg-[var(--store-muted)]'
                     "
+                    :title="product.has_stock ? 'Em estoque' : 'Esgotado'"
+                />
+            </div>
+
+            <div class="mt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                <span class="text-sm font-bold">{{ priceLabel }}</span>
+                <span
+                    v-if="product.has_promotion && product.min_original_price_cents"
+                    class="text-xs text-[var(--store-muted)] line-through"
                 >
-                    {{ product.has_stock ? 'Em estoque' : 'Esgotado' }}
+                    {{ formatMoneyFromCents(product.min_original_price_cents) }}
                 </span>
             </div>
         </div>

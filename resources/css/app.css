@@ -10,4 +10,124 @@
 @theme {
     --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-serif: Georgia, Cambria, 'Times New Roman', Times, serif;
+}
+
+:root {
+    --store-canvas: #f4f0e8;
+    --store-paper: #fffdf8;
+    --store-ink: #171811;
+    --store-muted: #66685c;
+    --store-line: #d9d4c8;
+    --store-accent: #dfff4f;
+    --store-coral: #ff6b4a;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-color: var(--store-ink) var(--store-canvas);
+    scrollbar-width: thin;
+}
+
+body {
+    margin: 0;
+    background: var(--store-canvas);
+    color: var(--store-ink);
+}
+
+::selection {
+    background: var(--store-accent);
+    color: var(--store-ink);
+}
+
+:focus-visible {
+    outline: 2px solid var(--store-coral);
+    outline-offset: 4px;
+}
+
+.store-scroll-progress {
+    position: fixed;
+    inset: 0 auto auto 0;
+    z-index: 80;
+    width: 100%;
+    height: 3px;
+    background: var(--store-coral);
+    transform: scaleX(0);
+    transform-origin: left;
+}
+
+.store-grain {
+    position: relative;
+    isolation: isolate;
+}
+
+.store-grain::before {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    pointer-events: none;
+    content: '';
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+}
+
+.store-marquee-track {
+    animation: store-marquee 28s linear infinite;
+}
+
+@keyframes store-marquee {
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes store-scroll-progress {
+    to {
+        transform: scaleX(1);
+    }
+}
+
+@keyframes store-reveal {
+    from {
+        opacity: 0.35;
+        transform: translateY(2rem) scale(0.985);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@supports (animation-timeline: scroll()) {
+    .store-scroll-progress {
+        animation: store-scroll-progress linear both;
+        animation-timeline: scroll(root block);
+    }
+
+    .store-reveal {
+        animation: store-reveal linear both;
+        animation-timeline: view(block);
+        animation-range: entry 5% cover 35%;
+    }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 320ms;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

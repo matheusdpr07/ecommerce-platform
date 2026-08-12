@@ -16,6 +16,12 @@ export type PageProps<
         success?: string | null;
         error?: string | null;
     };
+    store: {
+        name: string;
+        eyebrow: string;
+        tagline: string;
+        support_email?: string | null;
+    };
     cart: {
         item_count: number;
         subtotal_cents: number;

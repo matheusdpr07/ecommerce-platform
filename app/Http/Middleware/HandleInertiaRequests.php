@@ -48,6 +48,12 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
             ],
+            'store' => [
+                'name' => config('store.name'),
+                'eyebrow' => config('store.eyebrow'),
+                'tagline' => config('store.tagline'),
+                'support_email' => config('store.support_email'),
+            ],
             'cart' => fn () => app(CartService::class)->getSummary($request),
             'wishlist' => fn () => $request->user()
                 ? app(WishlistService::class)->getSummary($request->user())
