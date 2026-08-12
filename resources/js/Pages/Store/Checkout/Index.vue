@@ -6,6 +6,7 @@ import StoreLayout from '@/Layouts/StoreLayout.vue';
 import type { CheckoutPayload } from '@/types/catalog';
 import { formatMoneyFromCents } from '@/utils/money';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 const props = defineProps<CheckoutPayload>();
 
@@ -14,11 +15,25 @@ const form = useForm({
     shipping_method_id: props.selected_shipping_method_id,
 });
 
+const confirmForm = useForm({});
+
 const submit = () => {
     form.patch(route('store.checkout.update'), {
         preserveScroll: true,
     });
 };
+
+const confirmOrder = () => {
+    confirmForm.post(route('store.checkout.store'), {
+        preserveScroll: true,
+    });
+};
+
+const confirmError = computed(() => {
+    const errors = confirmForm.errors as Record<string, string | undefined>;
+
+    return errors.checkout || errors.cart || '';
+});
 
 const deliveryEstimate = (min?: number | null, max?: number | null) => {
     if (min && max) {
@@ -235,10 +250,20 @@ const deliveryEstimate = (min?: number | null, max?: number | null) => {
 
                 <div
                     v-if="is_ready"
-                    class="mt-4 rounded-md bg-green-50 p-4 text-sm text-green-800"
+                    class="mt-4 space-y-3"
                 >
-                    Endereco e frete selecionados. A confirmacao do pedido sera
-                    habilitada na proxima fase.
+                    <div class="rounded-md bg-green-50 p-4 text-sm text-green-800">
+                        Endereco e frete selecionados. Confirme o pedido para
+                        concluir a compra.
+                    </div>
+                    <PrimaryButton
+                        type="button"
+                        :disabled="confirmForm.processing"
+                        @click="confirmOrder"
+                    >
+                        Confirmar pedido
+                    </PrimaryButton>
+                    <InputError :message="confirmError" />
                 </div>
 
                 <Link

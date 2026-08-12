@@ -68,6 +68,24 @@ class CouponService
         ];
     }
 
+    public function assertCouponUsableForOrder(Coupon $coupon, int $subtotalCents): void
+    {
+        $this->assertCouponUsable($coupon, $subtotalCents);
+    }
+
+    public function recordUsage(Coupon $coupon): void
+    {
+        $coupon->refresh();
+
+        if (! $coupon->hasRemainingUses()) {
+            throw ValidationException::withMessages([
+                'code' => 'Este cupom atingiu o limite de uso.',
+            ]);
+        }
+
+        $coupon->increment('usage_count');
+    }
+
     private function assertCouponUsable(Coupon $coupon, int $subtotalCents): void
     {
         if (! $coupon->is_active) {

@@ -59,6 +59,13 @@ const wishlist = computed(() => page.props.wishlist);
                     </Link>
                     <Link
                         v-if="user"
+                        :href="route('store.orders.index')"
+                        class="text-gray-600 hover:text-gray-900"
+                    >
+                        Pedidos
+                    </Link>
+                    <Link
+                        v-if="user"
                         :href="route('store.addresses.index')"
                         class="text-gray-600 hover:text-gray-900"
                     >

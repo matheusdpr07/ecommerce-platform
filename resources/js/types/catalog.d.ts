@@ -318,3 +318,55 @@ export interface CheckoutPayload {
     grand_total_cents: number;
     is_ready: boolean;
 }
+
+export interface OrderSummary {
+    id: number;
+    number: string;
+    status: string;
+    status_label: string;
+    item_count: number;
+    total_cents: number;
+    placed_at?: string | null;
+}
+
+export interface OrderItemDetail {
+    id: number;
+    product_name: string;
+    product_slug: string;
+    variant_name: string;
+    variant_sku: string;
+    quantity: number;
+    unit_price_cents: number;
+    original_unit_price_cents?: number | null;
+    line_total_cents: number;
+}
+
+export interface OrderDetail {
+    id: number;
+    number: string;
+    status: string;
+    status_label: string;
+    subtotal_cents: number;
+    discount_cents: number;
+    shipping_cents: number;
+    total_cents: number;
+    coupon?: {
+        code: string;
+        name?: string | null;
+    } | null;
+    shipping_method_name: string;
+    shipping_address: {
+        recipient_name: string;
+        recipient_phone?: string | null;
+        postal_code: string;
+        street: string;
+        number: string;
+        complement?: string | null;
+        neighborhood: string;
+        city: string;
+        state: string;
+        summary: string;
+    };
+    placed_at?: string | null;
+    items: OrderItemDetail[];
+}

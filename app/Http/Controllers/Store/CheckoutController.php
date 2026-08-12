@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Store;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Store\UpdateCheckoutRequest;
 use App\Services\CheckoutService;
+use App\Services\OrderService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -15,6 +16,7 @@ class CheckoutController extends Controller
 {
     public function __construct(
         private readonly CheckoutService $checkoutService,
+        private readonly OrderService $orderService,
     ) {}
 
     public function index(Request $request): Response|RedirectResponse
@@ -45,5 +47,18 @@ class CheckoutController extends Controller
         }
 
         return back()->with('success', 'Checkout atualizado.');
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        try {
+            $order = $this->orderService->placeOrder($request);
+        } catch (ValidationException $exception) {
+            return back()->withErrors($exception->errors());
+        }
+
+        return redirect()
+            ->route('store.orders.show', $order)
+            ->with('success', 'Pedido realizado com sucesso.');
     }
 }

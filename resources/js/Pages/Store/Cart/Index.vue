@@ -283,7 +283,7 @@ const removeCoupon = () => {
                         </PrimaryButton>
                     </Link>
                     <p class="mt-4 text-xs text-gray-500">
-                        Frete calculado no checkout. Pagamento na fase 10.
+                        Frete calculado no checkout. Pagamento na Fase 10.
                     </p>
                 </div>
             </aside>
