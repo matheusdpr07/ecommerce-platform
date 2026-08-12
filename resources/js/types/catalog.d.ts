@@ -387,3 +387,20 @@ export interface OrderDetail {
     items: OrderItemDetail[];
     payment?: PaymentDetail | null;
 }
+
+export interface AdminOrderSummary extends OrderSummary {
+    customer: {
+        id: number;
+        name: string;
+        email: string;
+    };
+    payment?: Pick<PaymentDetail, 'status' | 'status_label' | 'method'> | null;
+}
+
+export interface AdminOrderDetail extends OrderDetail {
+    customer: {
+        id: number;
+        name: string;
+        email: string;
+    };
+}

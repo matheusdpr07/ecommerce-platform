@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\ProductVariant;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -151,6 +152,43 @@ class OrderService
             ->get()
             ->map(fn (Order $order) => $this->transformOrderSummary($order))
             ->all();
+    }
+
+    /**
+     * @return LengthAwarePaginator<int, array<string, mixed>>
+     */
+    public function paginateForAdmin(string $search, string $status): LengthAwarePaginator
+    {
+        $statusEnum = OrderStatus::tryFrom($status);
+
+        return Order::query()
+            ->with(['user:id,name,email', 'payment'])
+            ->withCount('items')
+            ->when($search !== '', function ($query) use ($search): void {
+                $query->where(function ($query) use ($search): void {
+                    $query->where('number', 'like', "%{$search}%")
+                        ->orWhereHas('user', fn ($query) => $query
+                            ->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%"));
+                });
+            })
+            ->when($statusEnum !== null, fn ($query) => $query->where('status', $statusEnum))
+            ->latest('placed_at')
+            ->paginate(15)
+            ->withQueryString()
+            ->through(fn (Order $order) => [
+                ...$this->transformOrderSummary($order),
+                'customer' => [
+                    'id' => $order->user->id,
+                    'name' => $order->user->name,
+                    'email' => $order->user->email,
+                ],
+                'payment' => $order->payment ? [
+                    'status' => $order->payment->status->value,
+                    'status_label' => $order->payment->status->label(),
+                    'method' => $order->payment->method,
+                ] : null,
+            ]);
     }
 
     /**

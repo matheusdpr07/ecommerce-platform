@@ -67,7 +67,7 @@ class MercadoPagoGateway implements PaymentGateway
     {
         return $this->send(
             fn () => $this->request($idempotencyKey)
-                ->post('/v1/orders/'.rawurlencode($providerOrderId).'/refund', []),
+                ->send('POST', '/v1/orders/'.rawurlencode($providerOrderId).'/refund'),
         );
     }
 

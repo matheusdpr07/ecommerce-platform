@@ -65,6 +65,12 @@ const user = computed(() => page.props.auth.user!);
                                 Promocoes
                             </NavLink>
                             <NavLink
+                                :href="route('admin.orders.index')"
+                                :active="route().current('admin.orders.*')"
+                            >
+                                Pedidos
+                            </NavLink>
+                            <NavLink
                                 :href="route('admin.shipping-methods.index')"
                                 :active="route().current('admin.shipping-methods.*')"
                             >
@@ -191,6 +197,12 @@ const user = computed(() => page.props.auth.user!);
                         :active="route().current('admin.promotions.*')"
                     >
                         Promocoes
+                    </ResponsiveNavLink>
+                    <ResponsiveNavLink
+                        :href="route('admin.orders.index')"
+                        :active="route().current('admin.orders.*')"
+                    >
+                        Pedidos
                     </ResponsiveNavLink>
                     <ResponsiveNavLink
                         :href="route('admin.shipping-methods.index')"

@@ -110,26 +110,35 @@ class PaymentService
 
     public function refund(Payment $payment): Payment
     {
-        if ($payment->provider_order_id === null || ! in_array($payment->status, [
-            PaymentStatus::Approved,
-            PaymentStatus::PartiallyRefunded,
-        ], true)) {
-            throw ValidationException::withMessages([
-                'payment' => 'Somente pagamentos aprovados podem ser reembolsados.',
-            ]);
-        }
+        $payment = DB::transaction(function () use ($payment): Payment {
+            $lockedPayment = Payment::query()
+                ->whereKey($payment->id)
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        if ($payment->refund_idempotency_key === null) {
-            $payment->update([
-                'refund_idempotency_key' => (string) Str::uuid(),
-            ]);
-            $payment->refresh();
-        }
+            if ($lockedPayment->provider_order_id === null || ! in_array($lockedPayment->status, [
+                PaymentStatus::Approved,
+                PaymentStatus::PartiallyRefunded,
+            ], true)) {
+                throw ValidationException::withMessages([
+                    'payment' => 'Somente pagamentos aprovados podem ser reembolsados.',
+                ]);
+            }
 
-        $payload = $this->gateway->refundOrder(
+            if ($lockedPayment->refund_idempotency_key === null) {
+                $lockedPayment->update([
+                    'refund_idempotency_key' => (string) Str::uuid(),
+                ]);
+            }
+
+            return $lockedPayment->fresh();
+        });
+
+        $this->gateway->refundOrder(
             $payment->provider_order_id,
             $payment->refund_idempotency_key,
         );
+        $payload = $this->gateway->findOrder($payment->provider_order_id);
 
         return $this->syncFromProvider($payment, $payload);
     }
@@ -189,6 +198,10 @@ class PaymentService
 
     private function mapProviderStatus(string $status, string $statusDetail): PaymentStatus
     {
+        if ($statusDetail === 'refunded') {
+            return PaymentStatus::Refunded;
+        }
+
         if ($status === 'processed' && $statusDetail === 'partially_refunded') {
             return PaymentStatus::PartiallyRefunded;
         }
