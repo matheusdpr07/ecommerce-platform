@@ -134,3 +134,15 @@ Registro objetivo de decisoes relevantes. Novas entradas devem incluir data, con
 
 **Consequencias:** Pagina inicial deixa de ser Welcome do Breeze; admin permanece isolado em `/admin`.
 
+---
+
+## 2026-08-12 — Carrinho e lista de desejos
+
+**Contexto:** Fase 6 — conversao inicial da vitrine.
+
+**Decisao:** Carrinho persistente via `carts`/`cart_items` (sessao ou usuario); wishlist autenticada em `wishlist_items`; merge de carrinho no login/cadastro.
+
+**Motivo:** Permitir compra futura sem exigir cadastro para navegar; favoritos como recurso de conta.
+
+**Consequencias:** Rotas `/cart` e `/wishlist`; contadores compartilhados via Inertia; checkout permanece pendente.
+

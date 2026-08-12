@@ -102,6 +102,34 @@ MySQL em desenvolvimento e producao. SQLite in-memory apenas nos testes automati
 | notes | text nullable | |
 | created_at | timestamp | index |
 
+#### `carts`
+
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | bigint | PK |
+| user_id | bigint nullable | FK `users`, unique, cascade on delete |
+| session_id | uuid nullable | unique, carrinho de convidado |
+| created_at, updated_at | timestamp | |
+
+#### `cart_items`
+
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | bigint | PK |
+| cart_id | bigint | FK `carts`, cascade on delete |
+| product_variant_id | bigint | FK `product_variants`, cascade on delete |
+| quantity | unsigned int | |
+| unique(cart_id, product_variant_id) | | |
+
+#### `wishlist_items`
+
+| Coluna | Tipo | Observacao |
+|--------|------|------------|
+| id | bigint | PK |
+| user_id | bigint | FK `users`, cascade on delete |
+| product_id | bigint | FK `products`, cascade on delete |
+| unique(user_id, product_id) | | |
+
 ### Planejadas (fases futuras)
 
 - `orders`, `order_items`, `coupons`, `promotions`
@@ -117,9 +145,12 @@ categories ──┬── categories (parent_id)
 brands ──────── products (nullable)
 
 products ──┬── product_variants ── stock_movements
-           └── product_images
+           ├── product_images
+           └── wishlist_items
 
-users ──┬── orders (fase 9)
+users ──┬── carts ── cart_items
+        ├── wishlist_items
+        ├── orders (fase 9)
         ├── addresses (fase 8)
         └── stock_movements (admin, fase 4)
 ```

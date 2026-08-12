@@ -7,7 +7,7 @@
 3. **Categorias e marcas** — concluida
 4. **Produtos, variacoes, imagens e estoque** — concluida
 5. **Loja publica, busca, filtros e pagina do produto** — concluida
-6. Carrinho e lista de desejos
+6. **Carrinho e lista de desejos** — concluida
 7. Cupons e promocoes
 8. Enderecos, frete e checkout
 9. Pedidos e controle transacional de estoque
@@ -126,3 +126,40 @@
 ### Proxima fase recomendada
 
 **Fase 6:** Carrinho e lista de desejos
+
+---
+
+## Fase 6 — Carrinho e lista de desejos
+
+**Status:** concluida
+
+### Concluido
+
+- Tabelas `carts`, `cart_items` e `wishlist_items`
+- Carrinho para visitantes (sessao) e usuarios autenticados
+- Merge automatico do carrinho de convidado ao login ou cadastro
+- Pagina `/cart` com atualizacao de quantidade e remocao de itens
+- Lista de desejos autenticada em `/wishlist`
+- Adicionar aos favoritos na pagina do produto
+- Mover item da wishlist para o carrinho
+- Contadores de carrinho e favoritos no layout da loja
+- Validacao de estoque e precos calculados no backend
+
+### Pendente nesta fase
+
+- Nenhum
+
+### Decisoes
+
+- Carrinho aberto a visitantes; wishlist exige autenticacao
+- Preco e subtotal sempre recalculados a partir das variacoes no backend
+- Checkout e reserva de estoque ficam para fases futuras
+
+### Testes relacionados
+
+- `tests/Feature/Store/CartTest.php`
+- `tests/Feature/Store/WishlistTest.php`
+
+### Proxima fase recomendada
+
+**Fase 7:** Cupons e promocoes
