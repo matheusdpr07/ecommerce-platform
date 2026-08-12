@@ -1,0 +1,83 @@
+# Configuracao do ambiente
+
+## Requisitos
+
+- PHP 8.4+
+- Composer 2.x
+- Node.js 20+ e npm
+- PostgreSQL 15+
+- Herd (recomendado no Windows/macOS) ou equivalente
+
+## Instalacao
+
+```bash
+git clone <repo-url> ecommerce-platform
+cd ecommerce-platform
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+## Banco de dados (PostgreSQL)
+
+1. Crie o banco `ecommerce_platform` no PostgreSQL.
+2. Configure credenciais no `.env`:
+
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=ecommerce_platform
+DB_USERNAME=seu_usuario
+DB_PASSWORD=sua_senha
+```
+
+3. Execute as migrations:
+
+```bash
+php artisan migrate
+```
+
+> Nunca commite o arquivo `.env`. Credenciais ficam apenas localmente.
+
+## Herd
+
+Com Herd, o site pode ficar disponivel em `http://ecommerce-platform.test`. Ajuste `APP_URL` no `.env` conforme o dominio local.
+
+## Frontend
+
+```bash
+npm install
+npm run dev    # desenvolvimento com HMR
+npm run build  # build de producao
+```
+
+## Desenvolvimento integrado
+
+```bash
+composer dev
+```
+
+Inicia servidor PHP, fila, logs (Pail) e Vite simultaneamente.
+
+## Testes e qualidade
+
+```bash
+php artisan test           # Pest
+./vendor/bin/pint          # formatacao PHP
+npm run build              # verificar build TypeScript/Vite
+```
+
+Testes usam SQLite in-memory (configurado em `phpunit.xml`); nao e necessario PostgreSQL para rodar a suite.
+
+## Primeiro administrador
+
+Nao existem credenciais administrativas padrao. Na Fase 2 sera criado um comando Artisan seguro para promover o primeiro administrador.
+
+## Problemas comuns
+
+| Problema | Solucao |
+|----------|---------|
+| Erro de conexao PostgreSQL | Verifique servico, host, porta e credenciais no `.env` |
+| `npm run build` falha | Execute `npm install` e verifique Node 20+ |
+| Permissao em `storage/` ou `bootstrap/cache/` | `php artisan storage:link` e permissões de escrita |

@@ -1,0 +1,55 @@
+---
+description: Regras do projeto ecommerce-platform
+alwaysApply: true
+---
+
+# Ecommerce Platform — Regras do Projeto
+
+## Stack obrigatoria
+
+PHP 8.4, Laravel 12, PostgreSQL, Laravel Sanctum, Vue 3, TypeScript, Inertia.js, Tailwind CSS 4, Vite, Pest, Laravel Pint.
+
+Nao altere versoes ou troque a stack sem autorizacao explicita.
+
+## Arquitetura
+
+Monolito modular Laravel. Controllers pequenos, Form Requests, Policies, Enums para estados. Actions/Services apenas para regras complexas. Sem Repository Pattern desnecessario.
+
+Valores monetarios em centavos (inteiros). Backend e fonte de verdade para precos, estoque e permissoes.
+
+## Convencoes
+
+- Interface em portugues do Brasil
+- Classes, metodos, tabelas, colunas, rotas e variaveis em ingles
+- Commits: Conventional Commits (`tipo(escopo): descricao em portugues sem acentos no escopo`)
+
+## Seguranca
+
+- Segredos somente em `.env`; nunca versionar credenciais
+- Autorizacao sempre no backend (Policies)
+- Sem credenciais admin em seeders versionados
+- Rate limiting em autenticacao
+
+## Testes
+
+- Pest para testes
+- Executar testes relacionados antes de cada commit
+- Laravel Pint antes de commitar PHP
+- Build frontend quando houver mudanca estrutural relevante
+
+## Workflow
+
+1. Consultar `docs/ROADMAP.md` antes de implementar
+2. Implementar **somente a fase solicitada**
+3. Nao avancar automaticamente para a proxima fase
+4. Nao inventar credenciais, URLs ou tokens
+5. Nao executar `git push` automaticamente
+6. Commits locais por unidade logica funcional
+7. Ate 12 arquivos por unidade logica quando possivel
+8. Parar ao concluir a fase e aguardar autorizacao
+
+## Documentacao
+
+Manter atualizados: `README.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md`, `docs/DATABASE.md`, `docs/DECISIONS.md`, `docs/SETUP.md`.
+
+Registre decisoes relevantes em `docs/DECISIONS.md` e atualize o roadmap apos cada fase.
