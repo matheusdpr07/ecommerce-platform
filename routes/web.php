@@ -8,12 +8,17 @@ use App\Http\Controllers\Store\OrderController;
 use App\Http\Controllers\Store\PaymentController;
 use App\Http\Controllers\Store\ProductController as StoreProductController;
 use App\Http\Controllers\Store\WishlistController;
+use App\Http\Controllers\Webhooks\MercadoPagoWebhookController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [StoreProductController::class, 'index'])->name('store.home');
 Route::get('/categories/{category:slug}', [StoreProductController::class, 'index'])->name('store.categories.show');
 Route::get('/products/{slug}', [StoreProductController::class, 'show'])->name('store.products.show');
+
+Route::post('/webhooks/mercado-pago', MercadoPagoWebhookController::class)
+    ->middleware('throttle:120,1')
+    ->name('webhooks.mercado-pago');
 
 Route::get('/cart', [CartController::class, 'index'])->name('store.cart.index');
 Route::post('/cart/items', [CartController::class, 'store'])->name('store.cart.items.store');
