@@ -54,12 +54,16 @@ Configure as credenciais da aplicacao Mercado Pago somente no `.env` local:
 MERCADO_PAGO_ACCESS_TOKEN=seu_access_token
 MERCADO_PAGO_WEBHOOK_SECRET=seu_webhook_secret
 MERCADO_PAGO_BASE_URL=https://api.mercadopago.com
+MERCADO_PAGO_SANDBOX=false
+MERCADO_PAGO_SANDBOX_PAYER_EMAIL=
 MERCADO_PAGO_PIX_EXPIRATION=PT30M
 MERCADO_PAGO_WEBHOOK_TOLERANCE_SECONDS=300
 ```
 
 - `MERCADO_PAGO_ACCESS_TOKEN` autentica criacao, consulta e reembolso de orders.
 - `MERCADO_PAGO_WEBHOOK_SECRET` valida a assinatura HMAC das notificacoes.
+- `MERCADO_PAGO_SANDBOX` ativa o comprador de teste sem alterar o e-mail local do cliente.
+- `MERCADO_PAGO_SANDBOX_PAYER_EMAIL` recebe o e-mail `@testuser.com` de uma conta de teste do tipo Comprador.
 - `MERCADO_PAGO_PIX_EXPIRATION` usa o formato de duracao ISO 8601.
 - `MERCADO_PAGO_WEBHOOK_TOLERANCE_SECONDS` limita a idade aceita da assinatura.
 
@@ -70,6 +74,15 @@ https://seu-dominio.com/webhooks/mercado-pago
 ```
 
 Em desenvolvimento, use um tunnel HTTPS apontando para o dominio local. A criacao local do pedido continua funcionando sem credenciais, mas gerar o Pix exige um access token valido.
+
+Para testar a Checkout API Orders sem cobranca real, use o Access Token `APP_USR` da conta de teste Vendedor e configure:
+
+```env
+MERCADO_PAGO_SANDBOX=true
+MERCADO_PAGO_SANDBOX_PAYER_EMAIL=email_da_conta_comprador@testuser.com
+```
+
+Crie a conta Comprador em **Suas integracoes > Testes > Contas de teste**. Antes de publicar, altere `MERCADO_PAGO_SANDBOX=false`; em producao, o e-mail real do cliente volta a ser enviado.
 
 > Nunca registre ou commite access tokens e secrets. O endpoint de webhook e publico, mas rejeita assinaturas ausentes, invalidas ou expiradas.
 

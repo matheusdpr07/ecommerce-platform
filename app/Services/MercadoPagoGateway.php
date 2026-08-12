@@ -25,8 +25,9 @@ class MercadoPagoGateway implements PaymentGateway
     public function createPix(Order $order, Payment $payment): array
     {
         $amount = $this->formatAmount($payment->amount_cents);
+        $payerEmail = $this->payerEmail($order);
 
-        return $this->send(function () use ($order, $payment, $amount) {
+        return $this->send(function () use ($order, $payment, $amount, $payerEmail) {
             return $this->request($payment->idempotency_key)->post('/v1/orders', [
                 'type' => 'online',
                 'total_amount' => $amount,
@@ -44,7 +45,7 @@ class MercadoPagoGateway implements PaymentGateway
                     ]],
                 ],
                 'payer' => [
-                    'email' => $order->user->email,
+                    'email' => $payerEmail,
                 ],
             ]);
         });
@@ -120,5 +121,25 @@ class MercadoPagoGateway implements PaymentGateway
     private function formatAmount(int $amountCents): string
     {
         return sprintf('%d.%02d', intdiv($amountCents, 100), $amountCents % 100);
+    }
+
+    private function payerEmail(Order $order): string
+    {
+        if (! config('services.mercado_pago.sandbox')) {
+            return $order->user->email;
+        }
+
+        $email = config('services.mercado_pago.sandbox_payer_email');
+
+        if (! is_string($email)
+            || ! filter_var($email, FILTER_VALIDATE_EMAIL)
+            || ! str_ends_with(strtolower($email), '@testuser.com')
+        ) {
+            throw new PaymentGatewayException(
+                'Configure um comprador de teste do Mercado Pago para gerar Pix no sandbox.',
+            );
+        }
+
+        return $email;
     }
 }

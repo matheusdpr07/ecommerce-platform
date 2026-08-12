@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Http;
 beforeEach(function () {
     config()->set('services.mercado_pago.access_token', 'test-access-token');
     config()->set('services.mercado_pago.base_url', 'https://api.mercadopago.com');
+    config()->set('services.mercado_pago.sandbox', false);
+    config()->set('services.mercado_pago.sandbox_payer_email');
     config()->set('services.mercado_pago.pix_expiration', 'PT30M');
 });
 
@@ -104,6 +106,48 @@ test('checkout creates the order and its pix when the gateway is configured', fu
         ->not->toBeNull()
         ->amount_cents->toBe(10900)
         ->provider_order_id->toBe('ORD01TESTPAYMENT');
+});
+
+test('sandbox pix uses the configured mercado pago test buyer', function () {
+    config()->set('services.mercado_pago.sandbox', true);
+    config()->set('services.mercado_pago.sandbox_payer_email', 'comprador@testuser.com');
+
+    $user = User::factory()->create(['email' => 'cliente-local@example.com']);
+    $order = Order::factory()->for($user)->create([
+        'number' => 'PED-00000011',
+        'total_cents' => 5000,
+    ]);
+
+    Http::fake([
+        'https://api.mercadopago.com/v1/orders' => Http::response(
+            mercadoPagoPixPayload($order),
+            201,
+        ),
+    ]);
+
+    $this->actingAs($user)
+        ->post(route('store.orders.payment.pix', $order))
+        ->assertSessionHas('success');
+
+    Http::assertSent(fn (Request $request): bool => data_get(
+        $request->data(),
+        'payer.email',
+    ) === 'comprador@testuser.com');
+});
+
+test('sandbox pix requires a mercado pago test buyer', function () {
+    config()->set('services.mercado_pago.sandbox', true);
+
+    $user = User::factory()->create();
+    $order = Order::factory()->for($user)->create();
+
+    Http::fake();
+
+    $this->actingAs($user)
+        ->post(route('store.orders.payment.pix', $order))
+        ->assertSessionHas('error');
+
+    Http::assertNothingSent();
 });
 
 test('customers cannot generate pix for another users order', function () {

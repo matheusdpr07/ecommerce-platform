@@ -39,6 +39,8 @@ return [
         'access_token' => env('MERCADO_PAGO_ACCESS_TOKEN'),
         'webhook_secret' => env('MERCADO_PAGO_WEBHOOK_SECRET'),
         'base_url' => env('MERCADO_PAGO_BASE_URL', 'https://api.mercadopago.com'),
+        'sandbox' => filter_var(env('MERCADO_PAGO_SANDBOX', false), FILTER_VALIDATE_BOOL),
+        'sandbox_payer_email' => env('MERCADO_PAGO_SANDBOX_PAYER_EMAIL'),
         'pix_expiration' => env('MERCADO_PAGO_PIX_EXPIRATION', 'PT30M'),
         'webhook_tolerance_seconds' => (int) env('MERCADO_PAGO_WEBHOOK_TOLERANCE_SECONDS', 300),
     ],
