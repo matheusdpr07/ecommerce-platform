@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuditLogController;
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CouponController;
@@ -33,6 +34,7 @@ Route::patch('inventory/{variant}', [InventoryController::class, 'update'])->nam
 Route::post('inventory/{variant}/adjustments', [InventoryController::class, 'adjust'])->name('inventory.adjust');
 
 Route::resource('categories', CategoryController::class)->except(['show']);
+Route::resource('banners', BannerController::class)->except(['show']);
 Route::resource('brands', BrandController::class)->except(['show']);
 Route::resource('products', ProductController::class)->except(['show']);
 Route::resource('coupons', CouponController::class)->except(['show']);

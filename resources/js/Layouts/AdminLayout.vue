@@ -90,6 +90,16 @@ const navigationGroups: Array<{
             },
         ],
     },
+    {
+        label: 'Conteúdo',
+        items: [
+            {
+                label: 'Banners',
+                routeName: 'admin.banners.index',
+                activePattern: 'admin.banners.*',
+            },
+        ],
+    },
 ];
 
 const showingNavigation = ref(false);

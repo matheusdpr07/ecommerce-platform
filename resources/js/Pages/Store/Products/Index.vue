@@ -8,6 +8,7 @@ import type {
     StoreCategoryOption,
     StoreProductSummary,
 } from '@/types/catalog';
+import type { StoreBanner } from '@/types/content';
 import { formatMoneyFromCents } from '@/utils/money';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
@@ -17,6 +18,7 @@ const props = defineProps<{
     filters: StoreCatalogFilters;
     categories: StoreCategoryOption[];
     brands: StoreCategoryOption[];
+    banners: StoreBanner[];
     activeCategory?: StoreCategoryOption | null;
 }>();
 
@@ -31,6 +33,12 @@ const filtersOpen = ref(false);
 
 const pageTitle = computed(() => props.activeCategory?.name ?? 'Loja');
 const heroProduct = computed(() => props.products.data[0] ?? null);
+const heroBanner = computed(
+    () => props.banners.find((banner) => banner.placement === 'hero') ?? null,
+);
+const editorialBanners = computed(() =>
+    props.banners.filter((banner) => banner.placement === 'editorial'),
+);
 const heroPrice = computed(() =>
     heroProduct.value
         ? formatMoneyFromCents(heroProduct.value.min_price_cents)
@@ -54,6 +62,13 @@ const activeFilterCount = computed(
             Boolean,
         ).length + (sort.value !== 'name' ? 1 : 0),
 );
+
+const bannerThemeClasses = (theme: StoreBanner['theme']) =>
+    ({
+        paper: 'bg-[var(--store-paper)] text-[var(--store-ink)]',
+        ink: 'bg-[var(--store-ink)] text-[var(--store-paper)]',
+        accent: 'bg-[var(--store-accent)] text-[var(--store-ink)]',
+    })[theme];
 
 const catalogRoute = () =>
     props.activeCategory
@@ -125,9 +140,19 @@ const clearFilters = () => {
                         class="mb-5 flex items-center gap-3 text-[0.67rem] font-bold uppercase tracking-[0.24em]"
                     >
                         <span class="h-px w-9 bg-current" />
-                        Nova perspectiva para o cotidiano
+                        {{
+                            heroBanner?.eyebrow ??
+                            'Nova perspectiva para o cotidiano'
+                        }}
                     </p>
                     <h1
+                        v-if="heroBanner"
+                        class="max-w-4xl font-serif text-[clamp(4rem,8vw,8rem)] leading-[0.84] tracking-[-0.07em]"
+                    >
+                        {{ heroBanner.title }}
+                    </h1>
+                    <h1
+                        v-else
                         class="font-serif text-[clamp(4rem,9vw,8.8rem)] leading-[0.8] tracking-[-0.075em]"
                     >
                         O extraordinário
@@ -138,11 +163,22 @@ const clearFilters = () => {
                     <p
                         class="mt-8 max-w-lg text-base leading-7 text-[var(--store-muted)] sm:text-lg"
                     >
-                        {{ page.props.store.tagline }} Uma seleção pensada para
-                        ser descoberta sem pressa e escolhida com confiança.
+                        {{
+                            heroBanner?.description ??
+                            `${page.props.store.tagline} Uma seleção pensada para ser descoberta sem pressa e escolhida com confiança.`
+                        }}
                     </p>
                     <div class="mt-9 flex flex-wrap items-center gap-3">
                         <a
+                            v-if="heroBanner?.cta_url && heroBanner.cta_label"
+                            :href="heroBanner.cta_url"
+                            class="inline-flex items-center gap-4 rounded-full bg-[var(--store-ink)] px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5"
+                        >
+                            {{ heroBanner.cta_label }}
+                            <span aria-hidden="true">↗</span>
+                        </a>
+                        <a
+                            v-else
                             href="#catalogo"
                             class="inline-flex items-center gap-4 rounded-full bg-[var(--store-ink)] px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5"
                         >
@@ -160,14 +196,20 @@ const clearFilters = () => {
                 </div>
 
                 <div class="relative mx-auto w-full max-w-xl lg:justify-self-end">
-                    <Link
-                        v-if="heroProduct"
-                        :href="route('store.products.show', heroProduct.slug)"
-                        view-transition
+                    <div
+                        v-if="heroBanner?.image_url || heroProduct"
                         class="group relative block aspect-[4/5] w-[82%] overflow-hidden rounded-[3rem] bg-[#ded6c8] shadow-[0_30px_80px_rgba(23,24,17,0.18)] sm:w-[76%]"
                     >
                         <img
-                            v-if="heroProduct.primary_image"
+                            v-if="heroBanner?.image_url"
+                            :src="heroBanner.image_url"
+                            :alt="heroBanner.image_alt ?? heroBanner.title"
+                            fetchpriority="high"
+                            decoding="async"
+                            class="h-full w-full object-cover transition duration-1000 group-hover:scale-[1.025]"
+                        />
+                        <img
+                            v-else-if="heroProduct?.primary_image"
                             :src="heroProduct.primary_image.url"
                             :alt="
                                 heroProduct.primary_image.alt_text ??
@@ -191,7 +233,7 @@ const clearFilters = () => {
                                 class="absolute left-[16%] top-[24%] h-[55%] w-[68%] rotate-6 rounded-[45%_45%_20%_20%] border-[3px] border-[var(--store-ink)]/70 bg-white/35 backdrop-blur-sm"
                             />
                         </div>
-                    </Link>
+                    </div>
                     <div
                         v-else
                         class="relative aspect-[4/5] w-[76%] overflow-hidden rounded-[3rem] bg-[#ddd5c7] shadow-[0_30px_80px_rgba(23,24,17,0.18)]"
@@ -205,7 +247,7 @@ const clearFilters = () => {
                     </div>
 
                     <Link
-                        v-if="heroProduct"
+                        v-if="heroProduct && !heroBanner"
                         :href="route('store.products.show', heroProduct.slug)"
                         view-transition
                         class="absolute -bottom-5 right-0 w-[60%] rounded-[1.5rem] border border-[var(--store-ink)]/10 bg-[var(--store-paper)]/90 p-5 shadow-xl backdrop-blur-xl sm:right-3"
@@ -232,6 +274,64 @@ const clearFilters = () => {
                         role para<br />descobrir<br />↓
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <section
+            v-if="showEditorial && editorialBanners.length > 0"
+            class="px-4 py-10 sm:px-6 lg:px-10 lg:py-16"
+            aria-label="Destaques editoriais"
+        >
+            <div class="mx-auto grid max-w-[90rem] gap-6 lg:grid-cols-2">
+                <article
+                    v-for="banner in editorialBanners"
+                    :key="banner.id"
+                    class="store-reveal relative isolate min-h-[28rem] overflow-hidden rounded-[2.5rem] p-7 sm:p-10"
+                    :class="bannerThemeClasses(banner.theme)"
+                >
+                    <img
+                        v-if="banner.image_url"
+                        :src="banner.image_url"
+                        :alt="banner.image_alt ?? banner.title"
+                        loading="lazy"
+                        decoding="async"
+                        class="absolute inset-0 -z-20 size-full object-cover"
+                    />
+                    <div
+                        v-if="banner.image_url"
+                        class="absolute inset-0 -z-10 bg-gradient-to-t from-black/75 via-black/15 to-transparent"
+                    />
+                    <div
+                        class="flex min-h-[23rem] max-w-xl flex-col justify-end"
+                        :class="banner.image_url ? 'text-white' : ''"
+                    >
+                        <p
+                            v-if="banner.eyebrow"
+                            class="text-[0.65rem] font-bold uppercase tracking-[0.22em] opacity-70"
+                        >
+                            {{ banner.eyebrow }}
+                        </p>
+                        <h2
+                            class="mt-3 font-serif text-4xl leading-[0.95] tracking-[-0.045em] sm:text-5xl"
+                        >
+                            {{ banner.title }}
+                        </h2>
+                        <p
+                            v-if="banner.description"
+                            class="mt-4 max-w-md text-sm leading-6 opacity-75"
+                        >
+                            {{ banner.description }}
+                        </p>
+                        <a
+                            v-if="banner.cta_url && banner.cta_label"
+                            :href="banner.cta_url"
+                            class="mt-6 inline-flex w-fit items-center gap-3 rounded-full border border-current px-5 py-2.5 text-sm font-bold"
+                        >
+                            {{ banner.cta_label }}
+                            <span aria-hidden="true">↗</span>
+                        </a>
+                    </div>
+                </article>
             </div>
         </section>
 

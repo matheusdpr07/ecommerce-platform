@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Services\BannerService;
 use App\Services\StorefrontCatalogService;
 use App\Services\WishlistService;
 use Illuminate\Http\Request;
@@ -15,6 +16,7 @@ class ProductController extends Controller
     public function __construct(
         private readonly StorefrontCatalogService $catalogService,
         private readonly WishlistService $wishlistService,
+        private readonly BannerService $bannerService,
     ) {}
 
     public function index(Request $request, ?Category $category = null): Response
@@ -30,6 +32,7 @@ class ProductController extends Controller
             'filters' => $filters,
             'categories' => $this->catalogService->activeCategoryOptions(),
             'brands' => $this->catalogService->activeBrandOptions(),
+            'banners' => $this->bannerService->activeForStorefront(),
             'activeCategory' => $category ? [
                 'id' => $category->id,
                 'name' => $category->name,
