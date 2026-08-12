@@ -5,7 +5,7 @@
 1. **Fundacao, documentacao e ambiente** — concluida
 2. **Autenticacao, usuarios e autorizacao administrativa** — concluida
 3. **Categorias e marcas** — concluida
-4. Produtos, variacoes, imagens e estoque
+4. **Produtos, variacoes, imagens e estoque** — concluida
 5. Loja publica, busca, filtros e pagina do produto
 6. Carrinho e lista de desejos
 7. Cupons e promocoes
@@ -53,3 +53,41 @@
 ### Proxima fase recomendada
 
 **Fase 4:** Produtos, variacoes, imagens e estoque
+
+---
+
+## Fase 4 — Produtos, variacoes, imagens e estoque
+
+**Status:** concluida
+
+### Concluido
+
+- Tabelas `products`, `product_variants`, `product_images` e `stock_movements`
+- Produtos vinculados a categoria (obrigatoria) e marca (opcional)
+- Precos em centavos nas variacoes; estoque por variacao
+- CRUD administrativo em `/admin/products`
+- Upload de imagens no disco `public` (max. 2 MB por arquivo)
+- Historico de movimentacao de estoque (`initial`, `manual_adjustment`, `restock`)
+- Paginacao, busca (nome, slug, SKU) e filtros por status e categoria
+- Policies `ProductPolicy` (somente admin)
+- Exclusao de categoria/marca bloqueada quando houver produtos vinculados
+- Soft delete em produtos
+
+### Pendente nesta fase
+
+- Nenhum
+
+### Decisoes
+
+- Preco e estoque ficam na variacao, nao no produto pai
+- SKU unico globalmente entre variacoes
+- Imagens associadas ao produto (nao a variacao individual)
+- Movimentacoes de estoque registradas ao criar variacao e ao alterar quantidade
+
+### Testes relacionados
+
+- `tests/Feature/Admin/ProductManagementTest.php`
+
+### Proxima fase recomendada
+
+**Fase 5:** Loja publica, busca, filtros e pagina do produto

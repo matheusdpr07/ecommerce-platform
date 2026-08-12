@@ -110,3 +110,15 @@ Registro objetivo de decisoes relevantes. Novas entradas devem incluir data, con
 
 **Consequencias:** Rotas `/admin/categories` e `/admin/brands`; exclusao de categoria bloqueada se houver filhos.
 
+---
+
+## 2026-08-12 — Catalogo: produtos, variacoes e estoque
+
+**Contexto:** Fase 4 — CRUD administrativo de produtos.
+
+**Decisao:** Tabelas `products`, `product_variants`, `product_images` e `stock_movements`; precos e estoque na variacao; imagens no produto; movimentacoes auditaveis.
+
+**Motivo:** Modelo flexivel para SKUs distintos, precos por variacao e rastreio de estoque antes do checkout.
+
+**Consequencias:** Rota `/admin/products`; upload em `storage/app/public/products`; executar `php artisan storage:link` no ambiente local; exclusao de categoria/marca bloqueada com produtos vinculados.
+

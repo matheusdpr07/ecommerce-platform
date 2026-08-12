@@ -36,9 +36,11 @@ DB_PASSWORD=sua_senha
 
 ```bash
 php artisan migrate
+php artisan storage:link
 ```
 
 > Nunca commite o arquivo `.env`. Credenciais ficam apenas localmente.
+> O `storage:link` e necessario para exibir imagens de produtos no painel admin.
 
 ## Herd
 
