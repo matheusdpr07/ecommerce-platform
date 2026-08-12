@@ -139,6 +139,11 @@ class CartService
     {
         $cart->items()->delete();
         $this->couponService->removeFromCart($cart);
+        $cart->update([
+            'shipping_address_id' => null,
+            'shipping_method_id' => null,
+            'shipping_cents' => null,
+        ]);
     }
 
     public function applyCoupon(Request $request, string $code): void

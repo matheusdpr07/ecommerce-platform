@@ -65,6 +65,12 @@ const user = computed(() => page.props.auth.user!);
                                 Promocoes
                             </NavLink>
                             <NavLink
+                                :href="route('admin.shipping-methods.index')"
+                                :active="route().current('admin.shipping-methods.*')"
+                            >
+                                Frete
+                            </NavLink>
+                            <NavLink
                                 v-if="userIsAdmin(page.props.auth.user)"
                                 :href="route('dashboard')"
                             >
@@ -185,6 +191,12 @@ const user = computed(() => page.props.auth.user!);
                         :active="route().current('admin.promotions.*')"
                     >
                         Promocoes
+                    </ResponsiveNavLink>
+                    <ResponsiveNavLink
+                        :href="route('admin.shipping-methods.index')"
+                        :active="route().current('admin.shipping-methods.*')"
+                    >
+                        Frete
                     </ResponsiveNavLink>
                 </div>
             </div>

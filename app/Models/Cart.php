@@ -17,6 +17,9 @@ class Cart extends Model
         'user_id',
         'session_id',
         'coupon_id',
+        'shipping_address_id',
+        'shipping_method_id',
+        'shipping_cents',
     ];
 
     public function user(): BelongsTo
@@ -27,6 +30,16 @@ class Cart extends Model
     public function coupon(): BelongsTo
     {
         return $this->belongsTo(Coupon::class);
+    }
+
+    public function shippingAddress(): BelongsTo
+    {
+        return $this->belongsTo(Address::class, 'shipping_address_id');
+    }
+
+    public function shippingMethod(): BelongsTo
+    {
+        return $this->belongsTo(ShippingMethod::class);
     }
 
     public function items(): HasMany

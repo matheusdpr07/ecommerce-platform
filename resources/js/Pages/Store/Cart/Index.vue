@@ -4,11 +4,15 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import StoreLayout from '@/Layouts/StoreLayout.vue';
 import type { CartPayload } from '@/types/catalog';
 import { formatMoneyFromCents } from '@/utils/money';
-import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 defineProps<{
     cart: CartPayload;
 }>();
+
+const page = usePage();
+const user = computed(() => page.props.auth.user);
 
 const couponForm = useForm({
     code: '',
@@ -260,8 +264,26 @@ const removeCoupon = () => {
                             </dd>
                         </div>
                     </dl>
+                    <Link
+                        v-if="user"
+                        :href="route('store.checkout.index')"
+                        class="mt-6 block"
+                    >
+                        <PrimaryButton class="w-full">
+                            Ir para checkout
+                        </PrimaryButton>
+                    </Link>
+                    <Link
+                        v-else
+                        :href="route('login')"
+                        class="mt-6 block"
+                    >
+                        <PrimaryButton class="w-full">
+                            Entrar para checkout
+                        </PrimaryButton>
+                    </Link>
                     <p class="mt-4 text-xs text-gray-500">
-                        Frete e checkout disponiveis nas proximas fases.
+                        Frete calculado no checkout. Pagamento na fase 10.
                     </p>
                 </div>
             </aside>

@@ -266,3 +266,55 @@ export interface WishlistPayload {
 export interface WishlistSummary {
     item_count: number;
 }
+
+export interface CustomerAddress {
+    id: number;
+    label: string;
+    recipient_name: string;
+    recipient_phone?: string | null;
+    postal_code: string;
+    formatted_postal_code: string;
+    street: string;
+    number: string;
+    complement?: string | null;
+    neighborhood: string;
+    city: string;
+    state: string;
+    is_default: boolean;
+    summary: string;
+}
+
+export interface ShippingMethodItem {
+    id: number;
+    name: string;
+    description?: string | null;
+    price_cents: number;
+    free_above_cents?: number | null;
+    min_order_cents?: number | null;
+    max_order_cents?: number | null;
+    estimated_days_min?: number | null;
+    estimated_days_max?: number | null;
+    sort_order: number;
+    is_active: boolean;
+}
+
+export interface CheckoutShippingOption {
+    id: number;
+    name: string;
+    description?: string | null;
+    price_cents: number;
+    estimated_days_min?: number | null;
+    estimated_days_max?: number | null;
+}
+
+export interface CheckoutPayload {
+    cart: CartPayload;
+    addresses: CustomerAddress[];
+    shipping_methods: CheckoutShippingOption[];
+    selected_address_id?: number | null;
+    selected_shipping_method_id?: number | null;
+    shipping?: CheckoutShippingOption | null;
+    shipping_cents: number;
+    grand_total_cents: number;
+    is_ready: boolean;
+}

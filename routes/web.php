@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Store\AddressController;
 use App\Http\Controllers\Store\CartController;
+use App\Http\Controllers\Store\CheckoutController;
 use App\Http\Controllers\Store\ProductController as StoreProductController;
 use App\Http\Controllers\Store\WishlistController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +24,15 @@ Route::delete('/cart/coupon', [CartController::class, 'removeCoupon'])->name('st
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('store.checkout.index');
+    Route::patch('/checkout', [CheckoutController::class, 'update'])->name('store.checkout.update');
+
+    Route::resource('addresses', AddressController::class)
+        ->except(['show'])
+        ->names('store.addresses');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('store.wishlist.index');
