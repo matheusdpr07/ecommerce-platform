@@ -23,7 +23,7 @@ const priceLabel = computed(() => {
         <Link
             :href="route('store.products.show', product.slug)"
             view-transition
-            class="relative block aspect-[4/5] overflow-hidden rounded-[1.75rem] bg-[#e8e2d7]"
+            class="relative block aspect-[4/5] overflow-hidden rounded-[1.75rem] bg-[var(--store-sand)]"
         >
             <img
                 v-if="product.primary_image"
@@ -55,7 +55,7 @@ const priceLabel = computed(() => {
             >
                 <span
                     v-if="product.has_promotion"
-                    class="rounded-full bg-[var(--store-coral)] px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-white"
+                    class="rounded-full bg-[var(--store-cocoa)] px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[var(--store-cream)]"
                 >
                     Oferta
                 </span>
@@ -68,14 +68,14 @@ const priceLabel = computed(() => {
 
                 <span
                     v-if="!product.has_stock"
-                    class="ml-auto rounded-full bg-[var(--store-ink)] px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-white"
+                    class="ml-auto rounded-full bg-[var(--store-ink)] px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[var(--store-cream)]"
                 >
                     Esgotado
                 </span>
             </div>
 
             <span
-                class="absolute bottom-4 left-4 right-4 flex translate-y-4 items-center justify-between rounded-full bg-[var(--store-ink)] px-5 py-3 text-sm font-semibold text-white opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100"
+                class="absolute bottom-4 left-4 right-4 flex translate-y-4 items-center justify-between rounded-full bg-[var(--store-ink)] px-5 py-3 text-sm font-semibold text-[var(--store-cream)] opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100"
             >
                 Conhecer produto
                 <span aria-hidden="true">↗</span>

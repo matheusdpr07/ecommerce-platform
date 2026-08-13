@@ -337,7 +337,7 @@ onBeforeUnmount(() => {
                 data-story-chapter="0"
             >
                 <div
-                    class="store-story__content max-w-[46rem] text-[var(--store-paper)]"
+                    class="store-story__content max-w-[46rem] text-[var(--store-cream)]"
                     :class="sceneContentClass(0)"
                 >
                     <p class="store-story__eyebrow">
@@ -347,7 +347,7 @@ onBeforeUnmount(() => {
                     <h1 id="store-story-title" class="store-story__title">
                         {{ heroBanner?.title ?? 'O extraordinário mora nos detalhes.' }}
                     </h1>
-                    <p class="store-story__description text-white/70">
+                    <p class="store-story__description text-[var(--store-cream)]/70">
                         {{
                             heroBanner?.description ??
                             `${page.props.store.tagline} Descubra uma seleção feita para transformar escolhas simples em experiências memoráveis.`
@@ -369,7 +369,7 @@ onBeforeUnmount(() => {
                         <Link
                             :href="route('store.home', { sort: 'newest' })"
                             view-transition
-                            class="store-story__secondary-action border-white/35 text-white"
+                            class="store-story__secondary-action border-[var(--store-cream)]/35 text-[var(--store-cream)]"
                         >
                             Ver novidades
                         </Link>
@@ -382,7 +382,7 @@ onBeforeUnmount(() => {
                 data-story-chapter="1"
             >
                 <div
-                    class="store-story__content ml-auto max-w-[47rem] text-[var(--store-ink)]"
+                    class="store-story__content ml-auto max-w-[47rem] text-[var(--store-cream)]"
                     :class="sceneContentClass(1)"
                 >
                     <p class="store-story__eyebrow">
@@ -392,7 +392,7 @@ onBeforeUnmount(() => {
                     <h2 class="store-story__title">
                         Comece pelo que desperta sua curiosidade.
                     </h2>
-                    <p class="store-story__description text-[var(--store-ink)]/70">
+                    <p class="store-story__description text-[var(--store-cream)]/75">
                         Cada categoria abre uma nova forma de descobrir produtos que combinam
                         com o seu momento.
                     </p>
@@ -416,7 +416,7 @@ onBeforeUnmount(() => {
                     <a
                         v-else
                         href="#catalogo"
-                        class="store-story__secondary-action mt-8 border-[var(--store-ink)]/40"
+                        class="store-story__secondary-action mt-8 border-[var(--store-cream)]/40"
                     >
                         Descobrir o catálogo
                     </a>
@@ -462,7 +462,7 @@ onBeforeUnmount(() => {
                 data-story-chapter="3"
             >
                 <div
-                    class="store-story__content ml-auto max-w-[48rem] text-[var(--store-ink)]"
+                    class="store-story__content ml-auto max-w-[48rem] text-[var(--store-cream)]"
                     :class="sceneContentClass(3)"
                 >
                     <p class="store-story__eyebrow">
@@ -475,7 +475,7 @@ onBeforeUnmount(() => {
                             'Da descoberta à sua porta, você acompanha tudo.'
                         }}
                     </h2>
-                    <p class="store-story__description text-[var(--store-ink)]/65">
+                    <p class="store-story__description text-[var(--store-cream)]/70">
                         {{
                             editorialBanner?.description ??
                             'Escolha livremente, pague com segurança e acompanhe cada atualização sem sair da sua conta.'
@@ -538,15 +538,18 @@ onBeforeUnmount(() => {
 }
 
 .store-story__scene--ink {
-    background: radial-gradient(circle at 15% 12%, rgba(255, 107, 74, 0.2), transparent 30%),
-        #171811;
+    background: radial-gradient(circle at 15% 12%, rgba(192, 88, 0, 0.28), transparent 30%),
+        var(--store-ink);
 }
 
-.store-story__scene--coral { background: #ff6b4a; }
-.store-story__scene--accent { background: #dfff4f; }
+.store-story__scene--coral {
+    background: linear-gradient(rgba(56, 36, 13, 0.16), rgba(56, 36, 13, 0.16)),
+        var(--store-caramel);
+}
+.store-story__scene--accent { background: var(--store-cream); }
 .store-story__scene--paper {
-    background: radial-gradient(circle at 15% 45%, rgba(223, 255, 79, 0.55), transparent 25%),
-        #f4f0e8;
+    background: radial-gradient(circle at 15% 45%, rgba(192, 88, 0, 0.38), transparent 28%),
+        var(--store-cocoa);
 }
 
 .store-story__halo,
@@ -561,7 +564,7 @@ onBeforeUnmount(() => {
     top: -14vw;
     width: min(58vw, 58rem);
     aspect-ratio: 1;
-    border: clamp(2rem, 7vw, 7rem) solid rgba(223, 255, 79, 0.13);
+    border: clamp(2rem, 7vw, 7rem) solid rgba(253, 251, 212, 0.12);
 }
 
 .store-story__halo--two {
@@ -572,7 +575,7 @@ onBeforeUnmount(() => {
     background: var(--store-accent);
 }
 
-.store-story__orbit { border: 1px solid rgba(23, 24, 17, 0.28); }
+.store-story__orbit { border: 1px solid rgba(253, 251, 212, 0.28); }
 .store-story__orbit--one { left: -12vw; top: -22vw; width: 68vw; aspect-ratio: 1; }
 .store-story__orbit--two { left: -4vw; top: -14vw; width: 52vw; aspect-ratio: 1; }
 
@@ -590,7 +593,7 @@ onBeforeUnmount(() => {
     height: 84%;
     border-radius: 50% 50% 2.5rem 2.5rem;
     transform: rotate(2deg);
-    background: #d9d2c5;
+    background: var(--store-sand);
 }
 
 .store-story__hero-frame::after,
@@ -598,7 +601,7 @@ onBeforeUnmount(() => {
     position: absolute;
     inset: 0;
     content: '';
-    background: linear-gradient(140deg, transparent 45%, rgba(23, 24, 17, 0.32));
+    background: linear-gradient(140deg, transparent 45%, rgba(56, 36, 13, 0.32));
 }
 
 .store-story__hero-frame img,
@@ -618,7 +621,7 @@ onBeforeUnmount(() => {
     position: relative;
     width: 100%;
     height: 100%;
-    background: linear-gradient(155deg, #eee6d9, #b9ae9d);
+    background: linear-gradient(155deg, var(--store-paper), var(--store-sand));
 }
 
 .store-story__abstract-product span:first-child,
@@ -630,10 +633,10 @@ onBeforeUnmount(() => {
 }
 
 .store-story__abstract-product span:first-child {
-    left: -18%; top: 10%; background: var(--store-accent);
+    left: -18%; top: 10%; background: var(--store-caramel);
 }
 .store-story__abstract-product span:last-child {
-    right: -20%; bottom: -10%; background: var(--store-coral);
+    right: -20%; bottom: -10%; background: var(--store-cocoa);
 }
 
 .store-story__outline-word {
@@ -647,11 +650,16 @@ onBeforeUnmount(() => {
     line-height: 0.8;
     letter-spacing: -0.085em;
     white-space: nowrap;
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.09);
+    -webkit-text-stroke: 1px rgba(253, 251, 212, 0.1);
 }
 
 .store-story__outline-word--dark {
-    -webkit-text-stroke-color: rgba(23, 24, 17, 0.1);
+    -webkit-text-stroke-color: rgba(56, 36, 13, 0.1);
+}
+
+.store-story__scene--coral .store-story__outline-word--dark,
+.store-story__scene--paper .store-story__outline-word--dark {
+    -webkit-text-stroke-color: rgba(253, 251, 212, 0.12);
 }
 
 .store-story__scene-number {
@@ -677,13 +685,13 @@ onBeforeUnmount(() => {
     display: grid;
     place-items: center;
     overflow: hidden;
-    border: 0.55rem solid rgba(255, 253, 248, 0.92);
+    border: 0.55rem solid rgba(255, 254, 240, 0.94);
     border-radius: 1.5rem;
-    background: #d8d0c2;
-    color: rgba(23, 24, 17, 0.4);
+    background: var(--store-sand);
+    color: rgba(56, 36, 13, 0.4);
     font-family: Georgia, Cambria, 'Times New Roman', serif;
     font-size: 5rem;
-    box-shadow: 0 2rem 5rem rgba(23, 24, 17, 0.18);
+    box-shadow: 0 2rem 5rem rgba(56, 36, 13, 0.2);
 }
 
 .store-story__product-frame--1 { left: 20%; top: 2%; z-index: 3; width: 48%; height: 64%; transform: rotate(5deg); }
@@ -741,6 +749,7 @@ onBeforeUnmount(() => {
 .store-story__content {
     position: relative;
     z-index: 10;
+    min-width: 0;
     width: 100%;
     transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
         transform 850ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -791,7 +800,13 @@ onBeforeUnmount(() => {
     transition: transform 250ms ease, background-color 250ms ease;
 }
 
-.store-story__primary-action { background: var(--store-ink); color: white; }
+.store-story__primary-action { background: var(--store-ink); color: var(--store-cream); }
+.store-story__chapter--ink .store-story__primary-action,
+.store-story__chapter--coral .store-story__primary-action,
+.store-story__chapter--paper .store-story__primary-action {
+    background: var(--store-cream);
+    color: var(--store-ink);
+}
 .store-story__primary-action:hover,
 .store-story__secondary-action:hover { transform: translateY(-0.2rem); }
 .store-story__secondary-action { border-width: 1px; border-style: solid; }
@@ -801,13 +816,16 @@ onBeforeUnmount(() => {
     display: grid;
     align-items: center;
     gap: 0.75rem;
-    border-top: 1px solid rgba(23, 24, 17, 0.3);
+    border-top: 1px solid rgba(56, 36, 13, 0.3);
     padding: 0.9rem 0.2rem;
     transition: padding 250ms ease;
 }
 
 .store-story__category-link,
 .store-story__product-link { grid-template-columns: 2rem 1fr auto; }
+.store-story__chapter--coral .store-story__category-link {
+    border-color: rgba(253, 251, 212, 0.35);
+}
 .store-story__category-link:hover,
 .store-story__product-link:hover { padding-inline: 0.7rem; }
 .store-story__category-link > span,
@@ -819,7 +837,10 @@ onBeforeUnmount(() => {
     font-weight: 400;
 }
 
-.store-story__trust-item { border-top: 1px solid rgba(23, 24, 17, 0.28); padding-top: 0.9rem; }
+.store-story__trust-item { border-top: 1px solid rgba(56, 36, 13, 0.28); padding-top: 0.9rem; }
+.store-story__chapter--paper .store-story__trust-item {
+    border-color: rgba(253, 251, 212, 0.32);
+}
 .store-story__trust-item dt { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
 .store-story__trust-item dd { margin-top: 0.55rem; font-size: 0.8rem; line-height: 1.55; opacity: 0.68; }
 
@@ -842,11 +863,20 @@ onBeforeUnmount(() => {
 @media (max-width: 639px) {
     .store-story__stage { min-height: 35rem; }
     .store-story__chapter {
+        width: 100%;
+        box-sizing: border-box;
         min-height: max(35rem, calc(100svh - 4.75rem));
         padding-block: 3.5rem;
         padding-right: 2.4rem;
     }
-    .store-story__title { font-size: clamp(2.75rem, 14vw, 4.6rem); }
+    .store-story__content {
+        width: calc(100vw - 3.4rem);
+        max-width: calc(100vw - 3.4rem);
+    }
+    .store-story__title {
+        max-width: 100%;
+        font-size: clamp(2.05rem, 9.7vw, 3.6rem);
+    }
     .store-story__description { max-width: 28rem; margin-top: 1.25rem; font-size: 0.9rem; }
     .store-story__hero-frame,
     .store-story__editorial-frame,
@@ -865,10 +895,10 @@ onBeforeUnmount(() => {
     .store-story__stage { display: none; }
     .store-story__chapters { margin-top: 0; }
     .store-story__chapter { min-height: auto; padding-block: 5rem; }
-    .store-story__chapter--ink { background: #171811; }
-    .store-story__chapter--coral { background: #ff6b4a; }
-    .store-story__chapter--accent { background: #dfff4f; }
-    .store-story__chapter--paper { background: #f4f0e8; }
+    .store-story__chapter--ink { background: var(--store-ink); }
+    .store-story__chapter--coral { background: var(--store-caramel); }
+    .store-story__chapter--accent { background: var(--store-cream); }
+    .store-story__chapter--paper { background: var(--store-cocoa); }
     .store-story__content {
         pointer-events: auto !important;
         opacity: 1 !important;

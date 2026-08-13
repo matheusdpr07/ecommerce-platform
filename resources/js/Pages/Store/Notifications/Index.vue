@@ -101,7 +101,7 @@ const toneIcon = (notification: CustomerNotification) => {
                 ]"
             >
                 <span
-                    class="grid size-11 place-items-center rounded-full border border-[var(--store-ink)]/15 bg-white text-lg font-bold"
+                    class="grid size-11 place-items-center rounded-full border border-[var(--store-ink)]/15 bg-[var(--store-paper)] text-lg font-bold"
                     aria-hidden="true"
                 >
                     {{ toneIcon(notification) }}
@@ -151,7 +151,7 @@ const toneIcon = (notification: CustomerNotification) => {
             <Link
                 :href="route('store.home')"
                 view-transition
-                class="mt-6 inline-block rounded-full bg-[var(--store-ink)] px-6 py-3 text-sm font-bold text-white"
+                class="mt-6 inline-block rounded-full bg-[var(--store-ink)] px-6 py-3 text-sm font-bold text-[var(--store-cream)]"
             >
                 Voltar à loja
             </Link>

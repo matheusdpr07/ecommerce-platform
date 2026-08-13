@@ -78,7 +78,7 @@ const statusClasses = (status: string) => {
                         {{ formatMoneyFromCents(order.total_cents) }}
                     </span>
                     <span
-                        class="grid size-11 place-items-center rounded-full border border-[var(--store-ink)]/20 transition group-hover:translate-x-1 group-hover:bg-[var(--store-ink)] group-hover:text-white"
+                        class="grid size-11 place-items-center rounded-full border border-[var(--store-ink)]/20 transition group-hover:translate-x-1 group-hover:bg-[var(--store-ink)] group-hover:text-[var(--store-cream)]"
                         aria-hidden="true"
                     >
                         →
@@ -106,7 +106,7 @@ const statusClasses = (status: string) => {
             <Link
                 :href="route('store.home')"
                 view-transition
-                class="mt-7 inline-flex rounded-full bg-[var(--store-ink)] px-7 py-3.5 text-sm font-bold text-white"
+                class="mt-7 inline-flex rounded-full bg-[var(--store-ink)] px-7 py-3.5 text-sm font-bold text-[var(--store-cream)]"
             >
                 Descobrir a loja
             </Link>

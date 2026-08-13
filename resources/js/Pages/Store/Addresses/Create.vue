@@ -38,10 +38,11 @@ const submit = () => {
         <FlashAlert />
 
         <div class="mx-auto max-w-2xl">
-            <h1 class="text-3xl font-bold text-gray-900">Novo endereco</h1>
+            <p class="text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[var(--store-cocoa)]">Entrega</p>
+            <h1 class="mt-2 font-serif text-5xl tracking-[-0.045em]">Novo endereco</h1>
 
             <form
-                class="mt-8 space-y-4 rounded-lg border border-gray-200 bg-white p-6"
+                class="store-form mt-8 space-y-5 rounded-[2rem] border border-[var(--store-ink)]/12 bg-[var(--store-paper)] p-6 sm:p-8"
                 @submit.prevent="submit"
             >
                 <div class="grid gap-4 md:grid-cols-2">
@@ -157,7 +158,7 @@ const submit = () => {
                         <select
                             id="state"
                             v-model="form.state"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            class="mt-1 block w-full rounded-xl border-[var(--store-line)] bg-[var(--store-paper)] shadow-none focus:border-[var(--store-cocoa)] focus:ring-[var(--store-cocoa)]/20"
                             required
                         >
                             <option
@@ -174,7 +175,7 @@ const submit = () => {
 
                 <div class="flex items-center gap-2">
                     <Checkbox v-model:checked="form.is_default" />
-                    <span class="text-sm text-gray-700">Endereco padrao</span>
+                    <span class="text-sm text-[var(--store-muted)]">Endereco padrao</span>
                 </div>
 
                 <div class="flex items-center gap-3">
@@ -183,7 +184,7 @@ const submit = () => {
                     </PrimaryButton>
                     <Link
                         :href="route('store.addresses.index')"
-                        class="text-sm text-gray-600 hover:text-gray-900"
+                        class="text-sm text-[var(--store-muted)] hover:text-[var(--store-ink)]"
                     >
                         Cancelar
                     </Link>

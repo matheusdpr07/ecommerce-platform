@@ -128,7 +128,7 @@ const changeQuantity = (change: number) => {
         <div class="grid min-w-0 gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16">
             <section class="min-w-0 lg:sticky lg:top-28 lg:self-start">
                 <div
-                    class="group relative aspect-[4/5] w-full max-w-full overflow-hidden rounded-[2.5rem] bg-[#e7e0d5]"
+                    class="group relative aspect-[4/5] w-full max-w-full overflow-hidden rounded-[2.5rem] bg-[var(--store-sand)]"
                 >
                     <img
                         v-if="selectedImageUrl"
@@ -153,7 +153,7 @@ const changeQuantity = (change: number) => {
                     </div>
                     <span
                         v-if="hasPromotion"
-                        class="absolute left-5 top-5 rounded-full bg-[var(--store-coral)] px-4 py-2 text-[0.65rem] font-bold uppercase tracking-[0.15em] text-white"
+                        class="absolute left-5 top-5 rounded-full bg-[var(--store-cocoa)] px-4 py-2 text-[0.65rem] font-bold uppercase tracking-[0.15em] text-[var(--store-cream)]"
                     >
                         Oferta especial
                     </span>
@@ -255,7 +255,7 @@ const changeQuantity = (change: number) => {
                             class="rounded-full border px-5 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-35"
                             :class="
                                 selectedVariantId === variant.id
-                                    ? 'border-[var(--store-ink)] bg-[var(--store-ink)] text-white'
+                                    ? 'border-[var(--store-ink)] bg-[var(--store-ink)] text-[var(--store-cream)]'
                                     : 'border-[var(--store-ink)]/20 hover:border-[var(--store-ink)]'
                             "
                             :disabled="!variant.in_stock"
@@ -297,7 +297,7 @@ const changeQuantity = (change: number) => {
                     </div>
                     <button
                         type="button"
-                        class="flex h-14 flex-1 items-center justify-between rounded-full bg-[var(--store-ink)] px-7 text-sm font-bold text-white transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-45"
+                        class="flex h-14 flex-1 items-center justify-between rounded-full bg-[var(--store-ink)] px-7 text-sm font-bold text-[var(--store-cream)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-45"
                         :disabled="!canAddToCart || cartForm.processing"
                         @click="addToCart"
                     >

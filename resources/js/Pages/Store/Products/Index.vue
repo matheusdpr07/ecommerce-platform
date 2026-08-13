@@ -154,7 +154,7 @@ const clearFilters = () => {
                             Filtros
                             <span
                                 v-if="activeFilterCount > 0"
-                                class="grid size-5 place-items-center rounded-full bg-[var(--store-coral)] text-[0.65rem] text-white"
+                                class="grid size-5 place-items-center rounded-full bg-[var(--store-cocoa)] text-[0.65rem] text-[var(--store-cream)]"
                             >
                                 {{ activeFilterCount }}
                             </span>
@@ -309,7 +309,7 @@ const clearFilters = () => {
 
                             <button
                                 type="submit"
-                                class="w-full rounded-full bg-[var(--store-ink)] px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5"
+                                class="w-full rounded-full bg-[var(--store-ink)] px-5 py-3 text-sm font-bold text-[var(--store-cream)] transition hover:-translate-y-0.5"
                             >
                                 Aplicar filtros
                             </button>
@@ -375,7 +375,7 @@ const clearFilters = () => {
 
         <section
             v-if="showEditorial"
-            class="store-reveal bg-[var(--store-accent)] px-4 py-16 sm:px-6 lg:px-10 lg:py-24"
+            class="store-reveal bg-[var(--store-cocoa)] px-4 py-16 text-[var(--store-cream)] sm:px-6 lg:px-10 lg:py-24"
         >
             <div
                 class="mx-auto grid max-w-[90rem] gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-end"
@@ -384,7 +384,7 @@ const clearFilters = () => {
                     class="font-serif text-[clamp(3.2rem,7vw,7.5rem)] leading-[0.88] tracking-[-0.065em]"
                 >
                     Comprar bem também é se sentir
-                    <em class="text-[var(--store-coral)]">bem acompanhado.</em>
+                    <em class="text-[var(--store-cream)]">bem acompanhado.</em>
                 </p>
                 <div class="grid gap-6 sm:grid-cols-3 lg:grid-cols-1">
                     <div
@@ -394,12 +394,12 @@ const clearFilters = () => {
                             ['03', 'Do pedido à porta', 'Acompanhe cada etapa em um só lugar.'],
                         ]"
                         :key="item[0]"
-                        class="grid grid-cols-[2.5rem_1fr] gap-3 border-t border-[var(--store-ink)]/30 pt-4"
+                        class="grid grid-cols-[2.5rem_1fr] gap-3 border-t border-[var(--store-cream)]/30 pt-4"
                     >
                         <span class="text-xs font-bold">{{ item[0] }}</span>
                         <div>
                             <p class="font-bold">{{ item[1] }}</p>
-                            <p class="mt-1 text-sm text-[var(--store-ink)]/65">
+                            <p class="mt-1 text-sm text-[var(--store-cream)]/65">
                                 {{ item[2] }}
                             </p>
                         </div>

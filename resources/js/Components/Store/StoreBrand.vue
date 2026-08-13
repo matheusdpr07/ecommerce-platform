@@ -12,8 +12,8 @@ defineProps<{
             class="grid size-10 shrink-0 place-items-center rounded-full border"
             :class="
                 inverse
-                    ? 'border-white/25 bg-white text-[var(--store-ink)]'
-                    : 'border-[var(--store-ink)] bg-[var(--store-accent)] text-[var(--store-ink)]'
+                    ? 'border-[var(--store-cream)]/25 bg-[var(--store-cream)] text-[var(--store-ink)]'
+                    : 'border-[var(--store-caramel)] bg-[var(--store-caramel)] text-[var(--store-cream)]'
             "
             aria-hidden="true"
         >

@@ -78,14 +78,14 @@ const statusClasses = (status: string) => {
         <div class="mb-8">
             <Link
                 :href="route('store.orders.index')"
-                class="text-sm text-gray-600 hover:text-gray-900"
+                class="text-sm text-[var(--store-muted)] hover:text-[var(--store-ink)]"
             >
                 Voltar aos pedidos
             </Link>
-            <h1 class="mt-4 text-3xl font-bold text-gray-900">
+            <h1 class="mt-4 font-serif text-5xl tracking-[-0.045em]">
                 Pedido {{ order.number }}
             </h1>
-            <p class="mt-2 text-gray-600">
+            <p class="mt-2 text-[var(--store-muted)]">
                 Realizado em {{ formatDate(order.placed_at) }}
             </p>
             <span
@@ -100,14 +100,14 @@ const statusClasses = (status: string) => {
             <section class="space-y-6">
                 <div
                     v-if="['paid', 'partially_refunded'].includes(order.status)"
-                    class="rounded-lg border border-gray-200 bg-white p-6"
+                    class="rounded-[1.5rem] border border-[var(--store-ink)]/12 bg-[var(--store-paper)] p-6"
                 >
                     <div class="flex flex-wrap items-start justify-between gap-3">
                         <div>
-                            <h2 class="text-lg font-semibold text-gray-900">
+                            <h2 class="font-serif text-xl font-semibold">
                                 Acompanhamento da entrega
                             </h2>
-                            <p class="mt-1 text-sm text-gray-600">
+                            <p class="mt-1 text-sm text-[var(--store-muted)]">
                                 {{ order.fulfillment_status_label }}
                             </p>
                         </div>
@@ -116,43 +116,43 @@ const statusClasses = (status: string) => {
                             :href="order.tracking_url"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="text-sm font-medium text-indigo-600 hover:text-indigo-800"
+                            class="text-sm font-semibold text-[var(--store-cocoa)] underline underline-offset-4"
                         >
                             Rastrear entrega
                         </a>
                     </div>
 
                     <ol class="mt-5 grid gap-3 sm:grid-cols-3">
-                        <li class="rounded-md border p-3" :class="order.preparing_at ? 'border-green-200 bg-green-50' : 'border-gray-200'">
-                            <p class="text-sm font-medium text-gray-900">Em separação</p>
-                            <p class="mt-1 text-xs text-gray-500">{{ order.preparing_at ? formatDate(order.preparing_at) : 'Próxima etapa' }}</p>
+                        <li class="rounded-xl border p-3" :class="order.preparing_at ? 'border-green-200 bg-green-50' : 'border-[var(--store-line)]'">
+                            <p class="text-sm font-medium">Em separação</p>
+                            <p class="mt-1 text-xs text-[var(--store-muted)]">{{ order.preparing_at ? formatDate(order.preparing_at) : 'Próxima etapa' }}</p>
                         </li>
-                        <li class="rounded-md border p-3" :class="order.shipped_at ? 'border-green-200 bg-green-50' : 'border-gray-200'">
-                            <p class="text-sm font-medium text-gray-900">Enviado</p>
-                            <p class="mt-1 text-xs text-gray-500">{{ order.shipped_at ? formatDate(order.shipped_at) : 'Pendente' }}</p>
+                        <li class="rounded-xl border p-3" :class="order.shipped_at ? 'border-green-200 bg-green-50' : 'border-[var(--store-line)]'">
+                            <p class="text-sm font-medium">Enviado</p>
+                            <p class="mt-1 text-xs text-[var(--store-muted)]">{{ order.shipped_at ? formatDate(order.shipped_at) : 'Pendente' }}</p>
                         </li>
-                        <li class="rounded-md border p-3" :class="order.delivered_at ? 'border-green-200 bg-green-50' : 'border-gray-200'">
-                            <p class="text-sm font-medium text-gray-900">Entregue</p>
-                            <p class="mt-1 text-xs text-gray-500">{{ order.delivered_at ? formatDate(order.delivered_at) : 'Pendente' }}</p>
+                        <li class="rounded-xl border p-3" :class="order.delivered_at ? 'border-green-200 bg-green-50' : 'border-[var(--store-line)]'">
+                            <p class="text-sm font-medium">Entregue</p>
+                            <p class="mt-1 text-xs text-[var(--store-muted)]">{{ order.delivered_at ? formatDate(order.delivered_at) : 'Pendente' }}</p>
                         </li>
                     </ol>
 
-                    <p v-if="order.tracking_code" class="mt-4 text-sm text-gray-600">
+                    <p v-if="order.tracking_code" class="mt-4 text-sm text-[var(--store-muted)]">
                         Código de rastreio:
-                        <span class="font-medium text-gray-900">{{ order.tracking_code }}</span>
+                        <span class="font-medium text-[var(--store-ink)]">{{ order.tracking_code }}</span>
                     </p>
                 </div>
 
                 <div
                     v-else-if="order.fulfillment_status === 'cancelled'"
-                    class="rounded-lg border border-gray-200 bg-gray-50 p-5 text-sm text-gray-700"
+                    class="rounded-[1.5rem] border border-[var(--store-ink)]/12 bg-[var(--store-paper)] p-5 text-sm text-[var(--store-muted)]"
                 >
                     A operação de entrega deste pedido foi encerrada.
                 </div>
 
-                <div class="rounded-lg border border-gray-200 bg-white p-6">
-                    <h2 class="text-lg font-semibold text-gray-900">Itens</h2>
-                    <ul class="mt-4 divide-y divide-gray-200">
+                <div class="rounded-[1.5rem] border border-[var(--store-ink)]/12 bg-[var(--store-paper)] p-6">
+                    <h2 class="font-serif text-xl font-semibold">Itens</h2>
+                    <ul class="mt-4 divide-y divide-[var(--store-ink)]/10">
                         <li
                             v-for="item in order.items"
                             :key="item.id"
@@ -161,29 +161,29 @@ const statusClasses = (status: string) => {
                             <div>
                                 <Link
                                     :href="route('store.products.show', item.product_slug)"
-                                    class="font-medium text-gray-900 hover:text-indigo-700"
+                                    class="font-medium hover:text-[var(--store-cocoa)]"
                                 >
                                     {{ item.product_name }}
                                 </Link>
-                                <p class="text-sm text-gray-600">
+                                <p class="text-sm text-[var(--store-muted)]">
                                     {{ item.variant_name }} · {{ item.variant_sku }}
                                 </p>
-                                <p class="text-sm text-gray-500">
+                                <p class="text-sm text-[var(--store-muted)]">
                                     Qtd: {{ item.quantity }}
                                 </p>
                                 <Link
                                     v-if="order.fulfillment_status === 'delivered'"
                                     :href="`${route('store.products.show', item.product_slug)}#avaliacoes`"
-                                    class="mt-2 inline-block text-xs font-semibold text-indigo-600 underline underline-offset-4"
+                                    class="mt-2 inline-block text-xs font-semibold text-[var(--store-cocoa)] underline underline-offset-4"
                                 >
                                     Avaliar compra verificada
                                 </Link>
                             </div>
                             <div class="text-sm sm:text-right">
-                                <p class="font-medium text-gray-900">
+                                <p class="font-medium">
                                     {{ formatMoneyFromCents(item.line_total_cents) }}
                                 </p>
-                                <p class="text-gray-500">
+                                <p class="text-[var(--store-muted)]">
                                     {{ formatMoneyFromCents(item.unit_price_cents) }} un.
                                 </p>
                             </div>
@@ -191,13 +191,13 @@ const statusClasses = (status: string) => {
                     </ul>
                 </div>
 
-                <div class="rounded-lg border border-gray-200 bg-white p-6">
-                    <h2 class="text-lg font-semibold text-gray-900">
+                <div class="rounded-[1.5rem] border border-[var(--store-ink)]/12 bg-[var(--store-paper)] p-6">
+                    <h2 class="font-serif text-xl font-semibold">
                         Entrega
                     </h2>
-                    <dl class="mt-4 space-y-2 text-sm text-gray-600">
+                    <dl class="mt-4 space-y-2 text-sm text-[var(--store-muted)]">
                         <div>
-                            <dt class="font-medium text-gray-900">
+                            <dt class="font-medium text-[var(--store-ink)]">
                                 {{ order.shipping_method_name }}
                             </dt>
                         </div>
@@ -216,8 +216,8 @@ const statusClasses = (status: string) => {
                     </dl>
                 </div>
 
-                <div class="rounded-lg border border-gray-200 bg-white p-6">
-                    <h2 class="text-lg font-semibold text-gray-900">
+                <div class="rounded-[1.5rem] border border-[var(--store-ink)]/12 bg-[var(--store-paper)] p-6">
+                    <h2 class="font-serif text-xl font-semibold">
                         Pagamento
                     </h2>
 
@@ -234,14 +234,14 @@ const statusClasses = (status: string) => {
                                 v-if="order.payment.pix_qr_code_base64"
                                 :src="`data:image/png;base64,${order.payment.pix_qr_code_base64}`"
                                 alt="QR Code para pagamento via Pix"
-                                class="h-48 w-48 rounded-md border border-gray-200 bg-white p-2"
+                                class="h-48 w-48 rounded-xl border border-[var(--store-line)] bg-[var(--store-paper)] p-2"
                             />
 
                             <div class="min-w-0 flex-1">
-                                <p class="font-medium text-gray-900">
+                                <p class="font-medium">
                                     Pague com Pix
                                 </p>
-                                <p class="mt-1 text-sm text-gray-600">
+                                <p class="mt-1 text-sm text-[var(--store-muted)]">
                                     Escaneie o QR Code ou use o codigo Copia e Cola no aplicativo do seu banco.
                                 </p>
 
@@ -250,7 +250,7 @@ const statusClasses = (status: string) => {
                                     :value="order.payment.pix_qr_code"
                                     readonly
                                     rows="3"
-                                    class="mt-3 block w-full rounded-md border-gray-300 bg-gray-50 text-xs text-gray-700"
+                                    class="mt-3 block w-full rounded-xl border-[var(--store-line)] bg-[var(--store-canvas)] text-xs text-[var(--store-ink)]"
                                     aria-label="Codigo Pix Copia e Cola"
                                 />
 
@@ -258,7 +258,7 @@ const statusClasses = (status: string) => {
                                     <button
                                         v-if="order.payment.pix_qr_code"
                                         type="button"
-                                        class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                                        class="rounded-full bg-[var(--store-cocoa)] px-4 py-2 text-sm font-semibold text-[var(--store-cream)] hover:bg-[var(--store-ink)]"
                                         @click="copyPix"
                                     >
                                         Copiar codigo Pix
@@ -268,14 +268,14 @@ const statusClasses = (status: string) => {
                                         :href="order.payment.pix_ticket_url"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        class="text-sm font-medium text-indigo-600 hover:text-indigo-800"
+                                        class="text-sm font-semibold text-[var(--store-cocoa)] underline underline-offset-4"
                                     >
                                         Abrir pagina de pagamento
                                     </a>
                                 </div>
                                 <p
                                     v-if="copyMessage"
-                                    class="mt-2 text-sm text-gray-600"
+                                    class="mt-2 text-sm text-[var(--store-muted)]"
                                     role="status"
                                 >
                                     {{ copyMessage }}
@@ -313,12 +313,12 @@ const statusClasses = (status: string) => {
                     </div>
 
                     <div v-else-if="canGeneratePix" class="mt-4">
-                        <p class="text-sm text-gray-600">
+                        <p class="text-sm text-[var(--store-muted)]">
                             Gere o QR Code para pagar este pedido via Pix.
                         </p>
                         <button
                             type="button"
-                            class="mt-3 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                            class="mt-3 rounded-full bg-[var(--store-cocoa)] px-4 py-2 text-sm font-semibold text-[var(--store-cream)] hover:bg-[var(--store-ink)] disabled:opacity-50"
                             :disabled="paymentForm.processing"
                             @click="generatePix"
                         >
@@ -328,11 +328,11 @@ const statusClasses = (status: string) => {
                 </div>
             </section>
 
-            <aside class="h-fit rounded-lg border border-gray-200 bg-white p-6">
-                <h2 class="text-lg font-semibold text-gray-900">Resumo</h2>
+            <aside class="h-fit rounded-[1.5rem] border border-[var(--store-ink)]/12 bg-[var(--store-paper)] p-6">
+                <h2 class="font-serif text-xl font-semibold">Resumo</h2>
                 <dl class="mt-4 space-y-2 text-sm">
                     <div class="flex justify-between">
-                        <dt class="text-gray-600">Subtotal</dt>
+                        <dt class="text-[var(--store-muted)]">Subtotal</dt>
                         <dd>{{ formatMoneyFromCents(order.subtotal_cents) }}</dd>
                     </div>
                     <div
@@ -346,7 +346,7 @@ const statusClasses = (status: string) => {
                         <dd>-{{ formatMoneyFromCents(order.discount_cents) }}</dd>
                     </div>
                     <div class="flex justify-between">
-                        <dt class="text-gray-600">Frete</dt>
+                        <dt class="text-[var(--store-muted)]">Frete</dt>
                         <dd>
                             {{
                                 order.shipping_cents === 0
@@ -356,7 +356,7 @@ const statusClasses = (status: string) => {
                         </dd>
                     </div>
                     <div
-                        class="flex justify-between border-t border-gray-200 pt-2 font-semibold"
+                        class="flex justify-between border-t border-[var(--store-line)] pt-2 font-semibold"
                     >
                         <dt>Total</dt>
                         <dd>{{ formatMoneyFromCents(order.total_cents) }}</dd>
@@ -365,10 +365,10 @@ const statusClasses = (status: string) => {
 
                 <div
                     v-if="order.payment"
-                    class="mt-4 rounded-md bg-gray-50 p-4 text-sm text-gray-700"
+                    class="mt-4 rounded-xl bg-[var(--store-canvas)] p-4 text-sm text-[var(--store-ink)]"
                 >
                     <p class="font-medium">Pix · {{ order.payment.status_label }}</p>
-                    <p v-if="order.payment.expires_at" class="mt-1 text-xs text-gray-500">
+                    <p v-if="order.payment.expires_at" class="mt-1 text-xs text-[var(--store-muted)]">
                         Valido ate {{ formatDate(order.payment.expires_at) }}
                     </p>
                 </div>

@@ -68,7 +68,7 @@ const deliveryEstimate = (min?: number | null, max?: number | null) => {
                     </li>
                     <li class="h-px w-5 bg-[var(--store-line)]" />
                     <li class="flex items-center gap-2">
-                        <span class="grid size-7 place-items-center rounded-full bg-[var(--store-ink)] text-white">2</span>
+                        <span class="grid size-7 place-items-center rounded-full bg-[var(--store-ink)] text-[var(--store-cream)]">2</span>
                         Entrega
                     </li>
                     <li class="h-px w-5 bg-[var(--store-line)]" />
@@ -213,7 +213,7 @@ const deliveryEstimate = (min?: number | null, max?: number | null) => {
 
                 <button
                     type="submit"
-                    class="flex w-full items-center justify-between rounded-full border border-[var(--store-ink)] px-6 py-4 text-sm font-bold transition hover:bg-[var(--store-ink)] hover:text-white disabled:opacity-50 sm:w-auto sm:min-w-72"
+                    class="flex w-full items-center justify-between rounded-full border border-[var(--store-ink)] px-6 py-4 text-sm font-bold transition hover:bg-[var(--store-ink)] hover:text-[var(--store-cream)] disabled:opacity-50 sm:w-auto sm:min-w-72"
                     :disabled="form.processing || !form.shipping_address_id"
                 >
                     Atualizar entrega e total
@@ -223,7 +223,7 @@ const deliveryEstimate = (min?: number | null, max?: number | null) => {
 
             <aside class="h-fit lg:sticky lg:top-28">
                 <div
-                    class="rounded-[2rem] bg-[var(--store-ink)] p-7 text-[var(--store-paper)] shadow-[0_25px_60px_rgba(23,24,17,0.18)]"
+                    class="rounded-[2rem] bg-[var(--store-ink)] p-7 text-[var(--store-cream)] shadow-[0_25px_60px_rgba(56,36,13,0.2)]"
                 >
                     <p
                         class="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[var(--store-accent)]"
@@ -231,7 +231,7 @@ const deliveryEstimate = (min?: number | null, max?: number | null) => {
                         Revisão final
                     </p>
                     <dl class="mt-6 space-y-3 text-sm">
-                        <div class="flex justify-between text-white/65">
+                        <div class="flex justify-between text-[var(--store-cream)]/65">
                             <dt>{{ cart.item_count }} item(ns)</dt>
                             <dd>{{ formatMoneyFromCents(cart.subtotal_cents) }}</dd>
                         </div>
@@ -242,14 +242,14 @@ const deliveryEstimate = (min?: number | null, max?: number | null) => {
                             <dt>Desconto</dt>
                             <dd>-{{ formatMoneyFromCents(cart.discount_cents) }}</dd>
                         </div>
-                        <div class="flex justify-between text-white/65">
+                        <div class="flex justify-between text-[var(--store-cream)]/65">
                             <dt>Entrega</dt>
                             <dd>
                                 {{ shipping_cents === 0 && is_ready ? 'Grátis' : formatMoneyFromCents(shipping_cents) }}
                             </dd>
                         </div>
                         <div
-                            class="mt-5 flex items-end justify-between border-t border-white/15 pt-5"
+                            class="mt-5 flex items-end justify-between border-t border-[var(--store-cream)]/15 pt-5"
                         >
                             <dt class="font-bold">Total</dt>
                             <dd class="font-serif text-3xl tracking-[-0.04em]">
@@ -260,7 +260,7 @@ const deliveryEstimate = (min?: number | null, max?: number | null) => {
 
                     <div v-if="is_ready" class="mt-7">
                         <div
-                            class="mb-4 rounded-2xl bg-white/8 p-4 text-xs leading-5 text-white/65"
+                            class="mb-4 rounded-2xl bg-[var(--store-cream)]/8 p-4 text-xs leading-5 text-[var(--store-cream)]/65"
                         >
                             Tudo certo. Ao confirmar, criaremos o pedido e você
                             seguirá para o pagamento seguro via Pix.
@@ -278,7 +278,7 @@ const deliveryEstimate = (min?: number | null, max?: number | null) => {
                     </div>
                     <div
                         v-else
-                        class="mt-7 rounded-2xl border border-white/15 p-4 text-xs leading-5 text-white/55"
+                        class="mt-7 rounded-2xl border border-[var(--store-cream)]/15 p-4 text-xs leading-5 text-[var(--store-cream)]/55"
                     >
                         Selecione endereço e frete e atualize o total para liberar a confirmação.
                     </div>

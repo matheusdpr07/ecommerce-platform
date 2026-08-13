@@ -14,13 +14,17 @@
 }
 
 :root {
-    --store-canvas: #f4f0e8;
-    --store-paper: #fffdf8;
-    --store-ink: #171811;
-    --store-muted: #66685c;
-    --store-line: #d9d4c8;
-    --store-accent: #dfff4f;
-    --store-coral: #ff6b4a;
+    --store-cream: #fdfbd4;
+    --store-caramel: #c05800;
+    --store-cocoa: #713600;
+    --store-ink: #38240d;
+    --store-canvas: var(--store-cream);
+    --store-paper: #fffef0;
+    --store-sand: #eadfc1;
+    --store-muted: #745f48;
+    --store-line: #d8c79d;
+    --store-accent: var(--store-cream);
+    --store-coral: var(--store-cocoa);
 }
 
 html {
@@ -36,13 +40,49 @@ body {
 }
 
 ::selection {
-    background: var(--store-accent);
-    color: var(--store-ink);
+    background: var(--store-cocoa);
+    color: var(--store-cream);
 }
 
 :focus-visible {
     outline: 2px solid var(--store-coral);
     outline-offset: 4px;
+}
+
+.store-form input:not([type='checkbox']):not([type='radio']),
+.store-form select,
+.store-form textarea {
+    border-color: var(--store-line);
+    border-radius: 0.9rem;
+    background: var(--store-paper);
+    color: var(--store-ink);
+    box-shadow: none;
+}
+
+.store-form input:focus,
+.store-form select:focus,
+.store-form textarea:focus {
+    border-color: var(--store-cocoa);
+    --tw-ring-color: color-mix(in srgb, var(--store-cocoa) 24%, transparent);
+}
+
+.store-form label {
+    color: var(--store-ink);
+}
+
+.store-form button[type='submit'] {
+    border-radius: 999px;
+    background: var(--store-ink);
+    color: var(--store-cream);
+}
+
+.store-auth a {
+    color: var(--store-cocoa);
+}
+
+.store-auth input[type='checkbox'] {
+    border-color: var(--store-line);
+    color: var(--store-cocoa);
 }
 
 .store-scroll-progress {

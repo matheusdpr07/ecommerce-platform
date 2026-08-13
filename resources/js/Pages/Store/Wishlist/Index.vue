@@ -53,7 +53,7 @@ const moveToCart = (itemId: number) => {
                 <Link
                     :href="route('store.products.show', item.product.slug)"
                     view-transition
-                    class="relative block aspect-[4/5] overflow-hidden rounded-[1.75rem] bg-[#e7e0d5]"
+                    class="relative block aspect-[4/5] overflow-hidden rounded-[1.75rem] bg-[var(--store-sand)]"
                 >
                     <img
                         v-if="item.product.primary_image"
@@ -65,7 +65,7 @@ const moveToCart = (itemId: number) => {
                     />
                     <span
                         v-if="!item.product.has_stock"
-                        class="absolute left-4 top-4 rounded-full bg-[var(--store-ink)] px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-wider text-white"
+                        class="absolute left-4 top-4 rounded-full bg-[var(--store-ink)] px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-wider text-[var(--store-cream)]"
                     >
                         Esgotado
                     </span>
@@ -91,7 +91,7 @@ const moveToCart = (itemId: number) => {
                     <div class="mt-5 flex gap-2">
                         <button
                             type="button"
-                            class="flex-1 rounded-full bg-[var(--store-ink)] px-5 py-3 text-sm font-bold text-white disabled:opacity-40"
+                            class="flex-1 rounded-full bg-[var(--store-ink)] px-5 py-3 text-sm font-bold text-[var(--store-cream)] disabled:opacity-40"
                             :disabled="!item.product.has_stock"
                             @click="moveToCart(item.id)"
                         >
@@ -129,7 +129,7 @@ const moveToCart = (itemId: number) => {
             <Link
                 :href="route('store.home')"
                 view-transition
-                class="mt-7 inline-flex rounded-full bg-[var(--store-ink)] px-7 py-3.5 text-sm font-bold text-white"
+                class="mt-7 inline-flex rounded-full bg-[var(--store-ink)] px-7 py-3.5 text-sm font-bold text-[var(--store-cream)]"
             >
                 Explorar produtos
             </Link>

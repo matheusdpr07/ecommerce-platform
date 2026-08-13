@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import FlashAlert from '@/Components/FlashAlert.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import StoreLayout from '@/Layouts/StoreLayout.vue';
 import type { CustomerAddress } from '@/types/catalog';
 import { Head, Link, router } from '@inertiajs/vue3';
@@ -22,13 +21,19 @@ const destroyAddress = (addressId: number) => {
 
         <div class="mb-8 flex items-center justify-between">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">Meus enderecos</h1>
-                <p class="mt-2 text-gray-600">
+                <p class="text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[var(--store-cocoa)]">
+                    Sua conta
+                </p>
+                <h1 class="mt-2 font-serif text-5xl tracking-[-0.045em]">Meus enderecos</h1>
+                <p class="mt-2 text-[var(--store-muted)]">
                     Gerencie os enderecos usados no checkout.
                 </p>
             </div>
-            <Link :href="route('store.addresses.create')">
-                <PrimaryButton>Novo endereco</PrimaryButton>
+            <Link
+                :href="route('store.addresses.create')"
+                class="rounded-full bg-[var(--store-ink)] px-5 py-3 text-sm font-bold text-[var(--store-cream)]"
+            >
+                Novo endereco
             </Link>
         </div>
 
@@ -36,35 +41,35 @@ const destroyAddress = (addressId: number) => {
             <article
                 v-for="address in addresses"
                 :key="address.id"
-                class="rounded-lg border border-gray-200 bg-white p-5"
+                class="rounded-[1.5rem] border border-[var(--store-ink)]/12 bg-[var(--store-paper)] p-6"
             >
                 <div class="flex items-start justify-between gap-4">
                     <div>
                         <div class="flex items-center gap-2">
-                            <h2 class="font-semibold text-gray-900">
+                            <h2 class="font-serif text-xl font-semibold">
                                 {{ address.label }}
                             </h2>
                             <span
                                 v-if="address.is_default"
-                                class="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700"
+                                class="rounded-full bg-[var(--store-accent)] px-2.5 py-1 text-xs font-bold text-[var(--store-cocoa)]"
                             >
                                 Padrao
                             </span>
                         </div>
-                        <p class="mt-2 text-sm text-gray-700">
+                        <p class="mt-2 text-sm">
                             {{ address.recipient_name }}
                         </p>
-                        <p class="text-sm text-gray-600">
+                        <p class="text-sm text-[var(--store-muted)]">
                             {{ address.summary }}
                         </p>
-                        <p class="text-sm text-gray-600">
+                        <p class="text-sm text-[var(--store-muted)]">
                             CEP {{ address.formatted_postal_code }}
                         </p>
                     </div>
                     <div class="flex flex-col gap-2 text-sm">
                         <Link
                             :href="route('store.addresses.edit', address.id)"
-                            class="text-indigo-600 hover:text-indigo-800"
+                            class="font-semibold text-[var(--store-cocoa)] underline underline-offset-4"
                         >
                             Editar
                         </Link>
@@ -82,16 +87,19 @@ const destroyAddress = (addressId: number) => {
 
         <div
             v-else
-            class="rounded-lg border border-dashed border-gray-300 bg-white p-12 text-center"
+            class="rounded-[2rem] border border-dashed border-[var(--store-ink)]/25 bg-[var(--store-paper)] p-12 text-center"
         >
-            <p class="text-lg font-medium text-gray-900">
+            <p class="font-serif text-2xl font-medium">
                 Nenhum endereco cadastrado
             </p>
-            <p class="mt-2 text-sm text-gray-500">
+            <p class="mt-2 text-sm text-[var(--store-muted)]">
                 Cadastre um endereco para continuar a compra.
             </p>
-            <Link :href="route('store.addresses.create')" class="mt-6 inline-block">
-                <PrimaryButton>Cadastrar endereco</PrimaryButton>
+            <Link
+                :href="route('store.addresses.create')"
+                class="mt-6 inline-block rounded-full bg-[var(--store-ink)] px-5 py-3 text-sm font-bold text-[var(--store-cream)]"
+            >
+                Cadastrar endereco
             </Link>
         </div>
     </StoreLayout>

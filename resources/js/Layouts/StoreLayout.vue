@@ -71,7 +71,7 @@ const submitSearch = () => {
         </div>
 
         <header
-            class="sticky top-0 z-[60] border-b border-[var(--store-ink)]/10 bg-[color:rgba(244,240,232,0.88)] backdrop-blur-xl"
+            class="sticky top-0 z-[60] border-b border-[var(--store-ink)]/10 bg-[color:rgba(253,251,212,0.9)] backdrop-blur-xl"
         >
             <div
                 class="mx-auto flex h-[4.75rem] max-w-[90rem] items-center gap-4 px-4 sm:px-6 lg:px-10"
@@ -180,7 +180,7 @@ const submitSearch = () => {
                 <Link
                     :href="user ? route('dashboard') : route('login')"
                     view-transition
-                    class="hidden size-11 place-items-center rounded-full transition hover:bg-white/60 sm:grid"
+                    class="hidden size-11 place-items-center rounded-full transition hover:bg-[var(--store-paper)]/70 sm:grid"
                     :aria-label="user ? 'Abrir minha conta' : 'Entrar na conta'"
                 >
                     <svg
@@ -199,7 +199,7 @@ const submitSearch = () => {
                     v-if="user"
                     :href="route('store.notifications.index')"
                     view-transition
-                    class="relative grid size-11 place-items-center rounded-full transition hover:bg-white/60"
+                    class="relative grid size-11 place-items-center rounded-full transition hover:bg-[var(--store-paper)]/70"
                     aria-label="Abrir notificações"
                 >
                     <svg
@@ -214,7 +214,7 @@ const submitSearch = () => {
                     </svg>
                     <span
                         v-if="notifications.unread_count > 0"
-                        class="absolute right-0 top-0 grid size-5 place-items-center rounded-full bg-[var(--store-coral)] text-[0.6rem] font-bold text-white"
+                        class="absolute right-0 top-0 grid size-5 place-items-center rounded-full bg-[var(--store-cocoa)] text-[0.6rem] font-bold text-[var(--store-cream)]"
                     >
                         {{
                             notifications.unread_count > 9
@@ -227,7 +227,7 @@ const submitSearch = () => {
                 <Link
                     :href="route('store.cart.index')"
                     view-transition
-                    class="relative grid size-11 place-items-center rounded-full bg-[var(--store-ink)] text-white transition hover:-translate-y-0.5"
+                    class="relative grid size-11 place-items-center rounded-full bg-[var(--store-ink)] text-[var(--store-cream)] transition hover:-translate-y-0.5"
                     aria-label="Abrir carrinho"
                 >
                     <svg
@@ -242,7 +242,7 @@ const submitSearch = () => {
                     </svg>
                     <span
                         v-if="cart.item_count > 0"
-                        class="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-[var(--store-coral)] text-[0.62rem] font-bold text-white"
+                        class="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-[var(--store-cocoa)] text-[0.62rem] font-bold text-[var(--store-cream)]"
                     >
                         {{ cart.item_count }}
                     </span>
@@ -377,7 +377,7 @@ const submitSearch = () => {
                         inverse
                     />
                     <p
-                        class="mt-7 max-w-md font-serif text-3xl leading-tight tracking-[-0.03em] text-white/90"
+                        class="mt-7 max-w-md font-serif text-3xl leading-tight tracking-[-0.03em] text-[var(--store-cream)]/90"
                     >
                         {{ store.tagline }}
                     </p>
@@ -389,7 +389,7 @@ const submitSearch = () => {
                     >
                         Sua jornada
                     </p>
-                    <nav class="mt-5 grid gap-3 text-sm text-white/70">
+                    <nav class="mt-5 grid gap-3 text-sm text-[var(--store-cream)]/70">
                         <Link :href="route('store.home')" view-transition>
                             Explorar produtos
                         </Link>
@@ -426,23 +426,23 @@ const submitSearch = () => {
                     >
                         Precisa de ajuda?
                     </p>
-                    <p class="mt-5 max-w-xs text-sm leading-6 text-white/65">
+                    <p class="mt-5 max-w-xs text-sm leading-6 text-[var(--store-cream)]/65">
                         Fale com a nossa equipe. Queremos que cada etapa da sua
                         compra seja simples e transparente.
                     </p>
                     <a
                         v-if="store.support_email"
                         :href="`mailto:${store.support_email}`"
-                        class="mt-4 inline-block border-b border-white/30 pb-1 text-sm"
+                        class="mt-4 inline-block border-b border-[var(--store-cream)]/30 pb-1 text-sm"
                     >
                         {{ store.support_email }}
                     </a>
                 </div>
             </div>
 
-            <div class="border-t border-white/10">
+            <div class="border-t border-[var(--store-cream)]/10">
                 <div
-                    class="mx-auto flex max-w-[90rem] flex-col gap-2 px-4 py-5 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-10"
+                    class="mx-auto flex max-w-[90rem] flex-col gap-2 px-4 py-5 text-xs text-[var(--store-cream)]/45 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-10"
                 >
                     <span>© {{ new Date().getFullYear() }} {{ store.name }}</span>
                     <span>Compra segura · experiência feita com cuidado</span>

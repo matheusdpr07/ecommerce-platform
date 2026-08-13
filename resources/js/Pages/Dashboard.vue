@@ -50,7 +50,7 @@ const accountLinks = computed(() => [
             class="relative isolate overflow-hidden rounded-[2.5rem] bg-[var(--store-ink)] px-6 py-12 text-[var(--store-paper)] sm:px-10 lg:px-14 lg:py-16"
         >
             <div
-                class="absolute -right-24 -top-40 -z-10 size-[30rem] rounded-full bg-[var(--store-coral)]/60 blur-3xl"
+                class="absolute -right-24 -top-40 -z-10 size-[30rem] rounded-full bg-[var(--store-caramel)]/60 blur-3xl"
             />
             <div
                 class="absolute -bottom-52 left-1/3 -z-10 size-[28rem] rounded-full bg-[var(--store-accent)]/30 blur-3xl"
@@ -66,7 +66,7 @@ const accountLinks = computed(() => [
                 Que bom ter você aqui,
                 <em class="text-[var(--store-accent)]">{{ firstName }}.</em>
             </h1>
-            <p class="mt-7 max-w-lg text-sm leading-6 text-white/55">
+            <p class="mt-7 max-w-lg text-sm leading-6 text-[var(--store-cream)]/60">
                 Acompanhe tudo o que acontece depois da escolha — de um único
                 lugar, sem perder o caminho de volta à loja.
             </p>
@@ -100,10 +100,10 @@ const accountLinks = computed(() => [
             <Link
                 v-if="userIsAdmin(user)"
                 :href="route('admin.dashboard')"
-                class="store-reveal group flex min-h-52 flex-col rounded-[1.75rem] bg-[var(--store-coral)] p-6 text-white transition hover:-translate-y-1 hover:shadow-xl"
+                class="store-reveal group flex min-h-52 flex-col rounded-[1.75rem] bg-[var(--store-cocoa)] p-6 text-[var(--store-cream)] transition hover:-translate-y-1 hover:shadow-xl"
             >
                 <span
-                    class="grid size-11 place-items-center rounded-full border border-white/30 text-lg"
+                    class="grid size-11 place-items-center rounded-full border border-[var(--store-cream)]/30 text-lg"
                     aria-hidden="true"
                 >
                     ✦
@@ -111,7 +111,7 @@ const accountLinks = computed(() => [
                 <h2 class="mt-auto font-serif text-2xl tracking-[-0.03em]">
                     Administração
                 </h2>
-                <p class="mt-2 text-sm leading-6 text-white/70">
+                <p class="mt-2 text-sm leading-6 text-[var(--store-cream)]/70">
                     Entre na operação da loja, catálogo e conteúdo.
                 </p>
             </Link>

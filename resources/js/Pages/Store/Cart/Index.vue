@@ -81,7 +81,7 @@ const removeCoupon = () => {
                     <Link
                         :href="route('store.products.show', item.product.slug)"
                         view-transition
-                        class="aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-[#e7e0d5]"
+                        class="aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-[var(--store-sand)]"
                     >
                         <img
                             v-if="item.product.primary_image"
@@ -212,7 +212,7 @@ const removeCoupon = () => {
 
             <aside class="h-fit lg:sticky lg:top-28">
                 <div
-                    class="rounded-[2rem] bg-[var(--store-ink)] p-7 text-[var(--store-paper)] shadow-[0_25px_60px_rgba(23,24,17,0.18)]"
+                    class="rounded-[2rem] bg-[var(--store-ink)] p-7 text-[var(--store-cream)] shadow-[0_25px_60px_rgba(56,36,13,0.2)]"
                 >
                     <p
                         class="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[var(--store-accent)]"
@@ -220,7 +220,7 @@ const removeCoupon = () => {
                         Resumo
                     </p>
                     <dl class="mt-6 space-y-3 text-sm">
-                        <div class="flex justify-between text-white/65">
+                        <div class="flex justify-between text-[var(--store-cream)]/65">
                             <dt>Subtotal</dt>
                             <dd>{{ formatMoneyFromCents(cart.subtotal_cents) }}</dd>
                         </div>
@@ -231,12 +231,12 @@ const removeCoupon = () => {
                             <dt>Desconto</dt>
                             <dd>-{{ formatMoneyFromCents(cart.discount_cents) }}</dd>
                         </div>
-                        <div class="flex justify-between text-white/65">
+                        <div class="flex justify-between text-[var(--store-cream)]/65">
                             <dt>Frete</dt>
                             <dd>Calculado no checkout</dd>
                         </div>
                         <div
-                            class="mt-5 flex items-end justify-between border-t border-white/15 pt-5"
+                            class="mt-5 flex items-end justify-between border-t border-[var(--store-cream)]/15 pt-5"
                         >
                             <dt class="font-bold">Total parcial</dt>
                             <dd class="font-serif text-3xl tracking-[-0.04em]">
@@ -252,7 +252,7 @@ const removeCoupon = () => {
                         {{ user ? 'Continuar para entrega' : 'Entrar e continuar' }}
                         <span aria-hidden="true">→</span>
                     </Link>
-                    <p class="mt-4 text-xs leading-5 text-white/45">
+                    <p class="mt-4 text-xs leading-5 text-[var(--store-cream)]/45">
                         Seu carrinho fica preservado durante o acesso. A cobrança
                         só é criada após a revisão final.
                     </p>
@@ -284,7 +284,7 @@ const removeCoupon = () => {
             <Link
                 :href="route('store.home')"
                 view-transition
-                class="mt-7 inline-flex rounded-full bg-[var(--store-ink)] px-7 py-3.5 text-sm font-bold text-white"
+                class="mt-7 inline-flex rounded-full bg-[var(--store-ink)] px-7 py-3.5 text-sm font-bold text-[var(--store-cream)]"
             >
                 Explorar produtos
             </Link>

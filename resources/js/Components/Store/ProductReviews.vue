@@ -125,7 +125,7 @@ const formatDate = (isoDate?: string | null) => {
                     <button
                         v-if="canWrite"
                         type="button"
-                        class="rounded-full bg-[var(--store-ink)] px-6 py-3 text-sm font-bold text-white"
+                        class="rounded-full bg-[var(--store-ink)] px-6 py-3 text-sm font-bold text-[var(--store-cream)]"
                         @click="formOpen = !formOpen"
                     >
                         {{ existingReview ? 'Editar minha avaliação' : 'Avaliar produto' }}
@@ -228,7 +228,7 @@ const formatDate = (isoDate?: string | null) => {
                     <div class="mt-6 flex flex-wrap items-center gap-3">
                         <button
                             type="submit"
-                            class="rounded-full bg-[var(--store-ink)] px-6 py-3 text-sm font-bold text-white disabled:opacity-50"
+                            class="rounded-full bg-[var(--store-ink)] px-6 py-3 text-sm font-bold text-[var(--store-cream)] disabled:opacity-50"
                             :disabled="form.processing"
                         >
                             Enviar para moderação
