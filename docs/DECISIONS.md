@@ -248,7 +248,7 @@ Registro objetivo de decisoes relevantes. Novas entradas devem incluir data, con
 
 **Contexto:** Inicio da Fase 13 — adaptar para a loja o impacto de referencias visuais com troca de cenarios durante a rolagem.
 
-**Decisao:** Reconstruir o principio de capitulos em `StoreScrollStory`, usando somente dados e identidade da propria loja; manter artigos no fluxo, palco com `position: sticky` e ativacao por `IntersectionObserver`; fazer um gesto vertical da roda avancar um unico capitulo, posicionar a pagina imediatamente e animar apenas a troca de cenario; encerrar o bloqueio logo apos o fim da inercia, em vez de renovar uma espera fixa longa; liberar a rolagem nos extremos; nao incorporar a biblioteca de full page, imagens, textos ou codigo da referencia; remover o palco e o encaixe quando `prefers-reduced-motion` estiver ativo.
+**Decisao:** Reconstruir o principio de capitulos em `StoreScrollStory`, usando somente dados e identidade da propria loja; manter artigos no fluxo, palco com `position: sticky` e ativacao por `IntersectionObserver`; fazer um gesto vertical da roda avancar um unico capitulo por uma animacao curta e controlada de aceleracao e desaceleracao; encerrar o bloqueio junto da animacao e logo apos o fim da inercia, em vez de renovar uma espera fixa longa; liberar a rolagem nos extremos; nao incorporar a biblioteca de full page, imagens, textos ou codigo da referencia; remover o palco e o encaixe quando `prefers-reduced-motion` estiver ativo.
 
 **Motivo:** Obter a percepcao de uma experiencia imersiva e eliminar a necessidade de varias voltas na roda, sem capturar toque ou teclado e sem adicionar uma dependencia pesada ao bundle.
 

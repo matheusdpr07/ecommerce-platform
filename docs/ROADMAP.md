@@ -428,7 +428,7 @@
 - Homepage reorganizada em quatro capitulos narrativos ligados a rolagem
 - Cenarios construidos com CSS, banners e produtos reais da loja, sem ativos copiados da referencia visual
 - Troca de cena por `IntersectionObserver`, sem listener continuo durante a rolagem
-- Um gesto vertical da roda avanca um capitulo, com bloqueio curto guiado pelo fim da inercia e liberacao natural na primeira e na ultima cena
+- Um gesto vertical da roda avanca um capitulo com aceleracao e desaceleracao controladas, bloqueio limitado a animacao/inercia e liberacao natural na primeira e na ultima cena
 - Rolagem nativa preservada para toque, teclado, movimento reduzido e para o restante da pagina
 - Experiencia responsiva validada visualmente em desktop e celular
 - Fallback de `prefers-reduced-motion` validado com todos os capitulos visiveis e interativos

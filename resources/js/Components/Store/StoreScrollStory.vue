@@ -20,9 +20,21 @@ let wheelSnapping = false;
 let wheelUnlockTimer: ReturnType<typeof setTimeout> | null = null;
 let wheelSnapStartedAt = 0;
 let lastWheelEventAt = 0;
+let scrollAnimationFrame: number | null = null;
+let scrollAnimationRunning = false;
 
 const wheelGestureIdleMs = 120;
 const wheelMinimumLockMs = 240;
+const scrollAnimationDurationMs = 560;
+
+const cancelScrollAnimation = () => {
+    if (scrollAnimationFrame !== null) {
+        cancelAnimationFrame(scrollAnimationFrame);
+        scrollAnimationFrame = null;
+    }
+
+    scrollAnimationRunning = false;
+};
 
 const releaseWheelSnap = () => {
     wheelSnapping = false;
@@ -38,6 +50,11 @@ const releaseWheelSnap = () => {
 const scheduleWheelRelease = () => {
     if (wheelUnlockTimer) {
         clearTimeout(wheelUnlockTimer);
+    }
+
+    if (scrollAnimationRunning) {
+        wheelUnlockTimer = setTimeout(scheduleWheelRelease, 50);
+        return;
     }
 
     const now = performance.now();
@@ -59,10 +76,46 @@ const scrollToSection = (section: HTMLElement) => {
     );
     const headerOffset = (Number.isFinite(rootFontSize) ? rootFontSize : 16) * 4.75;
 
-    window.scrollTo({
-        top: section.getBoundingClientRect().top + window.scrollY - headerOffset,
-        behavior: 'instant' as ScrollBehavior,
-    });
+    const startPosition = window.scrollY;
+    const targetPosition =
+        section.getBoundingClientRect().top + startPosition - headerOffset;
+    const distance = targetPosition - startPosition;
+    const animationStartedAt = performance.now();
+
+    cancelScrollAnimation();
+
+    if (Math.abs(distance) < 1) {
+        return;
+    }
+
+    scrollAnimationRunning = true;
+
+    const animateScroll = (now: number) => {
+        const progress = Math.min(
+            (now - animationStartedAt) / scrollAnimationDurationMs,
+            1,
+        );
+        const easedProgress =
+            progress < 0.5
+                ? 4 * progress ** 3
+                : 1 - (-2 * progress + 2) ** 3 / 2;
+
+        window.scrollTo({
+            top: startPosition + distance * easedProgress,
+            behavior: 'instant' as ScrollBehavior,
+        });
+
+        if (progress < 1) {
+            scrollAnimationFrame = requestAnimationFrame(animateScroll);
+            return;
+        }
+
+        scrollAnimationFrame = null;
+        scrollAnimationRunning = false;
+        scheduleWheelRelease();
+    };
+
+    scrollAnimationFrame = requestAnimationFrame(animateScroll);
 };
 
 const handleStoryWheel = (event: WheelEvent) => {
@@ -99,10 +152,6 @@ const handleStoryWheel = (event: WheelEvent) => {
     event.preventDefault();
     wheelSnapping = true;
     wheelSnapStartedAt = lastWheelEventAt;
-
-    if (targetIndex < chapters.length) {
-        activeScene.value = targetIndex;
-    }
 
     scrollToSection(targetSection);
     scheduleWheelRelease();
@@ -177,6 +226,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
     observer?.disconnect();
     storyRoot.value?.removeEventListener('wheel', handleStoryWheel);
+    cancelScrollAnimation();
     releaseWheelSnap();
 });
 </script>
