@@ -18,9 +18,16 @@ const storyReady = ref(false);
 let observer: IntersectionObserver | null = null;
 let wheelSnapping = false;
 let wheelUnlockTimer: ReturnType<typeof setTimeout> | null = null;
+let wheelSnapStartedAt = 0;
+let lastWheelEventAt = 0;
+
+const wheelGestureIdleMs = 120;
+const wheelMinimumLockMs = 240;
 
 const releaseWheelSnap = () => {
     wheelSnapping = false;
+    wheelSnapStartedAt = 0;
+    lastWheelEventAt = 0;
 
     if (wheelUnlockTimer) {
         clearTimeout(wheelUnlockTimer);
@@ -33,18 +40,28 @@ const scheduleWheelRelease = () => {
         clearTimeout(wheelUnlockTimer);
     }
 
-    wheelUnlockTimer = setTimeout(releaseWheelSnap, 700);
+    const now = performance.now();
+    const remainingIdleTime = wheelGestureIdleMs - (now - lastWheelEventAt);
+    const remainingMinimumLock = wheelMinimumLockMs - (now - wheelSnapStartedAt);
+    const delay = Math.max(remainingIdleTime, remainingMinimumLock, 0);
+
+    if (delay === 0) {
+        releaseWheelSnap();
+        return;
+    }
+
+    wheelUnlockTimer = setTimeout(scheduleWheelRelease, delay);
 };
 
-const scrollToChapter = (chapter: HTMLElement) => {
+const scrollToSection = (section: HTMLElement) => {
     const rootFontSize = Number.parseFloat(
         window.getComputedStyle(document.documentElement).fontSize,
     );
     const headerOffset = (Number.isFinite(rootFontSize) ? rootFontSize : 16) * 4.75;
 
     window.scrollTo({
-        top: chapter.getBoundingClientRect().top + window.scrollY - headerOffset,
-        behavior: 'smooth',
+        top: section.getBoundingClientRect().top + window.scrollY - headerOffset,
+        behavior: 'instant' as ScrollBehavior,
     });
 };
 
@@ -53,10 +70,12 @@ const handleStoryWheel = (event: WheelEvent) => {
         !storyRoot.value ||
         event.ctrlKey ||
         Math.abs(event.deltaY) <= Math.abs(event.deltaX) ||
-        (event.deltaMode === 0 && Math.abs(event.deltaY) < 4)
+        (event.deltaMode === 0 && Math.abs(event.deltaY) < 1)
     ) {
         return;
     }
+
+    lastWheelEventAt = performance.now();
 
     if (wheelSnapping) {
         event.preventDefault();
@@ -69,14 +88,23 @@ const handleStoryWheel = (event: WheelEvent) => {
     ];
     const direction = event.deltaY > 0 ? 1 : -1;
     const targetIndex = activeScene.value + direction;
+    const targetSection =
+        chapters[targetIndex] ??
+        (direction > 0 ? document.getElementById('catalogo') : null);
 
-    if (targetIndex < 0 || targetIndex >= chapters.length) {
+    if (!targetSection || targetIndex < 0) {
         return;
     }
 
     event.preventDefault();
     wheelSnapping = true;
-    scrollToChapter(chapters[targetIndex]);
+    wheelSnapStartedAt = lastWheelEventAt;
+
+    if (targetIndex < chapters.length) {
+        activeScene.value = targetIndex;
+    }
+
+    scrollToSection(targetSection);
     scheduleWheelRelease();
 };
 

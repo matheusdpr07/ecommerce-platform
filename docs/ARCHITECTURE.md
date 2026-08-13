@@ -48,7 +48,7 @@ Monolito modular Laravel com frontend Inertia (Vue 3 + TypeScript). Uma unica ap
 - Movimento progressivo com Scroll-driven Animations, `transform`/`opacity` e fallback para `prefers-reduced-motion`
 - Navegacao Inertia com View Transitions como melhoria progressiva, sem substituir a rolagem nativa
 - `StoreScrollStory` transforma banners, categorias e produtos em quatro capitulos; um palco `sticky` muda por `IntersectionObserver` e cada gesto vertical da roda avanca um capitulo
-- O encaixe da roda tem bloqueio de repeticao, atua somente entre capitulos e libera a rolagem nos extremos; toque, teclado e movimento reduzido continuam no fluxo nativo
+- O encaixe da roda usa posicionamento imediato e deixa a transicao para os cenarios; o bloqueio termina logo apos a inercia do gesto, atua somente entre capitulos e libera a rolagem nos extremos; toque, teclado e movimento reduzido continuam no fluxo nativo
 - A narrativa e decorativa no palco e semantica nos artigos; em movimento reduzido, o palco e removido e todo o conteudo volta ao fluxo estatico
 
 ## Seguranca (diretrizes)
