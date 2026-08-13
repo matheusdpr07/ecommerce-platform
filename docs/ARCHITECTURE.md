@@ -45,6 +45,8 @@ Monolito modular Laravel com frontend Inertia (Vue 3 + TypeScript). Uma unica ap
 - Interface em portugues do Brasil
 - Layout responsivo com estados de carregamento, vazio e erro
 - Identidade da loja configuravel por `STORE_*` e tokens CSS em `app.css`
+- Paleta semantica centralizada em `--store-ink`, `--store-cocoa`, `--store-caramel` e `--store-cream`; superfícies derivadas usam `--store-canvas`, `--store-paper` e `--store-sand`
+- Formularios da area do cliente e autenticacao usam os escopos `.store-form` e `.store-auth`, preservando os componentes compartilhados e o visual neutro do painel administrativo
 - Movimento progressivo com Scroll-driven Animations, `transform`/`opacity` e fallback para `prefers-reduced-motion`
 - Navegacao Inertia com View Transitions como melhoria progressiva, sem substituir a rolagem nativa
 - `StoreScrollStory` transforma banners, categorias e produtos em quatro capitulos; um palco `sticky` muda por `IntersectionObserver` e cada gesto vertical da roda avanca um capitulo

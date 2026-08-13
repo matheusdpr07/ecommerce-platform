@@ -253,3 +253,15 @@ Registro objetivo de decisoes relevantes. Novas entradas devem incluir data, con
 **Motivo:** Obter a percepcao de uma experiencia imersiva e eliminar a necessidade de varias voltas na roda, sem capturar toque ou teclado e sem adicionar uma dependencia pesada ao bundle.
 
 **Consequencias:** A homepage passa por identidade, categorias, curadoria e confianca antes do catalogo; no mouse, cada gesto percorre um capitulo e a primeira/ultima cena nao prendem a pagina; o conteudo continua administravel por banners e catalogo; navegadores e usuarios sem movimento recebem quatro secoes estaticas completas; futuras otimizacoes da Fase 13 podem medir a experiencia sem depender de um motor proprietario de rolagem.
+
+---
+
+## 2026-08-12 — Paleta chocolate premium na jornada do cliente
+
+**Contexto:** A identidade vibrante inicial nao representava mais a direcao sofisticada desejada para a loja, e algumas paginas antigas da conta ainda usavam cinzas e azuis genericos.
+
+**Decisao:** Centralizar a identidade em chocolate `#38240D`, cacau `#713600`, caramelo `#C05800` e creme `#FDFBD4`; usar o caramelo principalmente em grandes areas e decoracao, reservar chocolate/cacau para texto e controles, e aplicar creme sobre fundos escuros; derivar apenas superficies neutras da mesma familia; limitar o novo escopo visual a loja e conta do cliente.
+
+**Motivo:** Criar uma marca contemporanea e premium com consistencia entre descoberta, compra e pos-venda, mantendo contraste de leitura e sem alterar o painel operacional.
+
+**Consequencias:** Homepage, catalogo, produto, carrinho, checkout, favoritos, notificacoes, enderecos, pedidos, dashboard e autenticacao compartilham os mesmos tokens; o contraste principal chocolate/creme e de aproximadamente `13.97:1`; o laranja nao e usado para texto pequeno porque sua combinacao direta com creme fica abaixo do alvo AA; formularios do cliente recebem os escopos `.store-form` e `.store-auth` sem mudar componentes globais usados pelo admin.

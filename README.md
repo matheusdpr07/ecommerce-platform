@@ -16,6 +16,7 @@ A Fase 12 esta concluida e a Fase 13 esta em andamento. A aplicacao inclui:
 - Avaliacoes moderadas exclusivas para compras entregues e verificadas
 - Central de notificacoes com alertas no banco e por e-mail para pedido, pagamento, entrega e avaliacao
 - Homepage narrativa em quatro capitulos, com cenarios responsivos que evoluem durante a rolagem nativa
+- Sistema visual premium em chocolate, cacau, caramelo e creme aplicado a toda a jornada do cliente, inclusive autenticacao
 
 ## Stack
 

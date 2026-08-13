@@ -426,6 +426,9 @@
 ### Concluido
 
 - Homepage reorganizada em quatro capitulos narrativos ligados a rolagem
+- Paleta premium chocolate/cacau/caramelo/creme aplicada de ponta a ponta na area do cliente
+- Contraste da paleta analisado e papeis semanticos definidos para evitar laranja em textos pequenos
+- Autenticacao, formularios, enderecos e detalhes de pedido modernizados sem alterar o tema do painel administrativo
 - Cenarios construidos com CSS, banners e produtos reais da loja, sem ativos copiados da referencia visual
 - Troca de cena por `IntersectionObserver`, sem listener continuo durante a rolagem
 - Um gesto vertical da roda avanca um capitulo com aceleracao e desaceleracao controladas, bloqueio limitado a animacao/inercia e liberacao natural na primeira e na ultima cena
